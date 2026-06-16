@@ -345,8 +345,11 @@ function AddUserModal({ onClose, allSets, onAdd }) {
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({ firstName:'', lastName:'', email:'', mobile:'', type:'Standard user' })
   const [selSets, setSelSets] = useState([])
+  const [touched, setTouched] = useState({ firstName:false, email:false })
   const toggleSet = s => setSelSets(prev => prev.includes(s)?prev.filter(x=>x!==s):[...prev,s])
-  const valid = form.firstName.trim() && form.email.includes('@')
+  const emailValid = form.email.includes('@') && form.email.includes('.')
+  const firstNameValid = form.firstName.trim().length > 0
+  const valid = firstNameValid && emailValid
 
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.45)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:300 }}>
@@ -363,18 +366,29 @@ function AddUserModal({ onClose, allSets, onAdd }) {
           {step===1 ? (
             <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
-                {[['First name *','firstName','e.g. Beth'],['Last name','lastName','e.g. Smith']].map(([l,k,p])=>(
-                  <div key={k}>
-                    <label style={{ fontSize:13, fontWeight:600, color:'#374151', display:'block', marginBottom:5 }}>{l}</label>
-                    <input value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})} placeholder={p}
-                      style={{ width:'100%', padding:'9px 12px', border:'1px solid #d1d5db', borderRadius:8, fontSize:14, outline:'none' }} />
-                  </div>
-                ))}
+                <div>
+                  <label style={{ fontSize:13, fontWeight:600, color:'#374151', display:'block', marginBottom:5 }}>First name *</label>
+                  <input value={form.firstName}
+                    onChange={e=>setForm({...form,firstName:e.target.value})}
+                    onBlur={()=>setTouched(t=>({...t,firstName:true}))}
+                    placeholder="e.g. Beth"
+                    style={{ width:'100%', padding:'9px 12px', border:`1px solid ${touched.firstName&&!firstNameValid?'#ef4444':'#d1d5db'}`, borderRadius:8, fontSize:14, outline:'none' }} />
+                  {touched.firstName && !firstNameValid && <div style={{ fontSize:12, color:'#ef4444', marginTop:4 }}>First name is required</div>}
+                </div>
+                <div>
+                  <label style={{ fontSize:13, fontWeight:600, color:'#374151', display:'block', marginBottom:5 }}>Last name</label>
+                  <input value={form.lastName} onChange={e=>setForm({...form,lastName:e.target.value})} placeholder="e.g. Smith"
+                    style={{ width:'100%', padding:'9px 12px', border:'1px solid #d1d5db', borderRadius:8, fontSize:14, outline:'none' }} />
+                </div>
               </div>
               <div>
                 <label style={{ fontSize:13, fontWeight:600, color:'#374151', display:'block', marginBottom:5 }}>Email address *</label>
-                <input value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="e.g. beth.smith@brand.com" type="email"
-                  style={{ width:'100%', padding:'9px 12px', border:'1px solid #d1d5db', borderRadius:8, fontSize:14, outline:'none' }} />
+                <input value={form.email}
+                  onChange={e=>setForm({...form,email:e.target.value})}
+                  onBlur={()=>setTouched(t=>({...t,email:true}))}
+                  placeholder="e.g. beth.smith@brand.com"
+                  style={{ width:'100%', padding:'9px 12px', border:`1px solid ${touched.email&&!emailValid&&form.email?'#ef4444':'#d1d5db'}`, borderRadius:8, fontSize:14, outline:'none' }} />
+                {touched.email && form.email && !emailValid && <div style={{ fontSize:12, color:'#ef4444', marginTop:4 }}>Enter a valid email address (e.g. name@company.com)</div>}
               </div>
               <div>
                 <label style={{ fontSize:13, fontWeight:600, color:'#374151', display:'block', marginBottom:5 }}>Mobile number</label>
@@ -440,7 +454,15 @@ function AddUserModal({ onClose, allSets, onAdd }) {
 
         <div style={{ padding:'16px 24px', borderTop:'1px solid #e5e7eb', display:'flex', justifyContent:'space-between' }}>
           <button onClick={step===1?onClose:()=>setStep(1)} style={{ padding:'9px 18px', borderRadius:8, fontSize:14, cursor:'pointer', background:'#fff', color:'#374151', border:'1px solid #d1d5db', fontWeight:500 }}>{step===1?'Cancel':'← Back'}</button>
-          <button disabled={step===1&&!valid} onClick={()=>{ if(step===1){setStep(2)}else{onAdd({...form,sets:selSets});onClose()} }}
+          <button
+            onClick={()=>{
+              if(step===1){
+                setTouched({firstName:true,email:true})
+                if(valid) setStep(2)
+              } else {
+                onAdd({...form,sets:selSets}); onClose()
+              }
+            }}
             style={{ padding:'9px 20px', borderRadius:8, fontSize:14, cursor:'pointer', background:step===1&&!valid?'#e5e7eb':'#111827', color:step===1&&!valid?'#9ca3af':'#fff', border:'none', fontWeight:600 }}>
             {step===1?'Next →':'Add user'}
           </button>
