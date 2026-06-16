@@ -4,20 +4,35 @@ import './App.css'
 // ─── Seed data ────────────────────────────────────────────────────────────────
 
 const MODULES = {
-  'Behavioural Events': { color:'#6366f1', perms:['View','Create','Edit','Delete'], desc:'Custom event tracking and webhook management' },
-  'Webhooks':           { color:'#8b5cf6', perms:['View','Create','Delete'],         desc:'Inbound webhook integrations' },
-  'Card Configuration': { color:'#0ea5e9', perms:['View','Create','Edit','Delete'], desc:'Card series, generation and global settings' },
-  'Email Domains':      { color:'#14b8a6', perms:['View','Create','Delete'],         desc:'Email gateway domain configuration' },
-  'OAuth / API Mgmt':   { color:'#f59e0b', perms:['View','Create','Edit','Delete'], desc:'API clients and access group management' },
-  'Manage Partners':    { color:'#ef4444', perms:['View','Create','Edit','Delete'], desc:'Partner entity configuration' },
-  'Liability Owners':   { color:'#10b981', perms:['View'],                          desc:'Loyalty liability owner management' },
-  'Milestone / Targets':{ color:'#f97316', perms:['View','Create','Edit','Delete'], desc:'Milestone and target group config' },
-  'Creatives':          { color:'#ec4899', perms:['View','Create','Edit','Delete'], desc:'Campaign creative templates' },
-  'Product Inventory':  { color:'#64748b', perms:['View','Create','Edit','Delete'], desc:'Brands, categories, attributes, styles' },
+  // Data Management > Entities
+  'Behavioural Events':       { color:'#6366f1', nav:'Data Management › Entities', perms:['View','Create','Edit','Delete'], desc:'Define custom event schemas and publish to Loyalty & Engage+' },
+  'Webhooks':                 { color:'#8b5cf6', nav:'Data Management › Entities', perms:['View','Create','Delete'],        desc:'Inbound webhook integrations for event data ingestion' },
+  'Cards':                    { color:'#0ea5e9', nav:'Data Management › Entities', perms:['View','Create','Edit','Delete'], desc:'Card series, generated cards and global card settings' },
+  'Product Inventory':        { color:'#64748b', nav:'Data Management › Entities', perms:['View','Create','Edit','Delete'], desc:'Brands, categories, colors, attributes, sizes, styles' },
+  // Settings > Org Settings
+  'Communication & Gateway':  { color:'#14b8a6', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'Configure domains, gateway mapping, gateways, OU sender IDs' },
+  'OAuth / API Management':   { color:'#f59e0b', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'API clients, access groups, resources and permissions' },
+  'Milestone / Target Groups':{ color:'#f97316', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'Milestone and target group configuration' },
+  'Manage Partners':          { color:'#ef4444', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'Partner entity list, create, edit, delete' },
+  'Liability Owners':         { color:'#10b981', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'Loyalty liability owner management' },
+  // Channels
+  'Creatives':                { color:'#ec4899', nav:'Channels › Creatives',      perms:['View','Create','Edit','Delete'], desc:'SMS, email and push notification templates' },
+  // Audiences (new top-level nav)
+  'Audiences':                { color:'#7c3aed', nav:'Audiences',                  perms:['View','Create','Edit','Delete'], desc:'Audience groups and org user segmentation' },
 }
 
-const allP = {}
-Object.keys(MODULES).forEach(m => { allP[m] = [...MODULES[m].perms] })
+// Permission sets per module for standard sets
+const dataManagerModules = ['Behavioural Events','Webhooks','Cards','Product Inventory','Communication & Gateway','Milestone / Target Groups','Manage Partners','Liability Owners']
+const dataManagerP = Object.fromEntries(dataManagerModules.map(m => [m, [...MODULES[m].perms]]))
+
+const dataImportP = {
+  'Behavioural Events':       ['View'],
+  'Webhooks':                 ['View'],
+  'Cards':                    ['View'],
+  'Product Inventory':        ['View','Create','Edit','Delete'],
+  'Milestone / Target Groups':['View'],
+  'Manage Partners':          ['View'],
+}
 
 const PC = {
   View:   { bg:'#eff6ff', tx:'#1d4ed8', br:'#bfdbfe' },
@@ -27,33 +42,117 @@ const PC = {
 }
 
 const INIT_SETS = [
-  { id:1, name:'Org Settings - Data Manager', desc:'Full access to all org settings modules. All new permissions included — existing users unaffected.', type:'Standard', by:'Capillary', on:'Jan 15, 2026', super:true,  perms: allP },
-  { id:2, name:'Behavioural Events — View',    desc:'Read-only access to Behavioural Events and Webhooks', type:'Custom', by:'George Johnson', on:'Jun 10, 2026', perms:{ 'Behavioural Events':['View'], 'Webhooks':['View'] } },
-  { id:3, name:'Behavioural Events — Manager', desc:'Create and edit events and webhooks. No delete access.', type:'Custom', by:'George Johnson', on:'Jun 10, 2026', perms:{ 'Behavioural Events':['View','Create','Edit'], 'Webhooks':['View','Create'] } },
-  { id:4, name:'Card Config — View',           desc:'Read-only access to Card Configuration', type:'Custom', by:'George Johnson', on:'Jun 10, 2026', perms:{ 'Card Configuration':['View'] } },
-  { id:5, name:'Card Config — Manager',        desc:'Create and edit card series. No delete access.', type:'Custom', by:'George Johnson', on:'Jun 10, 2026', perms:{ 'Card Configuration':['View','Create','Edit'] } },
-  { id:6, name:'OAuth — Manager',              desc:'Manage API clients and access groups', type:'Custom', by:'George Johnson', on:'Jun 11, 2026', perms:{ 'OAuth / API Mgmt':['View','Create','Edit'] } },
+  // ── Standard sets ──────────────────────────────────────────────────────────
+  {
+    id:1, name:'Org Settings - Data Manager',
+    desc:'Full access to all org settings modules. All new permissions included — existing users unaffected.',
+    type:'Standard', by:'Capillary', on:'Jan 15, 2026', super:true,
+    perms: dataManagerP
+  },
+  {
+    id:2, name:'Data Import',
+    desc:'View access across org settings modules. Full CRUD on Product Inventory for data import workflows.',
+    type:'Standard', by:'Capillary', on:'Jan 15, 2026',
+    perms: dataImportP
+  },
+  {
+    id:3, name:'API Access Configuration Admin',
+    desc:'Full access to OAuth / API Management — clients, access groups, resources and permissions.',
+    type:'Standard', by:'Capillary', on:'Jan 15, 2026',
+    perms:{ 'OAuth / API Management':['View','Create','Edit','Delete'] }
+  },
+  {
+    id:4, name:'API Access Configuration Viewer',
+    desc:'Read-only access to OAuth / API Management.',
+    type:'Standard', by:'Capillary', on:'Jan 15, 2026',
+    perms:{ 'OAuth / API Management':['View'] }
+  },
+  {
+    id:5, name:'Engage+ Authorize',
+    desc:'Full access to Engage+ including creative templates.',
+    type:'Standard', by:'Capillary', on:'Jan 15, 2026',
+    perms:{ 'Creatives':['View','Create','Edit','Delete'] }
+  },
+  {
+    id:6, name:'Engage+ Activate',
+    desc:'Create and edit campaigns, journeys and creative templates. No delete.',
+    type:'Standard', by:'Capillary', on:'Jan 15, 2026',
+    perms:{ 'Creatives':['View','Create','Edit'] }
+  },
+  {
+    id:7, name:'Engage+ Explore',
+    desc:'View-only access to Engage+ modules including creative templates.',
+    type:'Standard', by:'Capillary', on:'Jan 15, 2026',
+    perms:{ 'Creatives':['View'] }
+  },
+  {
+    id:8, name:'Audiences',
+    desc:'Create and manage audience groups and org user segmentation. New dedicated set for the Audiences module.',
+    type:'Standard', by:'Capillary', on:'Jun 16, 2026',
+    perms:{ 'Audiences':['View','Create','Edit','Delete'] }
+  },
+  // ── Custom sets ────────────────────────────────────────────────────────────
+  {
+    id:9,  name:'BE — View',
+    desc:'Read-only access to Behavioural Events and Webhooks.',
+    type:'Custom', by:'George Johnson', on:'Jun 10, 2026',
+    perms:{ 'Behavioural Events':['View'], 'Webhooks':['View'] }
+  },
+  {
+    id:10, name:'BE — Manager',
+    desc:'Create and edit events and webhooks. No delete.',
+    type:'Custom', by:'George Johnson', on:'Jun 10, 2026',
+    perms:{ 'Behavioural Events':['View','Create','Edit'], 'Webhooks':['View','Create'] }
+  },
+  {
+    id:11, name:'Cards — View',
+    desc:'Read-only access to Cards (card series and generated cards).',
+    type:'Custom', by:'George Johnson', on:'Jun 10, 2026',
+    perms:{ 'Cards':['View'] }
+  },
+  {
+    id:12, name:'Cards — Manager',
+    desc:'Create and edit card series. No delete access.',
+    type:'Custom', by:'George Johnson', on:'Jun 10, 2026',
+    perms:{ 'Cards':['View','Create','Edit'] }
+  },
+  {
+    id:13, name:'Comms — View',
+    desc:'Read-only access to Communication & Gateway configuration.',
+    type:'Custom', by:'George Johnson', on:'Jun 16, 2026',
+    perms:{ 'Communication & Gateway':['View'] }
+  },
+  {
+    id:14, name:'OAuth — View',
+    desc:'Read-only access to API clients and access groups.',
+    type:'Custom', by:'George Johnson', on:'Jun 11, 2026',
+    perms:{ 'OAuth / API Management':['View'] }
+  },
 ]
 
 const INIT_USERS = [
-  { id:1, name:'Rick Sanchez',  email:'rick.sanchez@adultswim.com',  type:'Organization owner', status:'Active',      lastActive:'Aug 21, 2023 09:23 AM', sets:[] },
-  { id:2, name:'Morty Smith',   email:'morty.smith@adultswim.com',   type:'Admin',              status:'Pending',     lastActive:'—',                     sets:['Org Settings - Data Manager'] },
-  { id:3, name:'Beth Smith',    email:'beth.smith@adultswim.com',    type:'Standard user',      status:'Active',      lastActive:'Jul 08, 2023 02:26 PM', sets:['Behavioural Events — View'] },
-  { id:4, name:'Jerry Smith',   email:'jerry.smith@adultswim.com',   type:'Standard user',      status:'Active',      lastActive:'Jun 29, 2023 12:10 PM', sets:['Card Config — View'] },
-  { id:5, name:'Summer Smith',  email:'summer.smith@adultswim.com',  type:'Standard user',      status:'Deactivated', lastActive:'Mar 15, 2023 08:00 AM', sets:[] },
-  { id:6, name:'Squanchy',      email:'squanchy@capillarytech.com',  type:'Standard user',      status:'Active',      lastActive:'Jun 29, 2023 12:10 PM', sets:['Behavioural Events — Manager','Card Config — Manager'] },
-  { id:7, name:'Amogh Rane',    email:'amogh.rane@capillarytech.com',type:'Standard user',      status:'Active',      lastActive:'Jun 29, 2023 12:10 PM', sets:['OAuth — Manager'] },
+  { id:1, name:'Rick Sanchez',  email:'rick.sanchez@adultswim.com',    type:'Organization owner', status:'Active',      lastActive:'Aug 21, 2023 09:23 AM', sets:[] },
+  { id:2, name:'Morty Smith',   email:'morty.smith@adultswim.com',     type:'Admin',              status:'Pending',     lastActive:'—',                     sets:['Org Settings - Data Manager'] },
+  { id:3, name:'Beth Smith',    email:'beth.smith@adultswim.com',      type:'Standard user',      status:'Active',      lastActive:'Jul 08, 2023 02:26 PM', sets:['BE — View'] },
+  { id:4, name:'Jerry Smith',   email:'jerry.smith@adultswim.com',     type:'Standard user',      status:'Active',      lastActive:'Jun 29, 2023 12:10 PM', sets:['Cards — View'] },
+  { id:5, name:'Summer Smith',  email:'summer.smith@adultswim.com',    type:'Standard user',      status:'Deactivated', lastActive:'Mar 15, 2023 08:00 AM', sets:[] },
+  { id:6, name:'Squanchy',      email:'squanchy@capillarytech.com',    type:'Standard user',      status:'Active',      lastActive:'Jun 10, 2026 11:00 AM', sets:['BE — Manager','Cards — Manager'] },
+  { id:7, name:'Amogh Rane',    email:'amogh.rane@capillarytech.com',  type:'Standard user',      status:'Active',      lastActive:'Jun 11, 2026 09:00 AM', sets:['API Access Configuration Admin'] },
+  { id:8, name:'Priya Nair',    email:'priya.nair@capillarytech.com',  type:'Standard user',      status:'Active',      lastActive:'Jun 14, 2026 03:20 PM', sets:['Data Import'] },
+  { id:9, name:'Harsh Verma',   email:'harsh.verma@capillarytech.com', type:'Standard user',      status:'Active',      lastActive:'Jun 16, 2026 10:00 AM', sets:['Audiences','Engage+ Explore'] },
 ]
 
 const AUDIT_LOGS = [
-  { id:1, date:'Jun 11, 2026 3:42 PM', action:'Create', desc:'New permission set created: OAuth — Manager', entity:'OAuth — Manager', entityType:'Permission set', by:'George Johnson', email:'george.johnson@capillarytech.com' },
-  { id:2, date:'Jun 10, 2026 11:20 AM', action:'Edit', desc:'Permission set updated: Behavioural Events — Manager', entity:'Behavioural Events — Manager', entityType:'Permission set', by:'George Johnson', email:'george.johnson@capillarytech.com' },
-  { id:3, date:'Jun 10, 2026 11:05 AM', action:'Create', desc:'New permission set created: Card Config — Manager', entity:'Card Config — Manager', entityType:'Permission set', by:'George Johnson', email:'george.johnson@capillarytech.com' },
-  { id:4, date:'Mar 09, 2026 1:10 PM', action:'Logout', desc:'User logged out', entity:'—', entityType:'—', by:'Rick Sanchez', email:'rick.sanchez@adultswim.com' },
-  { id:5, date:'Mar 09, 2026 12:10 PM', action:'Login', desc:'User logged in via SSO', entity:'—', entityType:'—', by:'Rick Sanchez', email:'rick.sanchez@adultswim.com' },
-  { id:6, date:'Feb 19, 2026 11:28 AM', action:'Approval', desc:'Permission set approved and assigned to user', entity:'Behavioural Events — View', entityType:'Permission set', by:'Morty Smith', email:'morty.smith@adultswim.com' },
-  { id:7, date:'Nov 07, 2025 5:25 PM', action:'Delete', desc:'User removed from organization', entity:'Old User', entityType:'User', by:'Rick Sanchez', email:'rick.sanchez@adultswim.com' },
-  { id:8, date:'Aug 21, 2023 9:23 AM', action:'Create', desc:'Organization created', entity:'Big Basket Prod', entityType:'Organization', by:'Rick Sanchez', email:'rick.sanchez@adultswim.com' },
+  { id:1,  date:'Jun 16, 2026 10:05 AM', action:'Create', desc:'New standard permission set created: Audiences', entity:'Audiences', entityType:'Permission set', by:'Capillary System Admin', email:'system@capillarytech.com' },
+  { id:2,  date:'Jun 16, 2026 10:02 AM', action:'Edit',   desc:'Org Settings - Data Manager updated: Behavioural Events, Webhooks, Cards, Product Inventory, Communication & Gateway, Milestone / Target Groups, Manage Partners, Liability Owners added', entity:'Org Settings - Data Manager', entityType:'Permission set', by:'Capillary System Admin', email:'system@capillarytech.com' },
+  { id:3,  date:'Jun 16, 2026 09:58 AM', action:'Edit',   desc:'Data Import updated: Behavioural Events (View), Webhooks (View), Cards (View), Product Inventory (full), Target Groups (View), Partners (View) added', entity:'Data Import', entityType:'Permission set', by:'Capillary System Admin', email:'system@capillarytech.com' },
+  { id:4,  date:'Jun 16, 2026 09:55 AM', action:'Create', desc:'Audiences permission set assigned to Harsh Verma', entity:'Harsh Verma', entityType:'User', by:'George Johnson', email:'george.johnson@capillarytech.com' },
+  { id:5,  date:'Jun 11, 2026 3:42 PM',  action:'Create', desc:'New permission set created: API Access Configuration Admin', entity:'API Access Configuration Admin', entityType:'Permission set', by:'George Johnson', email:'george.johnson@capillarytech.com' },
+  { id:6,  date:'Jun 10, 2026 11:20 AM', action:'Edit',   desc:'Permission set updated: BE — Manager', entity:'BE — Manager', entityType:'Permission set', by:'George Johnson', email:'george.johnson@capillarytech.com' },
+  { id:7,  date:'Jun 10, 2026 11:05 AM', action:'Create', desc:'New permission set created: Cards — Manager', entity:'Cards — Manager', entityType:'Permission set', by:'George Johnson', email:'george.johnson@capillarytech.com' },
+  { id:8,  date:'Mar 09, 2026 1:10 PM',  action:'Logout', desc:'User logged out', entity:'—', entityType:'—', by:'Rick Sanchez', email:'rick.sanchez@adultswim.com' },
+  { id:9,  date:'Feb 19, 2026 11:28 AM', action:'Approval', desc:'Permission set approved and assigned to user', entity:'BE — View', entityType:'Permission set', by:'Morty Smith', email:'morty.smith@adultswim.com' },
+  { id:10, date:'Aug 21, 2023 9:23 AM',  action:'Create', desc:'Organization created', entity:'Big Basket Prod', entityType:'Organization', by:'Rick Sanchez', email:'rick.sanchez@adultswim.com' },
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -577,7 +676,7 @@ function PermSetsTab({ sets, setSets }) {
         <button onClick={()=>setShowNew(true)} style={{ padding:'8px 18px', background:'#111827', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer' }}>+ New permission set</button>
       </div>
       <div style={{ padding:'11px 16px', background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:8, marginBottom:16, fontSize:13, color:'#1e40af' }}>
-        <strong>How this works:</strong> "Org Settings - Data Manager" includes all new permissions — existing users keep full access. Create custom sets for specific, limited access.
+        <strong>How this works:</strong> Standard sets (Org Settings - Data Manager, Data Import, Engage+, API Access Config, Audiences) are updated with all new module permissions — existing users keep their current access. Create custom sets for specific, limited access.
       </div>
       <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:10, overflow:'hidden' }}>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 240px 100px 80px 150px 100px', padding:'10px 20px', background:'#f9fafb', borderBottom:'1px solid #e5e7eb' }}>
