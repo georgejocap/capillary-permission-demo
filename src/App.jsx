@@ -747,8 +747,20 @@ function UserMgmtPage({ onBack }) {
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 
-const NAV=[{id:'aira',icon:'✦',label:'aiRA',sub:[]},{id:'loyalty',icon:'🏷',label:'Loyalty',sub:['Programs','Promotions']},{id:'engage',icon:'📣',label:'Engage',sub:['Campaigns','Journeys']},{id:'rewards',icon:'🎁',label:'Rewards',sub:[]},{id:'aud',icon:'👥',label:'Audiences',sub:[]},{id:'chan',icon:'❄️',label:'Channels',sub:[]},{id:'mc',icon:'🛡',label:'Member Care',sub:[]},{id:'ins',icon:'📊',label:'Insights',sub:[]}]
-const NAV2=[{id:'dm',icon:'🗂',label:'Data Management',sub:[]},{id:'ext',icon:'<>',label:'Extensions',sub:[]}]
+const NAV=[
+  {id:'aira',   icon:'✦',  label:'aiRA',        sub:[]},
+  {id:'loyalty',icon:'🏷',  label:'Loyalty',     sub:['Programs','Promotions']},
+  {id:'engage', icon:'📣',  label:'Engage',      sub:['Campaigns','Journeys']},
+  {id:'rewards',icon:'🎁',  label:'Rewards',     sub:['Coupons','Cart Promotions','Gift Vouchers','Badges','Rewards Catalog']},
+  {id:'aud',    icon:'👥',  label:'Audiences',   sub:[]},
+  {id:'chan',   icon:'❄️',  label:'Channels',    sub:['Creatives','Channel Setup']},
+  {id:'mc',     icon:'🛡',  label:'Member Care', sub:[]},
+  {id:'ins',    icon:'📊',  label:'Insights',    sub:['Reports','Library','Segments']},
+]
+const NAV2=[
+  {id:'dm',  icon:'🗂',  label:'Data Management', sub:['Entities','Dataflows','Imports','Exports','Event Notifications']},
+  {id:'ext', icon:'<>', label:'Extensions',      sub:['API Extensions','UI Extensions','Dev Console','Custom Apps']},
+]
 const NAV3=[{id:'set',icon:'⚙️',label:'Settings',sub:[]}]
 
 function Sidebar({ expanded, setExpanded, active, setActive }) {
