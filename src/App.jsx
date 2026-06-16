@@ -4,53 +4,81 @@ import './App.css'
 // ─── Seed data ────────────────────────────────────────────────────────────────
 
 const MODULES = {
-  // Data Management > Entities
+  // Data Management > Entities — new modules being added via VAPT work
   'Behavioural Events':       { color:'#6366f1', nav:'Data Management › Entities', perms:['View','Create','Edit','Delete'], desc:'Define custom event schemas and publish to Loyalty & Engage+' },
   'Webhooks':                 { color:'#8b5cf6', nav:'Data Management › Entities', perms:['View','Create','Delete'],        desc:'Inbound webhook integrations for event data ingestion' },
   'Cards':                    { color:'#0ea5e9', nav:'Data Management › Entities', perms:['View','Create','Edit','Delete'], desc:'Card series, generated cards and global card settings' },
   'Product Inventory':        { color:'#64748b', nav:'Data Management › Entities', perms:['View','Create','Edit','Delete'], desc:'Brands, categories, colors, attributes, sizes, styles' },
-  // Settings > Org Settings
+  // Settings > Org Settings — new modules being added via VAPT work
   'Communication & Gateway':  { color:'#14b8a6', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'Configure domains, gateway mapping, gateways, OU sender IDs' },
   'OAuth / API Management':   { color:'#f59e0b', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'API clients, access groups, resources and permissions' },
   'Milestone / Target Groups':{ color:'#f97316', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'Milestone and target group configuration' },
   'Manage Partners':          { color:'#ef4444', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'Partner entity list, create, edit, delete' },
   'Liability Owners':         { color:'#10b981', nav:'Settings › Org Settings',   perms:['View','Create','Edit','Delete'], desc:'Loyalty liability owner management' },
-  // Channels
+  // Channels > Creatives — new module being added via VAPT work
   'Creatives':                { color:'#ec4899', nav:'Channels › Creatives',      perms:['View','Create','Edit','Delete'], desc:'SMS, email and push notification templates' },
-  // Audiences (new top-level nav)
+  // Audiences — new top-level nav, new dedicated set
   'Audiences':                { color:'#7c3aed', nav:'Audiences',                  perms:['View','Create','Edit','Delete'], desc:'Audience groups and org user segmentation' },
+  // Existing Engage+ permissions — already in Engage+ sets today
+  'Campaigns':                { color:'#0284c7', nav:'Engage › Campaigns',         perms:['View','Create','Edit','Approval'], desc:'Campaign creation, editing and approval workflows' },
+  'Journeys':                 { color:'#0369a1', nav:'Engage › Journeys',          perms:['View','Create','Edit','Approval'], desc:'Journey builder and activation' },
+  // Existing Org Settings permissions — already in Data Manager and Data Import today
+  'Org Settings (existing)':  { color:'#6b7280', nav:'Settings › Org Settings',   perms:['View'],                           desc:'Existing org settings access (legacy mod27 — View)' },
 }
 
-// ── Org Settings - Data Manager: 8 modules, full CRUD on each ─────────────────
-// OAuth, Creatives, Audiences are NOT included — they have their own sets
+// ── Org Settings - Data Manager ───────────────────────────────────────────────
+// Existing today: Org Settings (mod27 View) + Member Care (legacy)
+// Adding via VAPT: 8 new modules with full CRUD
 const dataManagerP = {
-  'Behavioural Events':       ['View','Create','Edit','Delete'],
-  'Webhooks':                 ['View','Create','Delete'],
-  'Cards':                    ['View','Create','Edit','Delete'],
-  'Product Inventory':        ['View','Create','Edit','Delete'],
-  'Communication & Gateway':  ['View','Create','Edit','Delete'],
-  'Milestone / Target Groups':['View','Create','Edit','Delete'],
-  'Manage Partners':          ['View','Create','Edit','Delete'],
-  'Liability Owners':         ['View','Create','Edit','Delete'],
+  'Org Settings (existing)':  ['View'],          // already had this
+  'Behavioural Events':       ['View','Create','Edit','Delete'],   // new
+  'Webhooks':                 ['View','Create','Delete'],           // new
+  'Cards':                    ['View','Create','Edit','Delete'],   // new
+  'Product Inventory':        ['View','Create','Edit','Delete'],   // new
+  'Communication & Gateway':  ['View','Create','Edit','Delete'],   // new
+  'Milestone / Target Groups':['View','Create','Edit','Delete'],   // new
+  'Manage Partners':          ['View','Create','Edit','Delete'],   // new
+  'Liability Owners':         ['View','Create','Edit','Delete'],   // new
 }
 
-// ── Data Import: View on most, full CRUD on Product Inventory ──────────────────
-// Cards Global Settings excluded (admin-only). Comm & Gateway excluded (no use case).
-// Liability Owners excluded (admin-only).
+// ── Data Import ────────────────────────────────────────────────────────────────
+// Existing today: Org Settings (mod27 View)
+// Adding via VAPT: 6 modules — View on most, full CRUD on Product Inventory
 const dataImportP = {
-  'Behavioural Events':       ['View'],
-  'Webhooks':                 ['View'],
-  'Cards':                    ['View'],
-  'Product Inventory':        ['View','Create','Edit','Delete'],
-  'Milestone / Target Groups':['View'],
-  'Manage Partners':          ['View'],
+  'Org Settings (existing)':  ['View'],          // already had this
+  'Behavioural Events':       ['View'],           // new
+  'Webhooks':                 ['View'],           // new
+  'Cards':                    ['View'],           // new
+  'Product Inventory':        ['View','Create','Edit','Delete'],   // new — Data Import users actively import product data
+  'Milestone / Target Groups':['View'],           // new
+  'Manage Partners':          ['View'],           // new
+}
+
+// ── Engage+ sets ───────────────────────────────────────────────────────────────
+// Existing today: Campaigns, Journeys
+// Adding via VAPT: Creatives
+const engageAuthorizeP = {
+  'Campaigns':  ['View','Create','Edit','Approval'],  // existing
+  'Journeys':   ['View','Create','Edit','Approval'],  // existing
+  'Creatives':  ['View','Create','Edit','Delete'],    // new
+}
+const engageActivateP = {
+  'Campaigns':  ['View','Create','Edit'],  // existing
+  'Journeys':   ['View','Create','Edit'],  // existing
+  'Creatives':  ['View','Create','Edit'],  // new
+}
+const engageExploreP = {
+  'Campaigns':  ['View'],   // existing
+  'Journeys':   ['View'],   // existing
+  'Creatives':  ['View'],   // new
 }
 
 const PC = {
-  View:   { bg:'#eff6ff', tx:'#1d4ed8', br:'#bfdbfe' },
-  Create: { bg:'#f0fdf4', tx:'#15803d', br:'#bbf7d0' },
-  Edit:   { bg:'#fffbeb', tx:'#b45309', br:'#fde68a' },
-  Delete: { bg:'#fef2f2', tx:'#dc2626', br:'#fecaca' },
+  View:     { bg:'#eff6ff', tx:'#1d4ed8', br:'#bfdbfe' },
+  Create:   { bg:'#f0fdf4', tx:'#15803d', br:'#bbf7d0' },
+  Edit:     { bg:'#fffbeb', tx:'#b45309', br:'#fde68a' },
+  Delete:   { bg:'#fef2f2', tx:'#dc2626', br:'#fecaca' },
+  Approval: { bg:'#faf5ff', tx:'#7c3aed', br:'#ddd6fe' },
 }
 
 const INIT_SETS = [
@@ -69,33 +97,33 @@ const INIT_SETS = [
   },
   {
     id:3, name:'API Access Configuration Admin',
-    desc:'Full access to OAuth / API Management — clients, access groups, resources and permissions.',
+    desc:'Full access to OAuth / API Management — clients, access groups, resources and permissions (new).',
     type:'Standard', by:'Capillary', on:'Jan 15, 2026',
     perms:{ 'OAuth / API Management':['View','Create','Edit','Delete'] }
   },
   {
     id:4, name:'API Access Configuration Viewer',
-    desc:'Read-only access to OAuth / API Management.',
+    desc:'Read-only access to OAuth / API Management (new).',
     type:'Standard', by:'Capillary', on:'Jan 15, 2026',
     perms:{ 'OAuth / API Management':['View'] }
   },
   {
     id:5, name:'Engage+ Authorize',
-    desc:'Full access to Engage+ including creative templates.',
+    desc:'Full access to Engage+ — campaigns, journeys, and creative templates (new).',
     type:'Standard', by:'Capillary', on:'Jan 15, 2026',
-    perms:{ 'Creatives':['View','Create','Edit','Delete'] }
+    perms: engageAuthorizeP
   },
   {
     id:6, name:'Engage+ Activate',
-    desc:'Create and edit campaigns, journeys and creative templates. No delete.',
+    desc:'Create and edit campaigns, journeys and creative templates (new). No delete, no approval.',
     type:'Standard', by:'Capillary', on:'Jan 15, 2026',
-    perms:{ 'Creatives':['View','Create','Edit'] }
+    perms: engageActivateP
   },
   {
     id:7, name:'Engage+ Explore',
-    desc:'View-only access to Engage+ modules including creative templates.',
+    desc:'View-only access to Engage+ — campaigns, journeys and creative templates (new).',
     type:'Standard', by:'Capillary', on:'Jan 15, 2026',
-    perms:{ 'Creatives':['View'] }
+    perms: engageExploreP
   },
   {
     id:8, name:'Audiences',
