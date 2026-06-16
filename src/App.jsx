@@ -21,10 +21,22 @@ const MODULES = {
   'Audiences':                { color:'#7c3aed', nav:'Audiences',                  perms:['View','Create','Edit','Delete'], desc:'Audience groups and org user segmentation' },
 }
 
-// Permission sets per module for standard sets
-const dataManagerModules = ['Behavioural Events','Webhooks','Cards','Product Inventory','Communication & Gateway','Milestone / Target Groups','Manage Partners','Liability Owners']
-const dataManagerP = Object.fromEntries(dataManagerModules.map(m => [m, [...MODULES[m].perms]]))
+// ── Org Settings - Data Manager: 8 modules, full CRUD on each ─────────────────
+// OAuth, Creatives, Audiences are NOT included — they have their own sets
+const dataManagerP = {
+  'Behavioural Events':       ['View','Create','Edit','Delete'],
+  'Webhooks':                 ['View','Create','Delete'],
+  'Cards':                    ['View','Create','Edit','Delete'],
+  'Product Inventory':        ['View','Create','Edit','Delete'],
+  'Communication & Gateway':  ['View','Create','Edit','Delete'],
+  'Milestone / Target Groups':['View','Create','Edit','Delete'],
+  'Manage Partners':          ['View','Create','Edit','Delete'],
+  'Liability Owners':         ['View','Create','Edit','Delete'],
+}
 
+// ── Data Import: View on most, full CRUD on Product Inventory ──────────────────
+// Cards Global Settings excluded (admin-only). Comm & Gateway excluded (no use case).
+// Liability Owners excluded (admin-only).
 const dataImportP = {
   'Behavioural Events':       ['View'],
   'Webhooks':                 ['View'],
@@ -47,7 +59,7 @@ const INIT_SETS = [
     id:1, name:'Org Settings - Data Manager',
     desc:'Full access to all org settings modules. All new permissions included — existing users unaffected.',
     type:'Standard', by:'Capillary', on:'Jan 15, 2026', super:true,
-    perms: dataManagerP
+    perms: dataManagerP,
   },
   {
     id:2, name:'Data Import',
@@ -87,7 +99,7 @@ const INIT_SETS = [
   },
   {
     id:8, name:'Audiences',
-    desc:'Create and manage audience groups and org user segmentation. New dedicated set for the Audiences module.',
+    desc:'New dedicated standard set for the Audiences top-level nav item. Covers audience groups and org user segmentation.',
     type:'Standard', by:'Capillary', on:'Jun 16, 2026',
     perms:{ 'Audiences':['View','Create','Edit','Delete'] }
   },
@@ -184,7 +196,7 @@ function SetDrawer({ set, onClose, allSets }) {
   const [edit, setEdit] = useState(false)
   const [lp, setLp] = useState(JSON.parse(JSON.stringify(set.perms)))
   const toggle = (mod,p) => setLp(prev => { const c=prev[mod]||[]; return {...prev,[mod]:c.includes(p)?c.filter(x=>x!==p):[...c,p]} })
-  const visibleMods = set.super ? Object.keys(MODULES) : Object.keys(set.perms)
+  const visibleMods = Object.keys(set.perms)
   const userCount = INIT_USERS.filter(u=>u.sets.includes(set.name)).length
 
   return (
