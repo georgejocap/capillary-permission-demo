@@ -339,6 +339,73 @@ function UserDrawer({ user, onClose, allSets, onUpdate }) {
   )
 }
 
+// ─── Expandable set picker (used in Add User step 2 + Edit sets) ─────────────
+
+function SetPickerList({ allSets, selSets, toggleSet }) {
+  const [expanded, setExpanded] = useState({})
+  const toggle = id => setExpanded(prev => ({...prev, [id]: !prev[id]}))
+
+  return (
+    <>
+      {allSets.map(s => {
+        const on = selSets.includes(s.name)
+        const mods = Object.keys(s.perms)
+        const isExpanded = !!expanded[s.id]
+        return (
+          <div key={s.id} style={{ border:`1.5px solid ${on?'#6366f1':'#e5e7eb'}`, borderRadius:8, marginBottom:10, background:on?'#f5f3ff':'#fff', overflow:'hidden' }}>
+            {/* Header row — click to select */}
+            <div onClick={()=>toggleSet(s.name)} style={{ padding:'12px 14px', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+              <div style={{ flex:1 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:3 }}>
+                  <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>{s.name}</span>
+                  <span style={{ background:s.type==='Standard'?'#f0f9ff':'#f5f3ff', color:s.type==='Standard'?'#0369a1':'#7c3aed', borderRadius:4, padding:'1px 7px', fontSize:10, fontWeight:600 }}>{s.type}</span>
+                </div>
+                <div style={{ fontSize:12, color:'#6b7280', marginBottom:6 }}>{s.desc}</div>
+                {/* Module chips — first 3 + expandable "+N" */}
+                <div style={{ display:'flex', gap:4, flexWrap:'wrap', alignItems:'center' }}>
+                  {(isExpanded ? mods : mods.slice(0,3)).map(m =>
+                    <span key={m} style={{ background:'#f3f4f6', color:'#374151', borderRadius:4, padding:'2px 8px', fontSize:11 }}>{m}</span>
+                  )}
+                  {!isExpanded && mods.length > 3 && (
+                    <span
+                      onClick={e=>{ e.stopPropagation(); toggle(s.id) }}
+                      style={{ background:'#e0e7ff', color:'#4338ca', borderRadius:4, padding:'2px 8px', fontSize:11, fontWeight:600, cursor:'pointer' }}>
+                      +{mods.length-3} more ▾
+                    </span>
+                  )}
+                  {isExpanded && (
+                    <span
+                      onClick={e=>{ e.stopPropagation(); toggle(s.id) }}
+                      style={{ background:'#e0e7ff', color:'#4338ca', borderRadius:4, padding:'2px 8px', fontSize:11, fontWeight:600, cursor:'pointer' }}>
+                      Show less ▴
+                    </span>
+                  )}
+                </div>
+              </div>
+              <span style={{ width:20, height:20, borderRadius:4, border:`2px solid ${on?'#6366f1':'#d1d5db'}`, background:on?'#6366f1':'#fff', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:11, fontWeight:700, flexShrink:0, marginLeft:12 }}>{on?'✓':''}</span>
+            </div>
+
+            {/* Expanded detail — all modules with their permission badges */}
+            {isExpanded && (
+              <div style={{ borderTop:'1px solid #e5e7eb', padding:'10px 14px', background:'#fafafa' }}>
+                {mods.map(mod => (
+                  <div key={mod} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:7 }}>
+                    <div style={{ width:7, height:7, borderRadius:'50%', background:MODULES[mod]?.color||'#9ca3af', flexShrink:0 }}/>
+                    <span style={{ fontSize:12, fontWeight:600, color:'#374151', width:180, flexShrink:0 }}>{mod}</span>
+                    <div style={{ display:'flex', gap:4, flexWrap:'wrap' }}>
+                      {s.perms[mod].map(p => <PBadge key={p} type={p} />)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
 // ─── Add user modal ───────────────────────────────────────────────────────────
 
 function AddUserModal({ onClose, allSets, onAdd }) {
@@ -424,28 +491,7 @@ function AddUserModal({ onClose, allSets, onAdd }) {
                     Select permission sets for <strong style={{color:'#111827'}}>{form.firstName} {form.lastName}</strong>. You can change these later.
                     {selSets.length>0 && <strong style={{color:'#6366f1'}}> ({selSets.length} selected)</strong>}
                   </div>
-                  {allSets.map(s => {
-                    const on = selSets.includes(s.name)
-                    const mods = Object.keys(s.perms)
-                    return (
-                      <div key={s.id} onClick={()=>toggleSet(s.name)} style={{ padding:'12px 14px', border:`1.5px solid ${on?'#6366f1':'#e5e7eb'}`, borderRadius:8, marginBottom:10, cursor:'pointer', background:on?'#f5f3ff':'#fff' }}>
-                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
-                          <div style={{ flex:1 }}>
-                            <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
-                              <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>{s.name}</span>
-                              <span style={{ background:s.type==='Standard'?'#f0f9ff':'#f5f3ff', color:s.type==='Standard'?'#0369a1':'#7c3aed', borderRadius:4, padding:'1px 7px', fontSize:10, fontWeight:600 }}>{s.type}</span>
-                            </div>
-                            <div style={{ fontSize:12, color:'#6b7280', marginBottom:6 }}>{s.desc}</div>
-                            <div style={{ display:'flex', gap:4, flexWrap:'wrap' }}>
-                              {mods.slice(0,3).map(m=><span key={m} style={{ background:'#f3f4f6', color:'#374151', borderRadius:4, padding:'1px 7px', fontSize:11 }}>{m}</span>)}
-                              {mods.length>3&&<span style={{ background:'#f3f4f6', color:'#6b7280', borderRadius:4, padding:'1px 7px', fontSize:11 }}>+{mods.length-3}</span>}
-                            </div>
-                          </div>
-                          <span style={{ width:20, height:20, borderRadius:4, border:`2px solid ${on?'#6366f1':'#d1d5db'}`, background:on?'#6366f1':'#fff', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:11, fontWeight:700, flexShrink:0, marginLeft:12 }}>{on?'✓':''}</span>
-                        </div>
-                      </div>
-                    )
-                  })}
+                  <SetPickerList allSets={allSets} selSets={selSets} toggleSet={toggleSet} />
                 </>
               )}
             </div>
