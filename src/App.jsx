@@ -44,7 +44,55 @@ const MODULES = {
   'Journeys':                   { color:'#0369a1', nav:'Engage',          perms:['View','Create','Edit','Approval'], desc:'Journey builder and activation' },
 }
 
-// PRODUCT_TREE — aligned to new Capillary navigation order
+// PRODUCT_TREE_EXISTING — original Capillary permission UI product structure
+const PRODUCT_TREE_EXISTING = [
+  {
+    id:'engage', label:'engage+',
+    rows:[
+      { key:'Campaign',   children:['Workflow','Messages','Incentive','Audience','Report','Creatives','Config'] },
+      { key:'Incentives', children:['Badges','Coupons','Cart Promotions','Gift Vouchers','Rewards Catalog'] },
+    ]
+  },
+  {
+    id:'loyalty', label:'loyalty+',
+    rows:[
+      { key:'Basic',          children:[] },
+      { key:'Program',        children:[] },
+      { key:'Promotion',      children:[] },
+      { key:'New Promotions', children:[] },
+      { key:'Milestones',     children:[] },
+      { key:'Streaks',        children:[] },
+    ]
+  },
+  {
+    id:'mc', label:'member care',
+    rows:[
+      { key:'Customer', children:['Customer Profile','Customer PII','Customer Retro Transaction','Customer Cards','Customer Goodwill','Customer Group'] },
+      { key:'Requests', children:['Requests Goodwill Points','Requests Goodwill Coupons','Requests ID Change','Requests ID Reallocation/Merge','Requests PII Deletion','Requests Cards','Requests Retro Transaction','Requests Transaction'] },
+      { key:'Group',    children:['Group Goodwill','Group Transactions'] },
+      { key:'Sessions',        children:[] },
+      { key:'Settings',        children:[] },
+      { key:'Search Criteria', children:[] },
+    ]
+  },
+  {
+    id:'conn', label:'connect+',
+    rows:[
+      { key:'Dataflows', children:[] },
+    ]
+  },
+  {
+    id:'ins', label:'insights+',
+    rows:[
+      { key:'Reports',  children:[] },
+      { key:'Segments', children:[] },
+      { key:'Export',   children:[] },
+      { key:'Settings', children:[] },
+    ]
+  },
+]
+
+// PRODUCT_TREE_NEW — aligned to new Capillary navigation order
 const PRODUCT_TREE = [
   {
     id:'loyalty', label:'Loyalty',
@@ -604,15 +652,16 @@ function AddUserModal({ onClose, allSets, onAdd }) {
 }
 
 // ─── NEW PERMISSION SET — full-page table-grid (Pattern 1.2) ─────────────────
-function NewPermSetPage({ onCancel, onSave }) {
+function NewPermSetPage({ onCancel, onSave, variant='new' }) {
   const [name, setName] = useState('')
   const [nameErr, setNameErr] = useState(false)
-  const [activeProduct, setActiveProduct] = useState('loyalty')
+  const tree = variant === 'existing' ? PRODUCT_TREE_EXISTING : PRODUCT_TREE
+  const [activeProduct, setActiveProduct] = useState(tree[0].id)
   const [sel, setSel] = useState({})
   const [expanded, setExpanded] = useState({})
   const [saved, setSaved] = useState(false)
 
-  const product = PRODUCT_TREE.find(p => p.id === activeProduct)
+  const product = tree.find(p => p.id === activeProduct)
 
   const isChecked = (mod, perm) => (sel[mod]||[]).includes(perm)
 
@@ -677,6 +726,7 @@ function NewPermSetPage({ onCancel, onSave }) {
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
             <div style={{ fontSize:18, fontWeight:500, color:DS.neutral11 }}>Create permission set</div>
+            <span style={{ padding:'2px 8px', borderRadius:4, fontSize:11, fontWeight:600, background: variant==='existing'?DS.orange1:DS.blue1, color: variant==='existing'?DS.orange7:DS.blue9, border:`1px solid ${variant==='existing'?'#FFD4A8':'#BEDBFF'}` }}>{variant==='existing'?'Existing':'New navigation'}</span>
           </div>
           {name && <div style={{ fontSize:12, color:DS.neutral6, marginTop:2, marginLeft:24 }}>Name: {name}</div>}
         </div>
@@ -696,7 +746,7 @@ function NewPermSetPage({ onCancel, onSave }) {
         <div style={{ width:180, borderRight:`1px solid ${DS.neutral3}`, background:DS.white, display:'flex', flexDirection:'column', flexShrink:0 }}>
           <div style={{ padding:'10px 16px 6px', fontSize:10, fontWeight:700, letterSpacing:'0.07em', textTransform:'uppercase', color:DS.neutral6 }}>Products</div>
           <div style={{ flex:1, overflowY:'auto' }}>
-            {PRODUCT_TREE.map(p => (
+            {tree.map(p => (
               <div key={p.id} onClick={()=>setActiveProduct(p.id)}
                 style={{ padding:'9px 16px', fontSize:13, color: activeProduct===p.id ? DS.blue9 : DS.neutral8, cursor:'pointer', borderLeft:`2px solid ${activeProduct===p.id ? DS.blue9 : 'transparent'}`, background: activeProduct===p.id ? DS.blue1 : 'transparent', fontWeight: activeProduct===p.id ? 500 : 400 }}
                 onMouseEnter={e=>{ if(activeProduct!==p.id) e.currentTarget.style.background=DS.neutral1 }}
@@ -912,19 +962,34 @@ function AuditTab() {
 function PermSetsTab({ sets, setSets, onNewSet }) {
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
+  const [variant, setVariant] = useState('existing')
   const filtered = sets.filter(s=>s.name.toLowerCase().includes(search.toLowerCase())||s.desc.toLowerCase().includes(search.toLowerCase()))
 
   const deleteSet = id => { setSets(prev=>prev.filter(s=>s.id!==id)); if(selected?.id===id) setSelected(null) }
 
   return (
     <div>
-      <div style={{ display:'flex', justifyContent:'space-between', marginBottom:16 }}>
-        <div style={{ position:'relative' }}>
-          <span style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', color:DS.neutral6, fontSize:13 }}>⌕</span>
-          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search permission sets..."
-            style={{ padding:'8px 12px 8px 32px', border:`1.5px solid ${DS.neutral3}`, borderRadius:8, fontSize:13, width:280, outline:'none', fontFamily:'inherit' }}/>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <div style={{ position:'relative' }}>
+            <span style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', color:DS.neutral6, fontSize:13 }}>⌕</span>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search permission sets..."
+              style={{ padding:'8px 12px 8px 32px', border:`1.5px solid ${DS.neutral3}`, borderRadius:8, fontSize:13, width:240, outline:'none', fontFamily:'inherit' }}/>
+          </div>
+          {/* Variant toggle */}
+          <div style={{ display:'flex', background:DS.neutral2, borderRadius:8, padding:3, gap:2 }}>
+            {['existing','new'].map(v=>(
+              <button key={v} onClick={()=>setVariant(v)}
+                style={{ padding:'5px 14px', borderRadius:6, fontSize:12, fontWeight:600, cursor:'pointer', border:'none', fontFamily:'inherit',
+                  background: variant===v ? DS.white : 'transparent',
+                  color: variant===v ? DS.neutral11 : DS.neutral6,
+                  boxShadow: variant===v ? '0 1px 3px rgba(9,30,66,0.12)' : 'none' }}>
+                {v==='existing' ? 'Existing' : 'New navigation'}
+              </button>
+            ))}
+          </div>
         </div>
-        <button onClick={onNewSet} style={{ padding:'8px 18px', background:DS.green7, color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>+ New permission set</button>
+        <button onClick={()=>onNewSet(variant)} style={{ padding:'8px 18px', background:DS.green7, color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>+ New permission set</button>
       </div>
       <div style={{ padding:'11px 16px', background:DS.blue1, border:`1px solid #BEDBFF`, borderRadius:8, marginBottom:16, fontSize:13, color:'#1A4A9E' }}>
         <strong>How this works:</strong> New permissions are added to existing standard sets before enforcement goes live. Every current user keeps their access. Create custom sets for role-specific access.
@@ -974,9 +1039,11 @@ function UserMgmtPage({ onBack, initialTab }) {
   const [users, setUsers] = useState(INIT_USERS)
   const [sets, setSets] = useState(INIT_SETS)
   const [showNewSet, setShowNewSet] = useState(false)
+  const [newSetVariant, setNewSetVariant] = useState('existing')
 
   if(showNewSet) return (
     <NewPermSetPage
+      variant={newSetVariant}
       onCancel={()=>setShowNewSet(false)}
       onSave={d=>{ setSets(prev=>[...prev,{ id:Date.now(), name:d.name, desc:d.desc||'Custom permission set', type:'Custom', by:'George Johnson', on:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}), perms:d.perms }]); setShowNewSet(false) }}
     />
@@ -996,7 +1063,7 @@ function UserMgmtPage({ onBack, initialTab }) {
       </div>
       {tab==='Users'&&<UsersTab users={users} setUsers={setUsers} allSets={sets}/>}
       {tab==='Audit logs'&&<AuditTab/>}
-      {tab==='Permission sets'&&<PermSetsTab sets={sets} setSets={setSets} onNewSet={()=>setShowNewSet(true)}/>}
+      {tab==='Permission sets'&&<PermSetsTab sets={sets} setSets={setSets} onNewSet={v=>{ setNewSetVariant(v); setShowNewSet(true) }}/>}
     </div>
   )
 }
