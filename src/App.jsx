@@ -42,15 +42,21 @@ const MODULES = {
   'Audiences':                  { color:'#7c3aed', nav:'Audiences',       perms:['View','Create','Edit','Delete'], desc:'Audience groups and org user segmentation' },
   'Campaigns':                  { color:'#0284c7', nav:'Engage',          perms:['View','Create','Edit','Approval'], desc:'Campaign creation, editing and approval workflows' },
   'Journeys':                   { color:'#0369a1', nav:'Engage',          perms:['View','Create','Edit','Approval'], desc:'Journey builder and activation' },
+  // Loyalty+ — custom permission page revamp (new modules, not yet live)
+  'Benefit Categories':         { color:'#d946ef', nav:'Loyalty',         perms:['View','Create','Edit'],            desc:'Benefit category list, creation and status management' },
+  'Tiers':                      { color:'#a855f7', nav:'Loyalty',         perms:['View','Create','Edit','Delete','Approval'], desc:'Tier configuration, draft review and approval workflow' },
+  'Subscription Programs':      { color:'#8b5cf6', nav:'Loyalty',         perms:['View','Create','Edit','Delete','Approval'], desc:'Subscription program setup, status changes and approval' },
+  'Config Attributes':          { color:'#6366f1', nav:'Loyalty',         perms:['View','Create','Edit'],            desc:'Loyalty config attributes and attribute scopes' },
+  'Loyalty Benefits':           { color:'#3b82f6', nav:'Loyalty',         perms:['View','Create','Edit','Delete','Approval'], desc:'Loyalty benefit list, creation, status change and approval' },
 }
 
-// PRODUCT_TREE_EXISTING — original Capillary permission UI product structure
+// PRODUCT_TREE_EXISTING — exact Capillary permission UI product structure (scraped live)
 const PRODUCT_TREE_EXISTING = [
   {
     id:'engage', label:'engage+',
     rows:[
       { key:'Campaign',   children:['Workflow','Messages','Incentive','Audience','Report','Creatives','Config'] },
-      { key:'Incentives', children:['Badges','Coupons','Cart Promotions','Gift Vouchers','Rewards Catalog'] },
+      { key:'Incentives', children:['Badges','Coupons','Cart Promotion','Gift Voucher'] },
     ]
   },
   {
@@ -59,7 +65,7 @@ const PRODUCT_TREE_EXISTING = [
       { key:'Basic',          children:[] },
       { key:'Program',        children:[] },
       { key:'Promotion',      children:[] },
-      { key:'New Promotions', children:[] },
+      { key:'New Promotions', children:['Basic Operations','Listing Page','Status Change','Duplicate','Stop'] },
       { key:'Milestones',     children:[] },
       { key:'Streaks',        children:[] },
     ]
@@ -67,9 +73,9 @@ const PRODUCT_TREE_EXISTING = [
   {
     id:'mc', label:'member care',
     rows:[
-      { key:'Customer', children:['Customer Profile','Customer PII','Customer Retro Transaction','Customer Cards','Customer Goodwill','Customer Group'] },
-      { key:'Requests', children:['Requests Goodwill Points','Requests Goodwill Coupons','Requests ID Change','Requests ID Reallocation/Merge','Requests PII Deletion','Requests Cards','Requests Retro Transaction','Requests Transaction'] },
-      { key:'Group',    children:['Group Goodwill','Group Transactions'] },
+      { key:'Customer', children:[] },
+      { key:'Requests', children:['Requests goodwill points','Requests goodwill coupons','Requests ID Change','Requests ID Reallocation/Merge','Requests PII Deletion','Requests Cards','Requests Transaction','Request New Customer Status Change','New Points Redeem Request','Request Workflow'] },
+      { key:'Group',    children:['Group goodwill'] },
       { key:'Sessions',        children:[] },
       { key:'Settings',        children:[] },
       { key:'Search Criteria', children:[] },
@@ -82,17 +88,21 @@ const PRODUCT_TREE_EXISTING = [
     ]
   },
   {
+    id:'connnew', label:'connect+ (new)',
+    rows:[]
+  },
+  {
     id:'ins', label:'insights+',
     rows:[
-      { key:'Reports',  children:[] },
-      { key:'Segments', children:[] },
-      { key:'Export',   children:[] },
-      { key:'Settings', children:[] },
+      { key:'Reports',          children:[] },
+      { key:'Segments',         children:[] },
+      { key:'Export',           children:[] },
+      { key:'Insights Settings', label:'Settings', children:[] },
     ]
   },
 ]
 
-// PRODUCT_TREE_NEW — aligned to new Capillary navigation order
+// PRODUCT_TREE_NEW — same permissions as Existing, reorganised to new Capillary navigation
 const PRODUCT_TREE = [
   {
     id:'loyalty', label:'Loyalty',
@@ -100,9 +110,14 @@ const PRODUCT_TREE = [
       { key:'Basic',          children:[] },
       { key:'Program',        children:[] },
       { key:'Promotion',      children:[] },
-      { key:'New Promotions', children:[] },
+      { key:'New Promotions', children:['Basic Operations','Listing Page','Status Change','Duplicate','Stop'] },
       { key:'Milestones',     children:[] },
       { key:'Streaks',        children:[] },
+      { key:'Benefit Categories',    children:[] },
+      { key:'Tiers',                 children:[] },
+      { key:'Subscription Programs', children:[] },
+      { key:'Config Attributes',     children:[] },
+      { key:'Loyalty Benefits',      children:[] },
     ]
   },
   {
@@ -114,95 +129,141 @@ const PRODUCT_TREE = [
   {
     id:'rewards', label:'Rewards',
     rows:[
-      { key:'Badges',          children:[] },
-      { key:'Coupons',         children:[] },
-      { key:'Cart Promotions', children:[] },
-      { key:'Gift Vouchers',   children:[] },
-      { key:'Rewards Catalog', children:[] },
+      { key:'Incentives', children:['Badges','Coupons','Cart Promotion','Gift Voucher'] },
     ]
   },
   {
     id:'mc', label:'Member Care',
     rows:[
-      { key:'Customer', children:['Customer Profile','Customer PII','Customer Retro Transaction','Customer Cards','Customer Goodwill','Customer Group'] },
-      { key:'Requests', children:['Requests Goodwill Points','Requests Goodwill Coupons','Requests ID Change','Requests ID Reallocation/Merge','Requests PII Deletion','Requests Cards','Requests Retro Transaction','Requests Transaction'] },
-      { key:'Group',    children:['Group Goodwill','Group Transactions'] },
+      { key:'Customer', children:[] },
+      { key:'Requests', children:['Requests goodwill points','Requests goodwill coupons','Requests ID Change','Requests ID Reallocation/Merge','Requests PII Deletion','Requests Cards','Requests Transaction','Request New Customer Status Change','New Points Redeem Request','Request Workflow'] },
+      { key:'Group',    children:['Group goodwill'] },
       { key:'Sessions',        children:[] },
+      { key:'Settings',        children:[] },
       { key:'Search Criteria', children:[] },
+    ]
+  },
+  {
+    id:'audiences', label:'Audiences',
+    rows:[
+      { key:'Audiences', children:[] },
+    ]
+  },
+  {
+    id:'channels', label:'Channels & content',
+    rows:[
+      { key:'Creatives', children:[] },
     ]
   },
   {
     id:'ins', label:'Insights',
     rows:[
-      { key:'Reports',  children:[] },
-      { key:'Segments', children:[] },
-      { key:'Export',   children:[] },
+      { key:'Reports',           children:[] },
+      { key:'Segments',          children:[] },
+      { key:'Export',            children:[] },
+      { key:'Insights Settings', label:'Settings', children:[] },
     ]
   },
   {
     id:'dm', label:'Data Management',
     rows:[
-      { key:'Dataflows', children:[] },
+      { key:'Dataflows',           children:[] },
+      { key:'Behavioural Events',  children:[] },
+      { key:'Webhooks',            children:[] },
+      { key:'Card Configuration',  children:[] },
+      { key:'Product Inventory',   children:[] },
+    ]
+  },
+  {
+    id:'extensions', label:'Extensions',
+    rows:[
+      { key:'Neo Block Library', children:[] },
+    ]
+  },
+  {
+    id:'settings', label:'Settings',
+    rows:[
+      { key:'Manage Liability Owners', children:[] },
+      { key:'Manage Partners',         children:[] },
+      { key:'OAuth / API Management',  children:[] },
     ]
   },
 ]
 
 const ALL_PERMS = ['View','Create','Edit','Delete','Approval']
 const MODULE_PERMS = {
-  // Engage+ — Campaign sub-modules (from docs)
-  'Campaign':                         ['View','Create','Edit','Approval'],
-  'Workflow':                         ['View','Create','Approval'],
-  'Messages':                         ['Create','Approval'],
-  'Incentive':                        ['View','Create','Approval'],
-  'Audience':                         ['View'],
-  'Report':                           ['View'],
-  'Creatives':                        ['View'],
-  'Config':                           ['Edit'],
-  // Engage+ — Incentives sub-modules
-  'Incentives':                       ['View','Create','Edit','Delete'],
-  'Badges':                           ['View','Create','Edit','Delete'],
-  'Coupons':                          ['View','Create','Edit','Delete'],
-  'Cart Promotions':                  ['View','Create','Edit','Delete'],
-  'Gift Vouchers':                    ['View','Create','Edit','Delete'],
-  'Rewards Catalog':                  ['View'],
+  // Engage+ — Campaign
+  'Campaign':                              ['View','Create','Edit','Delete','Approval'],
+  'Workflow':                              ['View','Create','Approval'],
+  'Messages':                              ['Create','Approval'],
+  'Incentive':                             ['Create','Approval'],
+  'Audience':                              ['View'],
+  'Report':                                ['View'],
+  'Creatives':                             ['View','Create','Edit','Delete'],
+  'Config':                                ['Edit'],
+  // Engage+ — Incentives
+  'Incentives':                            ['View','Create','Edit'],
+  'Badges':                                ['Edit'],
+  'Coupons':                               ['View','Create','Edit'],
+  'Cart Promotion':                        ['Edit'],
+  'Gift Voucher':                          ['Edit'],
   // Loyalty+
-  'Basic':                            ['View'],
-  'Program':                          ['View','Create'],
-  'Promotion':                        ['View','Create'],
-  'New Promotions':                   ['View','Create','Edit','Delete','Approval'],
-  'Milestones':                       ['View','Create','Edit','Delete'],
-  'Streaks':                          ['View','Create','Edit','Delete'],
-  // Member Care — Customer sub-modules
-  'Customer':                         ['View','Create','Edit','Delete','Approval'],
-  'Customer Profile':                 ['View','Create','Edit','Delete'],
-  'Customer PII':                     ['View','Create','Approval'],
-  'Customer Retro Transaction':       ['View','Create','Approval'],
-  'Customer Cards':                   ['Create'],
-  'Customer Goodwill':                ['View'],
-  'Customer Group':                   ['View'],
-  // Member Care — Requests sub-modules
-  'Requests':                         ['View','Create','Approval'],
-  'Requests Goodwill Points':         ['View','Create','Approval'],
-  'Requests Goodwill Coupons':        ['View','Create','Approval'],
-  'Requests ID Change':               ['View','Create','Approval'],
-  'Requests ID Reallocation/Merge':   ['View'],
-  'Requests PII Deletion':            [],
-  'Requests Cards':                   [],
-  'Requests Retro Transaction':       [],
-  'Requests Transaction':             ['View','Create','Edit','Delete','Approval'],
-  // Member Care — Group sub-modules
-  'Group':                            ['View','Create','Approval'],
-  'Group Goodwill':                   ['View','Create','Approval'],
-  'Group Transactions':               [],
-  // Member Care — flat modules
-  'Sessions':                         ['View','Create','Edit','Delete'],
-  'Search Criteria':                  ['View','Create','Edit','Delete'],
+  'Basic':                                 ['View'],
+  'Program':                               ['Create'],
+  'Promotion':                             ['Create'],
+  'New Promotions':                        ['View','Create','Edit','Delete','Approval'],
+  'Basic Operations':                      ['View','Create','Edit','Delete'],
+  'Listing Page':                          ['View'],
+  'Status Change':                         ['Edit','Approval'],
+  'Duplicate':                             ['Create'],
+  'Stop':                                  ['Edit'],
+  'Milestones':                            ['View','Create','Edit','Delete'],
+  'Streaks':                               ['Create'],
+  // Loyalty+ — custom permission page revamp (new modules, not yet live)
+  'Benefit Categories':                    ['View','Create','Edit'],
+  'Tiers':                                 ['View','Create','Edit','Delete','Approval'],
+  'Subscription Programs':                 ['View','Create','Edit','Delete','Approval'],
+  'Config Attributes':                     ['View','Create','Edit'],
+  'Loyalty Benefits':                      ['View','Create','Edit','Delete','Approval'],
+  // Member Care — Customer
+  'Customer':                              ['View','Create','Edit','Delete','Approval'],
+  // Member Care — Requests
+  'Requests':                              ['View','Create','Edit','Approval'],
+  'Requests goodwill points':              ['View','Create','Edit','Approval'],
+  'Requests goodwill coupons':             ['View','Create','Edit','Approval'],
+  'Requests ID Change':                    ['View','Create','Approval'],
+  'Requests ID Reallocation/Merge':        ['View'],
+  'Requests PII Deletion':                 ['View','Create','Approval'],
+  'Requests Cards':                        ['View','Create','Edit'],
+  'Requests Transaction':                  ['View','Create','Approval'],
+  'Request New Customer Status Change':    ['Create','Approval'],
+  'New Points Redeem Request':             ['Create','Approval'],
+  'Request Workflow':                      ['Create','Approval'],
+  // Member Care — Group
+  'Group':                                 ['View','Create','Approval'],
+  'Group goodwill':                        ['View','Create','Approval'],
+  // Member Care — flat
+  'Sessions':                              ['Create','Edit'],
+  'Settings':                              ['Edit'],
+  'Search Criteria':                       ['View','Create','Delete'],
   // Connect+
-  'Dataflows':                        ['View','Create','Edit','Delete'],
+  'Dataflows':                             ['View','Create','Edit','Delete'],
   // Insights+
-  'Reports':                          ['View','Create'],
-  'Segments':                         ['View','Create'],
-  'Export':                           ['View','Create'],
+  'Reports':                               ['View'],
+  'Segments':                              ['View'],
+  'Export':                                ['View'],
+  'Insights Settings':                     ['View'],
+  // VAPT new modules (new nav only)
+  'Audiences':                             ['View','Create','Edit','Delete'],
+  'Behavioural Events':                    ['View','Create','Edit','Delete'],
+  'Webhooks':                              ['View','Create','Edit','Delete'],
+  'Card Configuration':                    ['View','Create','Edit','Delete'],
+  'Product Inventory':                     ['View','Create','Edit','Delete'],
+  'Manage Liability Owners':               ['View','Create','Edit'],
+  'Manage Partners':                       ['View','Create','Edit','Delete'],
+  'OAuth / API Management':               ['View','Create','Edit','Delete'],
+  // Extensions
+  'Neo Block Library':                     ['View','Create','Edit','Delete'],
 }
 
 const dataManagerP = {
@@ -794,7 +855,7 @@ function NewPermSetPage({ onCancel, onSave, variant='new' }) {
                               <span style={{ fontSize:11, color:DS.neutral6, width:14, display:'inline-block', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.15s' }}>›</span>
                             )}
                             {!hasChildren && <span style={{ width:14, display:'inline-block' }}/>}
-                            <span style={{ fontSize:13, fontWeight:500, color:DS.neutral11 }}>{row.key}</span>
+                            <span style={{ fontSize:13, fontWeight:500, color:DS.neutral11 }}>{row.label||row.key}</span>
                           </div>
                         </td>
                         {ALL_PERMS.map(perm => {
@@ -805,7 +866,7 @@ function NewPermSetPage({ onCancel, onSave, variant='new' }) {
                             <td key={perm} style={{ textAlign:'center', borderBottom:`1px solid ${DS.neutral3}`, padding:'10px 4px' }}>
                               {allowed
                                 ? <Checkbox checked={chk} indeterminate={ind} onChange={()=> hasChildren ? toggleGroupPerm(row, perm) : togglePerm(row.key, perm)}/>
-                                : <span style={{ color:DS.neutral4, fontSize:12 }}>—</span>
+                                : <Checkbox checked={false} disabled />
                               }
                             </td>
                           )
@@ -821,7 +882,7 @@ function NewPermSetPage({ onCancel, onSave, variant='new' }) {
                               <td key={perm} style={{ textAlign:'center', borderBottom:`1px solid ${DS.neutral3}`, padding:'8px 4px' }}>
                                 {allowed
                                   ? <Checkbox checked={chk} onChange={()=>togglePerm(child, perm)}/>
-                                  : <span style={{ color:DS.neutral4, fontSize:12 }}>—</span>
+                                  : <Checkbox checked={false} disabled />
                                 }
                               </td>
                             )
