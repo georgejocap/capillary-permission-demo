@@ -136,7 +136,7 @@ const PRODUCT_TREE = [
     id:'mc', label:'Member Care',
     rows:[
       { key:'Customer',         children:[] },
-      { key:'Customer Goodwill', children:['Get goodwill coupons/points config'], other:true },
+      { key:'Customer Goodwill', children:['Approve/reject goodwill requests','Get goodwill coupons/points config'], other:true },
       { key:'Requests', children:['Requests goodwill points','Requests goodwill coupons','Requests ID Change','Requests ID Reallocation/Merge','Requests PII Deletion','Requests Cards','Requests Transaction','Request New Customer Status Change','New Points Redeem Request','Request Workflow'] },
       { key:'Group',    children:['Group goodwill'] },
       { key:'Sessions',        children:[] },
@@ -163,8 +163,8 @@ const PRODUCT_TREE = [
       { key:'Segments',          children:[] },
       { key:'Export',            children:[] },
       { key:'Insights Settings', label:'Settings', children:[] },
-      { key:'External Facts',    children:[], other:true },
-      { key:'Target Templates',  children:[], other:true },
+      { key:'External Facts',   children:['View Insights+ External Facts','Create/edit Insights+ External Facts'], other:true },
+      { key:'Target Templates', children:['View/create/upload/download target templates'], other:true },
     ]
   },
   {
@@ -175,8 +175,11 @@ const PRODUCT_TREE = [
       { key:'Webhooks',               children:[] },
       { key:'Card Configuration',     children:[] },
       { key:'Product Inventory',      children:[] },
-      { key:'Metadata Orchestrator',  children:['Rules','Routing'], other:true },
-      { key:'Data Catalog',           children:['EI Metadata','Databricks','Data Catalog Admin'], other:true },
+      { key:'MO Rules',    label:'Metadata Orch — Rules',    children:['View MO rules','Create local MO rules','Create global MO rules','Edit MO rules','Edit global MO rules','Delete MO rules'], other:true },
+      { key:'MO Routing', label:'Metadata Orch — Routing', children:['View MO routing','Create local MO routing','Create global MO routing','Edit MO routing','Edit global MO routing','Delete MO routing'], other:true },
+      { key:'DC EI Metadata', label:'Data Catalog — EI Metadata', children:['Read DC EI metadata'], other:true },
+      { key:'DC Databricks',  label:'Data Catalog — Databricks',  children:['Read Databricks tables','Write Databricks descriptions','Execute Databricks SQL'], other:true },
+      { key:'DC Admin',       label:'Data Catalog — Admin',       children:['Cross-org admin access to Data Catalog'], other:true },
     ]
   },
   {
@@ -215,8 +218,8 @@ const PRODUCT_TREE = [
       { key:'Manage Liability Owners', children:[] },
       { key:'Manage Partners',         children:[] },
       { key:'OAuth / API Management',  children:[] },
-      { key:'Org Setup',               children:['Access to master stores'], other:true },
-      { key:'OAuth Clients Vulcan',    children:[], other:true },
+      { key:'Org Setup',               children:['Org set up assistant page','Access to master stores'], other:true },
+      { key:'OAuth Clients Vulcan',    children:['Upsert oauth clients on vulcan'], other:true },
     ]
   },
 ]
@@ -342,28 +345,49 @@ const MODULE_PERMS = {
   'Ext Neo rej lib ver':                   ['Create'],
   'Ext Neo promote rule':                  ['Edit'],
   'Ext Neo org mappings rule':             ['Edit'],
-  // Insights — Other Permissions additions
-  'External Facts':                        ['View','Create'],
-  'Target Templates':                      ['Create'],
-  // Data Management — Other Permissions additions
-  'Metadata Orchestrator':                 ['View','Create','Edit','Delete'],
-  'Rules':                                 ['View','Create','Edit','Delete'],
-  'Routing':                               ['View','Create','Edit','Delete'],
-  'Data Catalog':                          ['View','Edit','Approval'],
-  'EI Metadata':                           ['View'],
-  'Databricks':                            ['View','Edit'],
-  'Data Catalog Admin':                    ['Approval'],
-  // Settings — Other Permissions additions
-  'Org Setup':                             ['View'],
-  'OAuth Clients Vulcan':                  ['Edit'],
-  // Member Care — Other Permissions additions
+  // Member Care — Other Permissions
   'Customer Goodwill':                     ['View','Approval'],
+  'Approve/reject goodwill requests':      ['Approval'],
   'Get goodwill coupons/points config':    ['View'],
-  // Connect+ — Other Permissions additions
+  // Connect+ — Other Permissions
   'Connect+ APIs':                         ['Create'],
   'Access to connect plus apis':           ['Create'],
-  // Settings — master stores
+  // Settings — Other Permissions
+  'Org Setup':                             ['View'],
+  'Org set up assistant page':             ['View'],
   'Access to master stores':               ['View'],
+  'OAuth Clients Vulcan':                  ['Edit'],
+  'Upsert oauth clients on vulcan':        ['Edit'],
+  // Insights — Other Permissions (individual)
+  'External Facts':                        ['View','Create'],
+  'View Insights+ External Facts':         ['View'],
+  'Create/edit Insights+ External Facts':  ['Create'],
+  'Target Templates':                      ['Create'],
+  'View/create/upload/download target templates': ['Create'],
+  // Data Management — Metadata Orchestrator (split)
+  'MO Rules':                              ['View','Create','Edit','Delete'],
+  'View MO rules':                         ['View'],
+  'Create local MO rules':                 ['Create'],
+  'Create global MO rules':                ['Create'],
+  'Edit MO rules':                         ['Edit'],
+  'Edit global MO rules':                  ['Edit'],
+  'Delete MO rules':                       ['Delete'],
+  'MO Routing':                            ['View','Create','Edit','Delete'],
+  'View MO routing':                       ['View'],
+  'Create local MO routing':               ['Create'],
+  'Create global MO routing':              ['Create'],
+  'Edit MO routing':                       ['Edit'],
+  'Edit global MO routing':                ['Edit'],
+  'Delete MO routing':                     ['Delete'],
+  // Data Management — Data Catalog (split)
+  'DC EI Metadata':                        ['View'],
+  'Read DC EI metadata':                   ['View'],
+  'DC Databricks':                         ['View','Edit'],
+  'Read Databricks tables':                ['View'],
+  'Write Databricks descriptions':         ['Edit'],
+  'Execute Databricks SQL':                ['Edit'],
+  'DC Admin':                              ['Approval'],
+  'Cross-org admin access to Data Catalog':['Approval'],
 }
 
 const dataManagerP = {
