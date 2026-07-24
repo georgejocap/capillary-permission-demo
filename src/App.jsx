@@ -136,7 +136,7 @@ const PRODUCT_TREE = [
     id:'mc', label:'Member Care',
     rows:[
       { key:'Customer',         children:[] },
-      { key:'Customer Goodwill', children:[], other:true },
+      { key:'Customer Goodwill', children:['Get goodwill coupons/points config'], other:true },
       { key:'Requests', children:['Requests goodwill points','Requests goodwill coupons','Requests ID Change','Requests ID Reallocation/Merge','Requests PII Deletion','Requests Cards','Requests Transaction','Request New Customer Status Change','New Points Redeem Request','Request Workflow'] },
       { key:'Group',    children:['Group goodwill'] },
       { key:'Sessions',        children:[] },
@@ -204,12 +204,18 @@ const PRODUCT_TREE = [
     ]
   },
   {
+    id:'connplus', label:'Connect+',
+    rows:[
+      { key:'Connect+ APIs', children:['Access to connect plus apis'], other:true },
+    ]
+  },
+  {
     id:'settings', label:'Settings',
     rows:[
       { key:'Manage Liability Owners', children:[] },
       { key:'Manage Partners',         children:[] },
       { key:'OAuth / API Management',  children:[] },
-      { key:'Org Setup',               children:[], other:true },
+      { key:'Org Setup',               children:['Access to master stores'], other:true },
       { key:'OAuth Clients Vulcan',    children:[], other:true },
     ]
   },
@@ -351,7 +357,13 @@ const MODULE_PERMS = {
   'Org Setup':                             ['View'],
   'OAuth Clients Vulcan':                  ['Edit'],
   // Member Care — Other Permissions additions
-  'Customer Goodwill':                     ['Approval'],
+  'Customer Goodwill':                     ['View','Approval'],
+  'Get goodwill coupons/points config':    ['View'],
+  // Connect+ — Other Permissions additions
+  'Connect+ APIs':                         ['Create'],
+  'Access to connect plus apis':           ['Create'],
+  // Settings — master stores
+  'Access to master stores':               ['View'],
 }
 
 const dataManagerP = {
