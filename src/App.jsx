@@ -135,7 +135,8 @@ const PRODUCT_TREE = [
   {
     id:'mc', label:'Member Care',
     rows:[
-      { key:'Customer', children:[] },
+      { key:'Customer',         children:[] },
+      { key:'Customer Goodwill', children:[], other:true },
       { key:'Requests', children:['Requests goodwill points','Requests goodwill coupons','Requests ID Change','Requests ID Reallocation/Merge','Requests PII Deletion','Requests Cards','Requests Transaction','Request New Customer Status Change','New Points Redeem Request','Request Workflow'] },
       { key:'Group',    children:['Group goodwill'] },
       { key:'Sessions',        children:[] },
@@ -162,16 +163,20 @@ const PRODUCT_TREE = [
       { key:'Segments',          children:[] },
       { key:'Export',            children:[] },
       { key:'Insights Settings', label:'Settings', children:[] },
+      { key:'External Facts',    children:[], other:true },
+      { key:'Target Templates',  children:[], other:true },
     ]
   },
   {
     id:'dm', label:'Data Management',
     rows:[
-      { key:'Dataflows',           children:[] },
-      { key:'Behavioural Events',  children:[] },
-      { key:'Webhooks',            children:[] },
-      { key:'Card Configuration',  children:[] },
-      { key:'Product Inventory',   children:[] },
+      { key:'Dataflows',              children:[] },
+      { key:'Behavioural Events',     children:[] },
+      { key:'Webhooks',               children:[] },
+      { key:'Card Configuration',     children:[] },
+      { key:'Product Inventory',      children:[] },
+      { key:'Metadata Orchestrator',  children:['Rules','Routing'], other:true },
+      { key:'Data Catalog',           children:['EI Metadata','Databricks','Data Catalog Admin'], other:true },
     ]
   },
   {
@@ -186,6 +191,8 @@ const PRODUCT_TREE = [
       { key:'Manage Liability Owners', children:[] },
       { key:'Manage Partners',         children:[] },
       { key:'OAuth / API Management',  children:[] },
+      { key:'Org Setup',               children:[], other:true },
+      { key:'OAuth Clients Vulcan',    children:[], other:true },
     ]
   },
 ]
@@ -292,8 +299,24 @@ const MODULE_PERMS = {
   'Manage Liability Owners':               ['View','Create','Edit'],
   'Manage Partners':                       ['View','Create','Edit','Delete'],
   'OAuth / API Management':               ['View','Create','Edit','Delete'],
-  // Extensions
-  'Neo Block Library':                     ['View','Create','Edit','Delete'],
+  // Extensions — Neo (Other Permissions)
+  'Neo Block Library':                     ['Create','Edit'],
+  // Insights — Other Permissions additions
+  'External Facts':                        ['View','Create'],
+  'Target Templates':                      ['Create'],
+  // Data Management — Other Permissions additions
+  'Metadata Orchestrator':                 ['View','Create','Edit','Delete'],
+  'Rules':                                 ['View','Create','Edit','Delete'],
+  'Routing':                               ['View','Create','Edit','Delete'],
+  'Data Catalog':                          ['View','Edit','Approval'],
+  'EI Metadata':                           ['View'],
+  'Databricks':                            ['View','Edit'],
+  'Data Catalog Admin':                    ['Approval'],
+  // Settings — Other Permissions additions
+  'Org Setup':                             ['View'],
+  'OAuth Clients Vulcan':                  ['Edit'],
+  // Member Care — Other Permissions additions
+  'Customer Goodwill':                     ['Approval'],
 }
 
 const dataManagerP = {
@@ -886,6 +909,7 @@ function NewPermSetPage({ onCancel, onSave, variant='new' }) {
                             )}
                             {!hasChildren && <span style={{ width:14, display:'inline-block' }}/>}
                             <span style={{ fontSize:13, fontWeight:500, color:DS.neutral11 }}>{row.label||row.key}</span>
+                            {row.other && <span style={{ fontSize:10, fontWeight:600, background:'#FFF4EC', color:'#C05E00', border:'1px solid #FFD4A8', borderRadius:4, padding:'1px 6px', flexShrink:0 }}>Other</span>}
                           </div>
                         </td>
                         {ALL_PERMS.map(perm => {
@@ -1053,7 +1077,7 @@ function AuditTab() {
 function PermSetsTab({ sets, setSets, onNewSet }) {
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
-  const [variant, setVariant] = useState('existing')
+  const [variant, setVariant] = useState('new')
   const filtered = sets.filter(s=>s.name.toLowerCase().includes(search.toLowerCase())||s.desc.toLowerCase().includes(search.toLowerCase()))
 
   const deleteSet = id => { setSets(prev=>prev.filter(s=>s.id!==id)); if(selected?.id===id) setSelected(null) }
@@ -1163,7 +1187,7 @@ function UserMgmtPage({ onBack, initialTab }) {
 export default function App() {
   const [navExpanded, setNavExpanded] = useState(true)
   const [activeNavId, setActiveNavId] = useState('home')
-  const [page, setPage] = useState('home')
+  const [page, setPage] = useState('usermgmt_Permission sets')
   const [showProfile, setShowProfile] = useState(false)
 
   const goToUserMgmt = (tab) => { setPage('usermgmt'+(tab?`_${tab}`:'')); setShowProfile(false) }
