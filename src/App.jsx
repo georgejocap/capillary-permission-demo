@@ -182,7 +182,25 @@ const PRODUCT_TREE = [
   {
     id:'extensions', label:'Extensions',
     rows:[
-      { key:'Neo Block Library', children:[] },
+      { key:'Neo Block Library', children:[
+        'Ext Neo block lib init',
+        'Ext Neo block lib versions',
+        'Ext Neo list blocks of lib version',
+        'Ext Neo check block exists in lib ver',
+        'Ext Neo get block in a lib ver',
+        'Ext Neo get block library blocks details by meta',
+        'Ext Neo codeview',
+        'Ext Neo create block in a lib ver',
+        'Ext Neo update block in a lib ver',
+        'Ext Neo delete block in a lib ver',
+        'Ext Neo send lib ver for approval',
+        'Ext Neo edit lib ver',
+        'Ext Neo update lib ver',
+        'Ext Neo approve lib ver',
+        'Ext Neo rej lib ver',
+        'Ext Neo promote rule',
+        'Ext Neo org mappings rule',
+      ] },
     ]
   },
   {
@@ -299,8 +317,25 @@ const MODULE_PERMS = {
   'Manage Liability Owners':               ['View','Create','Edit'],
   'Manage Partners':                       ['View','Create','Edit','Delete'],
   'OAuth / API Management':               ['View','Create','Edit','Delete'],
-  // Extensions — Neo (Other Permissions)
+  // Extensions — Neo (Other Permissions) — types from live UI scrape
   'Neo Block Library':                     ['Create','Edit'],
+  'Ext Neo block lib init':                ['Create'],
+  'Ext Neo block lib versions':            ['Create'],
+  'Ext Neo list blocks of lib version':    ['Create'],
+  'Ext Neo check block exists in lib ver': ['Create'],
+  'Ext Neo get block in a lib ver':        ['Create'],
+  'Ext Neo get block library blocks details by meta': ['Create'],
+  'Ext Neo codeview':                      ['Create'],
+  'Ext Neo create block in a lib ver':     ['Create'],
+  'Ext Neo update block in a lib ver':     ['Create'],
+  'Ext Neo delete block in a lib ver':     ['Create'],
+  'Ext Neo send lib ver for approval':     ['Create'],
+  'Ext Neo edit lib ver':                  ['Create'],
+  'Ext Neo update lib ver':                ['Create'],
+  'Ext Neo approve lib ver':               ['Create'],
+  'Ext Neo rej lib ver':                   ['Create'],
+  'Ext Neo promote rule':                  ['Edit'],
+  'Ext Neo org mappings rule':             ['Edit'],
   // Insights — Other Permissions additions
   'External Facts':                        ['View','Create'],
   'Target Templates':                      ['Create'],
