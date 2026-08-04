@@ -1082,12 +1082,10 @@ const PERMISSION_TREE = {
       ] },
     ] },
     { id:'rewards', label:'Rewards', modules: [
-      { id:'rewards.incentives', label:'Incentives', allowedActions:['view','create','edit'], children: [
-        { id:'rewards.incentives.badges', label:'Badges', allowedActions:['edit'] },
-        { id:'rewards.incentives.coupons', label:'Coupons', allowedActions:['view','create','edit'] },
-        { id:'rewards.incentives.cart-promotion', label:'Cart Promotion', allowedActions:['edit'] },
-        { id:'rewards.incentives.gift-voucher', label:'Gift Voucher', allowedActions:['edit'] },
-      ] },
+      { id:'rewards.badges', label:'Badges', allowedActions:['edit'] },
+      { id:'rewards.coupons', label:'Coupons', allowedActions:['view','create','edit'] },
+      { id:'rewards.cart-promotion', label:'Cart Promotion', allowedActions:['edit'] },
+      { id:'rewards.gift-voucher', label:'Gift Voucher', allowedActions:['edit'] },
     ] },
     { id:'member-care', label:'Member Care', modules: [
       { id:'member-care.customer', label:'Customer', allowedActions:['view','create','edit','delete','approval'] },
