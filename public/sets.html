@@ -1016,6 +1016,13 @@ const SETS = [
 const PERMISSION_TREE = {
   actions: ['view','create','edit','delete','approval'],
   products: [
+    { id:'ask-aira', label:'aiRA', modules: [
+      { id:'ask-aira.analytics', label:'Analytics', allowedActions:['view','create','edit','delete'] },
+      { id:'ask-aira.qa', label:'QA', allowedActions:['view','create','edit','delete'] },
+      { id:'ask-aira.configurations', label:'Configurations', allowedActions:['view','create','edit','delete','approval'] },
+      { id:'ask-aira.settings', label:'Settings', allowedActions:['view','create','edit','delete'] },
+      { id:'ask-aira.dashboard', label:'Dashboard', allowedActions:['view','create','edit','delete'] },
+    ] },
     { id:'loyalty', label:'Loyalty', modules: [
       { id:'loyalty.old-promotions', label:'Old Promotions', allowedActions:['view','create'] },
       { id:'loyalty.program', label:'Old Programs', allowedActions:['create'] },
@@ -1195,13 +1202,6 @@ const PERMISSION_TREE = {
         { id:'extensions.promotion-rules.promote-rule', label:'Ext Neo promote rule', allowedActions:['edit'] },
         { id:'extensions.promotion-rules.org-mappings-rule', label:'Ext Neo org mappings rule', allowedActions:['edit'] },
       ] },
-    ] },
-    { id:'ask-aira', label:'Ask aiRA', modules: [
-      { id:'ask-aira.analytics', label:'Analytics', allowedActions:['view','create','edit','delete'] },
-      { id:'ask-aira.qa', label:'QA', allowedActions:['view','create','edit','delete'] },
-      { id:'ask-aira.configurations', label:'Configurations', allowedActions:['view','create','edit','delete','approval'] },
-      { id:'ask-aira.settings', label:'Settings', allowedActions:['view','create','edit','delete'] },
-      { id:'ask-aira.dashboard', label:'Dashboard', allowedActions:['view','create','edit','delete'] },
     ] },
     { id:'settings', label:'Settings', modules: [
 
@@ -1462,7 +1462,7 @@ const colLabel = a => a.charAt(0).toUpperCase() + a.slice(1);
 
 /* Rail grouping mirrors the L1 navigation: a rule before Data Management and
    another before Settings. Connect+ groups with the platform block. */
-const RAIL_DIVIDER_BEFORE = new Set(['data-management', 'extensions', 'ask-aira', 'settings']);
+const RAIL_DIVIDER_BEFORE = new Set(['data-management', 'extensions', 'settings']);
 
 document.getElementById('productList').innerHTML =
   PRODUCTS.map((p, i) =>
