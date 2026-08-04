@@ -713,9 +713,9 @@ svg{display:block;}
       <span class="nav-label">Data Management</span>
     </button>
 
-    <button class="nav-item" data-label="API Extension">
+    <button class="nav-item" data-label="Extensions">
       <span class="nav-ico"><svg width="12.7667" height="7.45867" viewBox="0 0 12.7667 7.45867" xmlns="http://www.w3.org/2000/svg"><path d="M1.6 3.75L4.18333 6.33333C4.30556 6.45556 4.36667 6.61111 4.36667 6.8C4.36667 6.98889 4.30556 7.14444 4.18333 7.26667C4.06111 7.38889 3.90556 7.45 3.71667 7.45C3.52778 7.45 3.37222 7.38889 3.25 7.26667L0.183333 4.2C0.116667 4.13333 0.0694444 4.06111 0.0416667 3.98333C0.0138889 3.90556 0 3.82222 0 3.73333C0 3.64444 0.0138889 3.56111 0.0416667 3.48333C0.0694444 3.40556 0.116667 3.33333 0.183333 3.26667L3.25 0.2C3.38333 0.0666667 3.54167 0 3.725 0C3.90833 0 4.06667 0.0666667 4.2 0.2C4.33333 0.333333 4.4 0.491667 4.4 0.675C4.4 0.858333 4.33333 1.01667 4.2 1.15L1.6 3.75ZM11.1667 3.71667L8.58333 1.13333C8.46111 1.01111 8.4 0.855555 8.4 0.666667C8.4 0.477778 8.46111 0.322222 8.58333 0.2C8.70556 0.0777778 8.86111 0.0166667 9.05 0.0166667C9.23889 0.0166667 9.39444 0.0777778 9.51667 0.2L12.5833 3.26667C12.65 3.33333 12.6972 3.40556 12.725 3.48333C12.7528 3.56111 12.7667 3.64444 12.7667 3.73333C12.7667 3.82222 12.7528 3.90556 12.725 3.98333C12.6972 4.06111 12.65 4.13333 12.5833 4.2L9.51667 7.26667C9.38333 7.4 9.22778 7.46389 9.05 7.45833C8.87222 7.45278 8.71667 7.38333 8.58333 7.25C8.45 7.11667 8.38333 6.95833 8.38333 6.775C8.38333 6.59167 8.45 6.43333 8.58333 6.3L11.1667 3.71667Z"/></svg></span>
-      <span class="nav-label">API Extension</span>
+      <span class="nav-label">Extensions</span>
     </button>
 
     <div class="nav-divider"></div>
@@ -1119,7 +1119,7 @@ const PERMISSION_TREE = {
     { id:'audiences', label:'Audiences', modules: [
       { id:'audiences.audiences', label:'Audiences', allowedActions:['view','create','edit','delete'] },
     ] },
-    { id:'channels-content', label:'Channels & content', modules: [
+    { id:'channels', label:'Channels', modules: [
       { id:'channels-content.creatives', label:'Creatives', allowedActions:['view','create','edit','delete'] },
     ] },
     { id:'insights', label:'Insights', modules: [
@@ -1141,6 +1141,9 @@ const PERMISSION_TREE = {
       { id:'data-management.webhooks', label:'Webhooks', allowedActions:['view','create','edit','delete'] },
       { id:'data-management.card-configuration', label:'Card Configuration', allowedActions:['view','create','edit','delete'] },
       { id:'data-management.product-inventory', label:'Product Inventory', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.connect-apis', label:'Connect+ APIs', allowedActions:['create'], children: [
+        { id:'data-management.connect-apis.access-to-connect-plus-apis', label:'Access to connect plus apis', allowedActions:['create'] },
+      ] },
       { id:'data-management.metadata-orch-rules', label:'Metadata Orch — Rules', allowedActions:['view','create','edit','delete'], children: [
         { id:'data-management.metadata-orch-rules.view-mo-rules', label:'View MO rules', allowedActions:['view'] },
         { id:'data-management.metadata-orch-rules.create-local-mo-rules', label:'Create local MO rules', allowedActions:['create'] },
@@ -1169,36 +1172,31 @@ const PERMISSION_TREE = {
         { id:'data-management.data-catalog-admin.cross-org-admin-access-to-data-catalog', label:'Cross-org admin access to Data Catalog', allowedActions:['approval'] },
       ] },
     ] },
-    { id:'api-extension', label:'API Extension', modules: [
-      { id:'api-extension.block-library-read', label:'Block Library — Read', allowedActions:['create'], children: [
-        { id:'api-extension.block-library-read.init', label:'Ext Neo block lib init', allowedActions:['create'] },
-        { id:'api-extension.block-library-read.versions', label:'Ext Neo block lib versions', allowedActions:['create'] },
-        { id:'api-extension.block-library-read.list-blocks', label:'Ext Neo list blocks of lib version', allowedActions:['create'] },
-        { id:'api-extension.block-library-read.check-block-exists', label:'Ext Neo check block exists in lib ver', allowedActions:['create'] },
-        { id:'api-extension.block-library-read.get-block', label:'Ext Neo get block in a lib ver', allowedActions:['create'] },
-        { id:'api-extension.block-library-read.get-block-by-meta', label:'Ext Neo get block library blocks details by meta', allowedActions:['create'] },
-        { id:'api-extension.block-library-read.codeview', label:'Ext Neo codeview', allowedActions:['create'] },
+    { id:'extensions', label:'Extensions', modules: [
+      { id:'extensions.block-library-read', label:'Block Library — Read', allowedActions:['create'], children: [
+        { id:'extensions.block-library-read.init', label:'Ext Neo block lib init', allowedActions:['create'] },
+        { id:'extensions.block-library-read.versions', label:'Ext Neo block lib versions', allowedActions:['create'] },
+        { id:'extensions.block-library-read.list-blocks', label:'Ext Neo list blocks of lib version', allowedActions:['create'] },
+        { id:'extensions.block-library-read.check-block-exists', label:'Ext Neo check block exists in lib ver', allowedActions:['create'] },
+        { id:'extensions.block-library-read.get-block', label:'Ext Neo get block in a lib ver', allowedActions:['create'] },
+        { id:'extensions.block-library-read.get-block-by-meta', label:'Ext Neo get block library blocks details by meta', allowedActions:['create'] },
+        { id:'extensions.block-library-read.codeview', label:'Ext Neo codeview', allowedActions:['create'] },
       ] },
-      { id:'api-extension.block-library-write', label:'Block Library — Write', allowedActions:['create'], children: [
-        { id:'api-extension.block-library-write.create-block', label:'Ext Neo create block in a lib ver', allowedActions:['create'] },
-        { id:'api-extension.block-library-write.update-block', label:'Ext Neo update block in a lib ver', allowedActions:['create'] },
-        { id:'api-extension.block-library-write.delete-block', label:'Ext Neo delete block in a lib ver', allowedActions:['create'] },
+      { id:'extensions.block-library-write', label:'Block Library — Write', allowedActions:['create'], children: [
+        { id:'extensions.block-library-write.create-block', label:'Ext Neo create block in a lib ver', allowedActions:['create'] },
+        { id:'extensions.block-library-write.update-block', label:'Ext Neo update block in a lib ver', allowedActions:['create'] },
+        { id:'extensions.block-library-write.delete-block', label:'Ext Neo delete block in a lib ver', allowedActions:['create'] },
       ] },
-      { id:'api-extension.version-management', label:'Version Management', allowedActions:['create'], children: [
-        { id:'api-extension.version-management.send-for-approval', label:'Ext Neo send lib ver for approval', allowedActions:['create'] },
-        { id:'api-extension.version-management.edit-lib-ver', label:'Ext Neo edit lib ver', allowedActions:['create'] },
-        { id:'api-extension.version-management.update-lib-ver', label:'Ext Neo update lib ver', allowedActions:['create'] },
-        { id:'api-extension.version-management.approve-lib-ver', label:'Ext Neo approve lib ver', allowedActions:['create'] },
-        { id:'api-extension.version-management.rej-lib-ver', label:'Ext Neo rej lib ver', allowedActions:['create'] },
+      { id:'extensions.version-management', label:'Version Management', allowedActions:['create'], children: [
+        { id:'extensions.version-management.send-for-approval', label:'Ext Neo send lib ver for approval', allowedActions:['create'] },
+        { id:'extensions.version-management.edit-lib-ver', label:'Ext Neo edit lib ver', allowedActions:['create'] },
+        { id:'extensions.version-management.update-lib-ver', label:'Ext Neo update lib ver', allowedActions:['create'] },
+        { id:'extensions.version-management.approve-lib-ver', label:'Ext Neo approve lib ver', allowedActions:['create'] },
+        { id:'extensions.version-management.rej-lib-ver', label:'Ext Neo rej lib ver', allowedActions:['create'] },
       ] },
-      { id:'api-extension.promotion-rules', label:'Promotion Rules', allowedActions:['edit'], children: [
-        { id:'api-extension.promotion-rules.promote-rule', label:'Ext Neo promote rule', allowedActions:['edit'] },
-        { id:'api-extension.promotion-rules.org-mappings-rule', label:'Ext Neo org mappings rule', allowedActions:['edit'] },
-      ] },
-    ] },
-    { id:'connect', label:'Connect+', modules: [
-      { id:'connect.connect-apis', label:'Connect+ APIs', allowedActions:['create'], children: [
-        { id:'connect.connect-apis.access-to-connect-plus-apis', label:'Access to connect plus apis', allowedActions:['create'] },
+      { id:'extensions.promotion-rules', label:'Promotion Rules', allowedActions:['edit'], children: [
+        { id:'extensions.promotion-rules.promote-rule', label:'Ext Neo promote rule', allowedActions:['edit'] },
+        { id:'extensions.promotion-rules.org-mappings-rule', label:'Ext Neo org mappings rule', allowedActions:['edit'] },
       ] },
     ] },
     { id:'settings', label:'Settings', modules: [
@@ -1460,7 +1458,7 @@ const colLabel = a => a.charAt(0).toUpperCase() + a.slice(1);
 
 /* Rail grouping mirrors the L1 navigation: a rule before Data Management and
    another before Settings. Connect+ groups with the platform block. */
-const RAIL_DIVIDER_BEFORE = new Set(['data-management', 'api-extension', 'settings']);
+const RAIL_DIVIDER_BEFORE = new Set(['data-management', 'extensions', 'settings']);
 
 document.getElementById('productList').innerHTML =
   PRODUCTS.map((p, i) =>
