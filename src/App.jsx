@@ -107,9 +107,9 @@ const PRODUCT_TREE = [
   {
     id:'loyalty', label:'Loyalty',
     rows:[
-      { key:'Basic',          children:[] },
-      { key:'Program',        children:[] },
-      { key:'Promotion',      children:[] },
+      { key:'Basic',          label:'Basic (Legacy v2/v3)',     children:[] },
+      { key:'Program',        label:'Program (Legacy v2/v3)',   children:[] },
+      { key:'Promotion',      label:'Promotion (Legacy v2/v3)', children:[] },
       { key:'New Promotions', children:['Basic Operations','Listing Page','Status Change','Duplicate','Stop'] },
       { key:'Milestones',     children:[] },
       { key:'Streaks',        children:[] },
@@ -183,9 +183,9 @@ const PRODUCT_TREE = [
     ]
   },
   {
-    id:'extensions', label:'Extensions',
+    id:'api-ext', label:'API Extension',
     rows:[
-      { key:'Neo Block Library', children:[
+      { key:'AE Read',       label:'Block Library — Read', children:[
         'Ext Neo block lib init',
         'Ext Neo block lib versions',
         'Ext Neo list blocks of lib version',
@@ -193,17 +193,23 @@ const PRODUCT_TREE = [
         'Ext Neo get block in a lib ver',
         'Ext Neo get block library blocks details by meta',
         'Ext Neo codeview',
+      ]},
+      { key:'AE Write',      label:'Block Library — Write', children:[
         'Ext Neo create block in a lib ver',
         'Ext Neo update block in a lib ver',
         'Ext Neo delete block in a lib ver',
+      ]},
+      { key:'AE VerMgmt',    label:'Version Management', children:[
         'Ext Neo send lib ver for approval',
         'Ext Neo edit lib ver',
         'Ext Neo update lib ver',
         'Ext Neo approve lib ver',
         'Ext Neo rej lib ver',
+      ]},
+      { key:'AE PromoRules', label:'Promotion Rules', children:[
         'Ext Neo promote rule',
         'Ext Neo org mappings rule',
-      ] },
+      ]},
     ]
   },
   {
@@ -326,8 +332,11 @@ const MODULE_PERMS = {
   'Manage Liability Owners':               ['View','Create','Edit'],
   'Manage Partners':                       ['View','Create','Edit','Delete'],
   'OAuth / API Management':               ['View','Create','Edit','Delete'],
-  // Extensions — Neo (Other Permissions) — types from live UI scrape
-  'Neo Block Library':                     ['Create','Edit'],
+  // API Extension — grouped sections
+  'AE Read':                               ['Create'],
+  'AE Write':                              ['Create'],
+  'AE VerMgmt':                            ['Create'],
+  'AE PromoRules':                         ['Edit'],
   'Ext Neo block lib init':                ['Create'],
   'Ext Neo block lib versions':            ['Create'],
   'Ext Neo list blocks of lib version':    ['Create'],
@@ -518,7 +527,7 @@ const NAV_TOP = [
 ]
 const NAV_MID = [
   { id:'dm',  icon:ICONS.datamgmt,   label:'Data Management', sub:['Behavioural Events','Webhooks','Card Configuration','Entities','Dataflows','Imports'] },
-  { id:'ext', icon:ICONS.extensions, label:'Extensions',      sub:['Vulcan','Neo','Dev Console'] },
+  { id:'api-ext', icon:ICONS.extensions, label:'API Extension',  sub:['Vulcan','API Extension','Dev Console'] },
 ]
 const NAV_BOT = [
   { id:'set', icon:ICONS.settings,   label:'Settings',        sub:['Org Setup','Communication & Gateway','OAuth / API Management','Partners','Liability Owners','Security & Audit'] },
