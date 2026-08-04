@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>User Management — Permission sets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Capillary DS — tokens
+   ============================================================ */
+:root{
+  /* surface — Neutral ramp */
+  --sf-page:#FFFFFF;
+  --sf-subtle:#FAFBFC;   /* Neutral/1 */
+  --sf-muted:#EBECF0;    /* Neutral/3 */
+  --sf-hover:#FAFBFC;
+
+  /* border */
+  --bd-1:#DFE2E7;        /* Neutral/4 */
+  --bd-2:#DFE2E7;
+  --bd-3:#EBECF0;        /* Neutral/3 */
+  --bd-field:#DFE2E7;
+
+  /* text */
+  --tx-1:#091E42;   /* Character/Active */
+  --tx-2:#5E6C84;   /* Character/Inactive */
+  --tx-3:#8A94A6;   /* placeholder */
+  --icon-light:#B3BAC5;  /* Icon/Light — Neutral/5 */
+  --tx-inv:#FFFFFF;
+
+  /* brand */
+  --green-7:#42B040;  /* Capillary Green/6 — primary action */
+  --green-8:#399A38;
+  --green-1:#ECF7EC;
+  --blue-6:#2466EA;   /* Additional/5 */
+  --blue-bg:#E9F0FE;  /* 10%/5 */
+  --orange-6:#F2994A;
+  --status-green:#42B040;
+
+  /* nav */
+  --nav-bg:#1A1A1A;
+  --nav-tx:rgba(255,255,255,.86);
+  --nav-tx-hover:#FFFFFF;
+  --nav-hover:rgba(255,255,255,.10);
+  --nav-active:rgba(255,255,255,.14);
+  --nav-divider:rgba(255,255,255,.14);
+
+  /* geometry */
+  --topbar-h:56px;
+  --nav-w:240px;
+  --nav-w-collapsed:64px;
+  --r-sm:4px;
+  --r-md:6px;
+  --r-lg:8px;
+  --r-pill:100px;
+
+  --sh-pane:-8px 0 32px rgba(16,24,40,.14);
+  --sh-pop:0 6px 20px rgba(16,24,40,.14);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:Roboto,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  font-size:14px;
+  line-height:20px;
+  color:var(--tx-1);
+  background:var(--sf-page);
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;}
+input{font:inherit;}
+svg{display:block;}
+[hidden]{display:none !important;}
+
+/* ============================================================
+   Top bar
+   ============================================================ */
+.topbar{
+  position:fixed;top:0;right:0;left:var(--nav-w);height:var(--topbar-h);z-index:40;
+  display:flex;align-items:stretch;background:#fff;
+  transition:left .18s ease;
+}
+.app.collapsed .topbar{left:var(--nav-w-collapsed);}
+
+.topbar-main{
+  flex:1;min-width:0;display:flex;align-items:center;
+  padding:0 32px;border-bottom:1px solid var(--bd-1);
+}
+.org-switch{
+  display:flex;align-items:center;gap:10px;height:36px;padding:0 8px;margin-left:-8px;
+  border-radius:var(--r-md);font-size:16px;font-weight:500;color:var(--tx-1);
+}
+.org-switch:hover{background:var(--sf-muted);}
+.org-switch svg{color:var(--tx-2);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:0;}
+.help-btn{
+  display:flex;align-items:center;gap:8px;height:32px;padding:0 10px;
+  border-radius:var(--r-md);color:var(--tx-2);font-size:14px;
+}
+.help-btn:hover{background:var(--sf-muted);color:var(--tx-1);}
+.topbar-sep{width:1px;height:28px;background:var(--bd-1);margin:0 20px;}
+.avatar-me{
+  width:32px;height:32px;border-radius:50%;background:var(--sf-muted);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:500;color:var(--tx-2);
+}
+
+/* ============================================================
+   Left navigation
+   ============================================================ */
+.nav{
+  position:fixed;left:0;top:0;bottom:0;width:var(--nav-w);z-index:45;
+  background:var(--nav-bg);padding:8px 0 16px;
+  display:flex;flex-direction:column;overflow-x:hidden;overflow-y:auto;
+  transition:width .18s ease;
+}
+.app.collapsed .nav{width:var(--nav-w-collapsed);}
+.nav::-webkit-scrollbar{width:0;}
+
+/* L1 item — Figma: h40 / px16 / gap8 / icon box 32 (16px glyph) */
+.nav-item{
+  display:flex;align-items:center;gap:8px;height:40px;flex:0 0 40px;
+  padding:0 16px;color:var(--nav-tx);width:100%;position:relative;white-space:nowrap;
+}
+.app.collapsed .nav-item{padding:0 16px;}
+.nav-item:hover{background:var(--nav-hover);color:var(--nav-tx-hover);}
+.nav-item.is-active{background:var(--nav-active);color:#fff;}
+.nav-ico{
+  width:32px;height:32px;flex:0 0 32px;
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-ico svg{fill:currentColor;}
+.nav-label{
+  flex:1 1 auto;min-width:0;text-align:left;
+  font-size:14px;line-height:20px;font-weight:400;overflow:hidden;
+}
+.app.collapsed .nav-label{display:none;}
+
+/* brand row */
+.nav-brand{gap:8px;}
+.nav-brand:hover{background:transparent;}
+.nav-brand .nav-ico{width:32px;flex:0 0 32px;}
+.nav-brand .nav-ico svg{width:21.25px;height:16px;fill:none;}
+.nav-toggle{
+  width:24px;height:24px;flex:0 0 24px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--r-sm);color:var(--nav-tx);margin-right:-4px;
+}
+.nav-toggle svg{fill:currentColor;}
+.nav-toggle:hover{background:var(--nav-hover);color:#fff;}
+.app.collapsed .nav-brand{padding-right:0;}
+.app.collapsed .nav-toggle{
+  position:absolute;left:0;top:0;width:100%;height:100%;border-radius:0;
+  background:rgba(255,255,255,.12);opacity:0;transition:opacity .12s ease;
+}
+.app.collapsed .nav-brand:hover .nav-toggle{opacity:1;}
+
+.nav-gap{height:24px;flex:0 0 24px;}
+.nav-divider{height:1px;flex:0 0 1px;background:var(--nav-divider);margin:16px 24px;}
+
+/* collapsed tooltip */
+.app.collapsed .nav-item::after{
+  content:attr(data-label);position:absolute;left:calc(100% + 8px);top:50%;
+  transform:translateY(-50%);background:#2B2B2B;color:#fff;font-size:12px;line-height:16px;
+  padding:5px 8px;border-radius:var(--r-sm);white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .1s ease;z-index:5;
+}
+.app.collapsed .nav-item:hover::after{opacity:1;}
+
+/* ============================================================
+   Main / page shell
+   ============================================================ */
+.main{
+  margin-left:var(--nav-w);padding-top:var(--topbar-h);
+  transition:margin-left .18s ease;min-height:100vh;
+}
+.app.collapsed .main{margin-left:var(--nav-w-collapsed);}
+.page{padding:24px 32px 48px;}
+
+.page-title{font-size:20px;line-height:28px;font-weight:500;margin:0;letter-spacing:-.1px;}
+.page-sub{font-size:14px;line-height:20px;color:var(--tx-2);margin:4px 0 0;}
+.page-head{display:flex;align-items:flex-start;}
+.page-head-actions{margin-left:auto;}
+
+/* settings button (page header, right) */
+/* Button — Components/button.md · Medium: 40px tall, Label/Medium 14/500,
+   Corner Radius/Radius-small 8px (was 6px, which was off-token). */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:40px;padding:0 16px;border-radius:8px;
+  font-size:14px;font-weight:500;line-height:20px;white-space:nowrap;
+}
+/* Primary CTA, matching the DS Button instance: 24px sides, 80px min width. */
+.btn-cta{padding:0 24px;min-width:80px;}
+.btn-primary{background:var(--green-7);color:#fff;}
+.btn-primary:hover{background:var(--green-8);}
+.btn-secondary{background:var(--sf-muted);color:var(--tx-1);}
+.btn-secondary:hover{background:#E3E7ED;}
+.btn-outline{background:#fff;border:1px solid var(--bd-2);color:var(--tx-1);}
+.btn-outline:hover{background:var(--sf-hover);}
+.btn-flat{color:var(--tx-1);}
+.btn-flat:hover{background:var(--sf-muted);}
+
+/* Tabs */
+.tabs{
+  display:flex;align-items:center;gap:32px;margin-top:24px;
+  border-bottom:1px solid var(--bd-1);
+}
+.tab{
+  position:relative;height:40px;font-size:14px;line-height:20px;color:var(--tx-2);
+  display:flex;align-items:center;
+}
+.tab:hover{color:var(--tx-1);}
+.tab.is-active{color:var(--tx-1);font-weight:500;}
+.tab.is-active::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--tx-1);
+}
+
+/* Stats */
+.stats{display:flex;gap:56px;margin-top:24px;}
+.stat-label{display:flex;align-items:center;gap:8px;font-size:14px;line-height:20px;color:var(--tx-2);}
+.stat-value{font-size:18px;line-height:26px;font-weight:500;color:var(--tx-1);margin-top:2px;}
+.dot{width:8px;height:8px;border-radius:50%;flex:0 0 8px;}
+.dot-green{background:var(--status-green);}
+.dot-orange{background:var(--orange-6);}
+
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:12px;margin-top:20px;}
+.toolbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+
+.field{
+  display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;
+  border:1px solid var(--bd-field);background:#fff;color:var(--tx-1);
+}
+.field svg{color:var(--tx-3);flex:0 0 16px;}
+.field input{
+  border:0;outline:0;width:100%;font-size:14px;line-height:20px;color:var(--tx-1);background:transparent;
+}
+.field input::placeholder{color:var(--tx-3);}
+.field:focus-within{border-color:var(--tx-2);}
+.field.pill{border-radius:var(--r-pill);}
+.field.rect{border-radius:var(--r-sm);}
+.field.search-users{width:316px;}
+.field.search-sets{width:318px;}
+
+.select-pill{
+  display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;
+  border:1px solid var(--bd-field);border-radius:var(--r-pill);
+  font-size:14px;color:var(--tx-1);background:#fff;
+}
+.select-pill:hover{background:var(--sf-hover);}
+.select-pill svg{color:var(--tx-2);}
+.select-rect{
+  display:inline-flex;align-items:center;height:40px;padding:0 14px;width:296px;
+  border:1px solid var(--bd-field);border-radius:var(--r-sm);background:#fff;
+  font-size:14px;color:var(--tx-3);
+}
+.select-rect svg{margin-left:auto;color:var(--tx-2);}
+.select-rect:hover{background:var(--sf-hover);}
+
+/* ============================================================
+   Table
+   ============================================================ */
+/* Container — CapTable: 0.5px solid Neutral/4, radius 8px on the top corners
+   only, white fill. This was missing entirely; the table had a header fill
+   and row rules but no outer border. */
+.table{
+  margin-top:20px;width:100%;background:#fff;
+  border:0.5px solid var(--bd-1);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;
+}
+.table .trow:last-child{border-bottom:0;}
+.thead{
+  display:flex;align-items:stretch;background:var(--sf-subtle);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;min-height:60px;
+}
+.th{
+  display:flex;flex-direction:column;justify-content:center;position:relative;
+  padding:10px 0;
+}
+/* Header separators — measured off CapTable's own `th::before`:
+   1px × 1.6em, Neutral/3 #EBECF0, vertically centred. Height is in em so it
+   tracks the header font instead of being pinned to the cell height. */
+.th + .th::before{
+  content:"";position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+  width:1px;height:1.6em;background:#EBECF0;
+}
+.th-1{font-size:13px;line-height:18px;font-weight:500;color:var(--tx-1);}
+.th-2{font-size:13px;line-height:18px;color:var(--tx-3);margin-top:2px;}
+.th-mid{justify-content:center;}
+.trow{
+  display:flex;align-items:center;border-bottom:1px solid var(--bd-3);
+}
+.trow:hover{background:var(--sf-hover);}
+.td{display:flex;flex-direction:column;justify-content:center;min-width:0;}
+
+/* ------------------------------------------------------------
+   Checkbox — Components/checkbox.md
+   16x16 · Radius/Small 4px · border #B3BAC5 · checked Cap Green/7
+   indeterminate: green fill + white dash
+   disabled(unchecked): #F4F5F7 fill · disabled(checked): #A1D8A0
+   ------------------------------------------------------------ */
+.cbx{
+  width:16px;height:16px;flex:0 0 16px;position:relative;display:inline-block;
+  cursor:pointer;vertical-align:middle;
+}
+.cbx > input{
+  position:absolute;inset:0;width:100%;height:100%;margin:0;
+  opacity:0;cursor:inherit;
+}
+.cbx > .cbx-box{
+  position:absolute;inset:0;border:1px solid #B3BAC5;border-radius:4px;
+  background:#fff;pointer-events:none;
+}
+.cbx:hover > .cbx-box{border-color:var(--green-7);}
+.cbx > input:focus-visible ~ .cbx-box{
+  outline:2px solid var(--green-7);outline-offset:2px;
+}
+/* checked */
+.cbx.is-checked > .cbx-box{background:var(--green-7);border-color:var(--green-7);}
+.cbx.is-checked > .cbx-box::after{
+  content:"";position:absolute;left:5px;top:1.5px;width:4px;height:8px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg);
+}
+/* indeterminate */
+.cbx.is-indeterminate > .cbx-box{background:var(--green-7);border-color:var(--green-7);}
+.cbx.is-indeterminate > .cbx-box::after{
+  content:"";position:absolute;left:3px;top:6.5px;width:8px;height:2px;
+  background:#fff;border-radius:1px;
+}
+/* disabled */
+.cbx.is-disabled{cursor:not-allowed;}
+.cbx.is-disabled:hover > .cbx-box{border-color:#B3BAC5;}
+.cbx.is-disabled > .cbx-box{background:#F4F5F7;border-color:#B3BAC5;}
+.cbx.is-disabled.is-checked > .cbx-box{background:#A1D8A0;border-color:#A1D8A0;}
+
+/* users table geometry */
+.users-table .col-sel{width:24px;padding-left:24px;flex:0 0 48px;}
+.users-table .col-name{flex:0 0 345px;min-width:0;}
+.users-table .col-type{flex:0 0 187px;}
+.users-table .col-login{flex:0 0 203px;}
+.users-table .col-ent{flex:1 1 auto;min-width:0;padding-right:16px;}
+.users-table .col-act{flex:0 0 62px;display:flex;align-items:center;justify-content:flex-end;padding-right:24px;}
+.users-table .trow{min-height:84px;}
+
+.user-cell{display:flex;align-items:center;gap:16px;min-width:0;}
+.avatar{
+  width:40px;height:40px;flex:0 0 40px;border-radius:50%;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:16px;font-weight:500;text-transform:uppercase;
+}
+.avatar-badge{
+  position:absolute;right:-2px;bottom:-2px;width:16px;height:16px;border-radius:50%;
+  background:#3B4757;border:2px solid #fff;display:flex;align-items:center;justify-content:center;
+}
+.cell-1{font-size:14px;line-height:20px;font-weight:500;color:var(--tx-1);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cell-2{font-size:13px;line-height:18px;color:var(--tx-2);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cell-2 .muted{color:var(--tx-3);}
+.cell-2 .strong{color:var(--tx-1);}
+
+.chip{
+  display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:var(--r-sm);
+  font-size:12px;line-height:16px;color:var(--tx-1);white-space:nowrap;align-self:flex-start;
+}
+.chip-owner{background:var(--green-1);}
+.chip-standard{background:var(--sf-muted);}
+
+.status{display:flex;align-items:center;gap:8px;font-size:13px;line-height:18px;color:var(--tx-2);margin-top:2px;}
+
+.icon-btn{
+  width:32px;height:32px;border-radius:var(--r-sm);display:flex;align-items:center;
+  justify-content:center;color:var(--tx-2);
+}
+.icon-btn:hover{background:var(--sf-muted);color:var(--tx-1);}
+
+/* permission-set table geometry */
+.sets-table .col-name{flex:0 0 532px;padding-left:24px;min-width:0;padding-right:24px;}
+.sets-table .col-gap{flex:0 0 207px;}
+.sets-table .col-users{flex:0 0 205px;padding-left:24px;}
+.sets-table .col-upd{flex:1 1 auto;padding-left:28px;min-width:0;}
+.sets-table .col-act{flex:0 0 61px;display:flex;align-items:center;justify-content:flex-end;padding-right:24px;}
+.sets-table .trow{min-height:66px;}
+
+/* ============================================================
+   Scrim + side panes
+   ============================================================ */
+.scrim{
+  position:fixed;inset:0;background:rgba(16,24,40,.32);z-index:50;
+  opacity:0;pointer-events:none;transition:opacity .18s ease;
+}
+.scrim.is-open{opacity:1;pointer-events:auto;}
+
+.pane{
+  position:fixed;top:0;right:0;bottom:0;z-index:60;background:#fff;
+  display:flex;flex-direction:column;box-shadow:var(--sh-pane);
+  transform:translateX(100%);transition:transform .22s cubic-bezier(.2,.7,.3,1);
+}
+.pane.is-open{transform:translateX(0);}
+/* Pane rhythm — every offset is a multiple of 4 (Space/x* tokens).
+   pane gutter 24 · back icon 24 · gap 16  ⇒  content column starts at 64,
+   so the title, Products, Permissions and both tables share one left edge. */
+.pane-close{
+  position:absolute;top:20px;right:24px;width:32px;height:32px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;color:var(--tx-1);
+}
+.pane-close:hover{background:var(--sf-muted);}
+.pane-body{flex:1;overflow-y:auto;}
+.pane-footer{flex:0 0 auto;}
+
+/* ---- Step 1 : create permission set ---- */
+#pane-create{width:940px;max-width:100vw;}
+#pane-create .pane-body{padding:24px 24px 24px 64px;}
+#pane-create .pane-footer{padding:0 24px 24px 64px;}
+.pane-title{font-size:24px;line-height:32px;font-weight:500;margin:0;}
+.form-col{width:558px;max-width:100%;}
+.form-label{display:block;font-size:14px;line-height:20px;font-weight:500;color:var(--tx-1);margin:0 0 8px;}
+.form-label .optional{font-weight:400;color:var(--tx-3);}
+.text-input{
+  width:100%;height:40px;padding:0 12px;border:1px solid var(--bd-field);
+  border-radius:var(--r-sm);font-size:14px;line-height:20px;color:var(--tx-1);outline:0;
+}
+.text-input::placeholder{color:var(--tx-3);}
+.text-input:focus{border-color:var(--tx-2);}
+.field-group + .field-group{margin-top:24px;}
+
+.choice-grid{display:flex;gap:12px;margin-top:8px;}
+.choice{
+  position:relative;flex:1 1 0;min-width:0;display:flex;gap:16px;align-items:flex-start;
+  padding:20px 16px;border:1px solid transparent;border-radius:var(--r-lg);
+  background:var(--sf-muted);text-align:left;
+}
+.choice:hover{background:#E6EAEF;}
+.choice.is-selected{background:#fff;border-color:var(--green-7);}
+.choice.is-selected:hover{background:#fff;}
+.choice-ico{
+  width:48px;height:48px;flex:0 0 48px;border-radius:50%;
+  background:#C9CFD8;color:#fff;display:flex;align-items:center;justify-content:center;
+}
+.choice.is-selected .choice-ico{background:var(--green-7);}
+.choice-body{display:block;min-width:0;}
+.choice-title{display:block;font-size:14px;line-height:20px;font-weight:500;color:var(--tx-3);}
+.choice-desc{display:block;font-size:12px;line-height:16px;color:var(--tx-3);margin-top:4px;}
+.choice.is-selected .choice-title{color:var(--tx-1);}
+.choice.is-selected .choice-desc{color:var(--tx-2);}
+.choice-check{
+  position:absolute;top:0;right:0;transform:translate(35%,-35%);
+  width:24px;height:24px;border-radius:50%;background:var(--green-7);
+  display:none;align-items:center;justify-content:center;color:#fff;
+}
+.choice.is-selected .choice-check{display:flex;}
+
+/* ---- Step 2 : permissions builder ---- */
+#pane-perms{width:980px;max-width:100vw;}
+#pane-perms .pane-head{padding:24px 24px 16px;position:relative;}
+.pane-head-row{display:flex;align-items:flex-start;gap:16px;}
+.pane-back{
+  width:24px;height:24px;flex:0 0 24px;margin-top:4px;color:var(--tx-1);
+  display:flex;align-items:center;justify-content:center;
+}
+.pane-back:hover{color:var(--green-7);}
+.pane-name{font-size:14px;line-height:20px;color:var(--tx-1);margin:4px 0 0;}
+.pane-name .val{color:var(--tx-2);}
+
+.perm-layout{display:flex;gap:32px;padding:0 24px 0 64px;align-items:flex-start;}
+.perm-products{flex:0 0 188px;position:sticky;top:0;}
+/* Heading/medium 16/24/500 — one step down from Heading/large. The DS scale
+   goes 20 → 16 with nothing between, so this is the smallest legal step.
+   Gap below 12 → 16 (Space/x4) to keep the heading off the content. */
+.col-heading{font-size:16px;line-height:24px;font-weight:500;margin:0 0 16px;}
+.product-list{display:flex;flex-direction:column;}
+.product-item{
+  display:flex;align-items:center;height:44px;padding:0 12px 0 25px;
+  font-size:14px;line-height:20px;color:var(--tx-1);border-radius:var(--r-sm);
+  position:relative;text-align:left;
+}
+.product-item:hover{background:var(--sf-hover);}
+.product-item.is-active{background:#F0F4F8;font-weight:500;}
+.product-item.is-active::before{
+  content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;
+  border-radius:2px;background:var(--blue-6);
+}
+/* Mirrors the L1 nav grouping: products · platform · admin.
+   Nav insets the rule 24px on a 240px rail; same ratio here on 188px. */
+.product-divider{height:1px;background:var(--bd-1);margin:8px 12px;}
+.product-group-label{
+  font-size:12px;line-height:16px;font-weight:500;color:var(--tx-3);
+  text-transform:uppercase;letter-spacing:.4px;padding:16px 0 6px 25px;
+}
+
+.perm-main{flex:1;min-width:0;}
+.perm-main-head{display:flex;align-items:center;margin-bottom:12px;}
+/* Text link — Components/button.md
+   inactive: Neutral/5 #B3BAC5 (DS disabled text) · active: Blue/9 #2466EA.
+   Nothing to preview until at least one permission is selected. */
+.preview-link{
+  margin-left:auto;display:inline-flex;align-items:center;gap:8px;
+  font-size:14px;line-height:20px;color:#B3BAC5;cursor:not-allowed;
+}
+.preview-link.is-active{color:var(--blue-6);cursor:pointer;}
+.preview-link.is-active:hover{text-decoration:underline;}
+.preview-link:focus-visible{outline:2px solid var(--blue-6);outline-offset:2px;border-radius:2px;}
+
+.perm-section + .perm-section{margin-top:32px;}
+.perm-section-title{font-size:16px;line-height:24px;font-weight:500;margin:0 0 12px;}
+.perm-table{border:1px solid var(--bd-1);border-radius:var(--r-lg);overflow:hidden;}
+.perm-thead{background:var(--sf-subtle);}
+/* Single header row — Label/Medium 14/500. The "Permissions" group label is
+   gone: the column heading above the table already says it, and View/Create/
+   Edit/Delete/Approval need no parent to be legible. Matches the reference,
+   which runs MODULES + the five actions on one line. */
+.perm-thead{position:relative;}
+.perm-thead-row{
+  display:flex;align-items:center;height:48px;padding:0 4px 0 24px;
+  font-size:14px;line-height:20px;font-weight:500;color:var(--tx-1);
+}
+.perm-thead-row .mod{flex:1;min-width:0;}
+/* Only "Modules" carries the Medium weight; the action labels sit back at
+   Regular so the row doesn't read as five competing headings. */
+.perm-thead-row .perm-cell{font-weight:400;}
+
+/* Hairlines in the gutters between the five action labels — CapTable's rule. */
+.perm-thead-row .perm-cell{position:relative;}
+.perm-thead-row .perm-cell + .perm-cell::before{
+  content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:1px;height:1.6em;background:#EBECF0;
+}
+.perm-cell{width:72px;flex:0 0 72px;text-align:center;}
+/* 4px right gutter so the Approval column isn't flush to the table edge.
+   Applied to header and body alike, otherwise the columns drift apart. */
+.perm-row{
+  display:flex;align-items:center;min-height:52px;padding:0 4px 0 24px;
+  border-top:1px solid var(--bd-3);
+}
+.perm-row:first-child{border-top:0;}
+/* gap 8 = Space/x2, matching the Figma nav item. Puts module labels at 48
+   (24 padding + 16 chevron + 8) so the 72px sub-row indent is exactly one
+   24px step, and every offset lands on the 4px grid. */
+.perm-row .mod{
+  flex:1;min-width:0;display:flex;align-items:center;gap:8px;
+  font-size:14px;line-height:20px;color:var(--tx-1);
+}
+/* Parent modules read the same as leaf modules — the chevron is the only
+   affordance that distinguishes them; colour was implying a link. */
+.perm-row.is-parent .mod-name{color:var(--tx-1);}
+.perm-caret{
+  width:16px;height:16px;flex:0 0 16px;color:var(--tx-2);
+  transition:transform .15s ease;
+}
+.perm-row.is-open .perm-caret{transform:rotate(90deg);}
+.perm-caret-spacer{width:16px;flex:0 0 16px;}
+.perm-cell-cb{width:72px;flex:0 0 72px;display:flex;align-items:center;justify-content:center;}
+/* Sub-permissions: grey block, text the same Neutral/11 as every other row.
+   Flush with the level-1 module labels (48px = 24 padding + 16 chevron +
+   8 gap, reached by padding alone since sub-rows carry no chevron), so the
+   background is what marks the nesting. */
+.perm-sub{background:#FAFBFC;}
+.perm-sub .perm-row{padding-left:48px;}
+.perm-row .mod-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* expand affordance is the caret button only, so an expand click can never
+   be mistaken for a selection gesture */
+.perm-caret-btn{
+  width:16px;height:16px;flex:0 0 16px;display:flex;align-items:center;
+  justify-content:center;color:var(--tx-2);cursor:pointer;border-radius:2px;
+}
+.perm-caret-btn:hover{color:var(--tx-1);}
+.perm-caret-btn:focus-visible{outline:2px solid var(--green-7);outline-offset:1px;}
+
+#pane-perms .pane-footer{padding:16px 24px 24px 64px;}
+.pane-footer-row{display:flex;align-items:center;gap:16px;}
+.footer-hint{font-size:12px;line-height:16px;color:var(--tx-2);}
+
+/* Button disabled — Components/button.md
+   bg Neutral/2 · text Neutral/5 · border Neutral/3 · cursor not-allowed */
+.btn:disabled,.btn[aria-disabled="true"]{
+  background:#F4F5F7;color:#B3BAC5;border:1px solid #EBECF0;cursor:not-allowed;
+}
+.btn:disabled:hover,.btn[aria-disabled="true"]:hover{background:#F4F5F7;}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:32px;transform:translate(-50%,16px);
+  background:#1F2A37;color:#fff;font-size:14px;line-height:20px;
+  padding:12px 18px;border-radius:var(--r-md);box-shadow:var(--sh-pop);
+  opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;z-index:90;
+}
+.toast.is-open{opacity:1;transform:translate(-50%,0);}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ================= TOP BAR ================= -->
+  <header class="topbar">
+    <div class="topbar-main">
+      <button class="org-switch">
+        Bukl Enterprises
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.3 8 10.3l4-4"/></svg>
+      </button>
+      <div class="topbar-right">
+        <button class="help-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#2F80ED" stroke-width="1.3">
+            <circle cx="8" cy="8" r="6.2"/>
+            <path d="M6.3 6.2a1.75 1.75 0 1 1 2.4 1.6c-.45.2-.7.6-.7 1.1v.3" stroke-linecap="round"/>
+            <circle cx="8" cy="11.4" r=".75" fill="#2F80ED" stroke="none"/>
+          </svg>
+          Help
+        </button>
+        <span class="topbar-sep"></span>
+        <span class="avatar-me">R</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= LEFT NAV ================= -->
+  <aside class="nav" id="nav">
+    <!-- Brand row — Capillary (Home) L1 item -->
+    <div class="nav-item nav-brand">
+      <span class="nav-ico">
+        <svg width="21.2528" height="16.0005" viewBox="0 0 21.2528 16.0005" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Capillary">
+          <g>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5974 2.04175C10.9644 2.29864 11.446 2.63936 11.8371 2.94659C16.9258 0.273206 20.1527 4.70367 16.9979 7.54899C16.5892 7.90455 16.1414 8.21234 15.6629 8.46641C14.0574 9.37597 11.6764 10.6283 11.133 12.595C10.8484 13.6273 11.164 14.8486 12.0218 15.4954C12.3453 15.7263 12.7155 15.8833 13.1063 15.9554C13.4971 16.0275 13.8989 16.013 14.2834 15.9128C17.209 15.2992 18.0176 12.1775 17.1438 9.7322L17.1197 9.74703C17.5438 9.48032 17.9509 9.18758 18.3388 8.87051C25.3059 3.11965 18.6001 -3.3439 10.5974 2.04175ZM15.5964 10.6215C15.8785 13.4886 12.9127 15.094 11.782 14.24C10.6513 13.3859 13.4519 11.772 14.9199 10.9852L15.5964 10.6215Z" fill="url(#cap0)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.3087 2.14683V0.113525C13.8683 0.321193 12.2605 0.92779 10.5974 2.04636C10.9644 2.30325 11.446 2.64397 11.8371 2.9512C13.1422 2.26055 14.3235 2.04367 15.3087 2.14683Z" fill="url(#cap1)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.1462 9.72852L15.5955 10.6208C15.64 11.0541 15.6062 11.4919 15.4957 11.9133V15.4506C17.3995 14.3516 17.9088 11.8113 17.1462 9.72852Z" fill="url(#cap2)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0409 3.10588C11.5726 2.73774 11.1231 2.34892 10.6304 2.01517C2.22629 -3.69164 -4.80398 3.94194 4.20809 9.78878C4.42954 9.19516 4.69767 8.62002 5.00999 8.06877C0.640031 5.35381 4.06606 0.0850328 9.43074 2.94765C9.80696 3.12745 14.0182 5.63475 15.0905 8.79674C15.5274 8.54951 15.9805 8.31285 16.4165 8.01349C15.5847 6.50632 13.8313 4.5627 12.0409 3.10588Z" fill="url(#cap3)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M14.2719 5.19263C14.2135 5.25331 14.1573 5.31309 14.0921 5.36816C14.0083 5.43918 13.9213 5.50683 13.8319 5.57043C13.7424 5.63403 13.6496 5.69764 13.5554 5.75854L13.279 5.94082L13.2653 5.95003C14.0656 6.75819 14.6876 7.72519 15.0911 8.7886C15.528 8.54138 15.9811 8.30472 16.4171 8.00535C15.8124 6.98855 15.0926 6.04476 14.2719 5.19263V5.19263Z" fill="url(#cap4)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.14198 5.85571C2.96895 6.00846 2.78324 6.1462 2.58685 6.26745C2.38953 6.39241 2.18546 6.50726 1.98251 6.62413C1.8816 6.68144 1.78024 6.73875 1.68091 6.80078C1.63169 6.83067 1.58337 6.86146 1.53302 6.89068C1.48268 6.9199 1.43211 6.95024 1.38289 6.98238C1.33367 7.01452 1.26018 7.06958 1.2031 7.11093C2.04119 8.17005 3.05648 9.07593 4.2039 9.78836C4.42558 9.19433 4.69401 8.61882 5.00669 8.06724C3.97691 7.42693 3.38268 6.64256 3.14198 5.85571Z" fill="url(#cap5)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.14198 5.85571C2.96895 6.00846 2.78324 6.1462 2.58685 6.26745C2.38953 6.39241 2.18546 6.50726 1.98251 6.62413C1.8816 6.68144 1.78024 6.73875 1.68091 6.80078C1.63169 6.83067 1.58337 6.86146 1.53302 6.89068C1.48268 6.9199 1.43211 6.95024 1.38289 6.98238C1.33367 7.01452 1.26018 7.06958 1.2031 7.11093C2.04119 8.17005 3.05648 9.07593 4.2039 9.78836C4.42558 9.19433 4.69401 8.61882 5.00669 8.06724C3.97691 7.42693 3.38268 6.64256 3.14198 5.85571Z" fill="url(#cap6)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.36115 8.83071C6.39441 8.75857 6.42858 8.68732 6.46206 8.61967C7.28328 6.91765 9.01944 5.00594 10.6745 3.73409C10.5942 3.67678 10.429 3.55856 10.3511 3.50462C10.068 3.30431 9.77096 3.12458 9.46219 2.9668C8.25577 3.95291 7.15743 5.0643 6.18563 6.28229C5.10415 7.69528 3.77725 9.49372 3.77725 11.8286C3.77725 13.7096 4.75782 15.4435 6.98842 15.9103C7.38507 16.0107 7.79857 16.0253 8.20132 15.9532C8.60407 15.881 8.98681 15.7238 9.32397 15.492C9.74069 15.1496 10.0473 14.692 10.2055 14.1764C10.3636 13.6608 10.3663 13.11 10.2133 12.5928C9.60445 10.57 6.36115 8.83071 6.36115 8.83071ZM9.57928 14.1624C8.64974 15.1385 5.85772 13.7772 5.68916 11.3917C5.67046 11.1475 5.68979 10.9018 5.74647 10.6635C6.21664 10.8953 10.6331 13.0445 9.57928 14.1582V14.1624Z" fill="url(#cap7)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.28463 5.24778C7.43071 5.36091 7.5783 5.47216 7.72738 5.58153C7.87646 5.69091 8.02749 5.79639 8.18047 5.89798C8.2171 5.92315 8.2562 5.94607 8.29509 5.97012C9.01578 5.15077 9.81213 4.40121 10.6736 3.7314C10.5933 3.67409 10.4281 3.55587 10.3502 3.50193C10.0671 3.30163 9.77006 3.12189 9.46129 2.96411C8.64524 3.6387 7.87513 4.36701 7.15607 5.14417C7.19855 5.17901 7.24103 5.21452 7.28463 5.24778Z" fill="url(#cap8)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.36176 8.83032C6.0981 9.42084 5.89188 10.0354 5.74595 10.6654C6.68822 11.1177 7.5939 11.6426 8.45481 12.2353H10.073C9.22883 10.3672 6.36176 8.83032 6.36176 8.83032Z" fill="url(#cap9)"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.36176 8.83032C6.0981 9.42084 5.89188 10.0354 5.74595 10.6654C6.68822 11.1177 7.5939 11.6426 8.45481 12.2353H10.073C9.22883 10.3672 6.36176 8.83032 6.36176 8.83032Z" fill="url(#cap10)"/>
+          </g>
+          <defs>
+            <linearGradient id="cap0" x1="18.0668" y1="-3.9238" x2="6.45015" y2="13.4772" gradientUnits="userSpaceOnUse"><stop stop-color="#F05A24"/><stop offset="0.2" stop-color="#F05D24"/><stop offset="0.32" stop-color="#F58E16"/><stop offset="0.52" stop-color="#FDDB00"/><stop offset="0.55" stop-color="#EAD707"/><stop offset="0.65" stop-color="#AACA1F"/><stop offset="0.75" stop-color="#78C031"/><stop offset="0.83" stop-color="#54B83F"/><stop offset="0.9" stop-color="#3EB447"/><stop offset="0.94" stop-color="#36B24A"/></linearGradient>
+            <linearGradient id="cap1" x1="11.4407" y1="3.42226" x2="12.7608" y2="0.225485" gradientUnits="userSpaceOnUse"><stop stop-color="#CF4F27"/><stop offset="0.32" stop-color="#D95226" stop-opacity="0.69"/><stop offset="1" stop-color="#F05A24" stop-opacity="0"/></linearGradient>
+            <linearGradient id="cap2" x1="15.237" y1="10.5067" x2="16.5172" y2="10.8039" gradientUnits="userSpaceOnUse"><stop stop-color="#76933C"/><stop offset="1" stop-color="#2E9C48" stop-opacity="0"/></linearGradient>
+            <linearGradient id="cap3" x1="4.46529" y1="-1.57599" x2="6.42347" y2="10.2465" gradientUnits="userSpaceOnUse"><stop stop-color="#1687C8"/><stop offset="0.29" stop-color="#1687C8"/><stop offset="0.3" stop-color="#1688C7"/><stop offset="0.46" stop-color="#22979A"/><stop offset="0.61" stop-color="#2AA377"/><stop offset="0.76" stop-color="#31AB5E"/><stop offset="0.89" stop-color="#35B04F"/><stop offset="1" stop-color="#36B24A"/></linearGradient>
+            <linearGradient id="cap4" x1="14.4189" y1="6.35053" x2="16.3575" y2="8.6107" gradientUnits="userSpaceOnUse"><stop stop-color="#36B24A" stop-opacity="0"/><stop offset="0.14" stop-color="#2DAF4A" stop-opacity="0.212"/><stop offset="0.46" stop-color="#1AA84A" stop-opacity="0.631"/><stop offset="0.68" stop-color="#0EA44A" stop-opacity="0.898"/><stop offset="0.8" stop-color="#09A24A"/></linearGradient>
+            <linearGradient id="cap5" x1="6.18961" y1="9.37937" x2="1.07043" y2="6.41913" gradientUnits="userSpaceOnUse"><stop offset="0.26" stop-color="#0EAB4B"/><stop offset="0.39" stop-color="#10A366" stop-opacity="0.78"/><stop offset="0.67" stop-color="#148FAB" stop-opacity="0.231"/><stop offset="0.78" stop-color="#1687C8" stop-opacity="0"/></linearGradient>
+            <linearGradient id="cap6" x1="6.18961" y1="9.37937" x2="1.07043" y2="6.41913" gradientUnits="userSpaceOnUse"><stop offset="0.26" stop-color="#038A45"/><stop offset="0.41" stop-color="#088968" stop-opacity="0.729"/><stop offset="0.76" stop-color="#1587C2" stop-opacity="0.051"/><stop offset="0.78" stop-color="#1687C8" stop-opacity="0"/></linearGradient>
+            <linearGradient id="cap7" x1="11.2193" y1="16.9235" x2="2.99847" y2="11.9631" gradientUnits="userSpaceOnUse"><stop stop-color="#FDDB00"/><stop offset="0.34" stop-color="#FDD901"/><stop offset="0.52" stop-color="#FCD104"/><stop offset="0.67" stop-color="#FAC308"/><stop offset="0.79" stop-color="#F8B00F"/><stop offset="0.9" stop-color="#F69818"/><stop offset="0.98" stop-color="#F38020"/></linearGradient>
+            <linearGradient id="cap8" x1="9.83992" y1="3.1565" x2="8.78515" y2="5.15403" gradientUnits="userSpaceOnUse"><stop stop-color="#CF4F27"/><stop offset="0.18" stop-color="#D75226" stop-opacity="0.749"/><stop offset="0.38" stop-color="#E05525" stop-opacity="0.478"/><stop offset="0.58" stop-color="#E75725" stop-opacity="0.271"/><stop offset="0.75" stop-color="#EC5924" stop-opacity="0.122"/><stop offset="0.9" stop-color="#EF5A24" stop-opacity="0.031"/><stop offset="1" stop-color="#F05A24" stop-opacity="0"/></linearGradient>
+            <linearGradient id="cap9" x1="5.945" y1="9.39214" x2="8.11657" y2="12.6381" gradientUnits="userSpaceOnUse"><stop stop-color="#67BB46"/><stop offset="0.38" stop-color="#A9D033"/><stop offset="0.56" stop-color="#CBDB2A"/><stop offset="0.71" stop-color="#D8D91F"/><stop offset="0.98" stop-color="#FAD502"/><stop offset="1" stop-color="#FDD500"/></linearGradient>
+            <linearGradient id="cap10" x1="5.945" y1="9.39214" x2="8.11657" y2="12.6381" gradientUnits="userSpaceOnUse"><stop stop-color="#029347"/><stop offset="0.17" stop-color="#3DA83E" stop-opacity="0.698"/><stop offset="0.34" stop-color="#70BA37" stop-opacity="0.451"/><stop offset="0.51" stop-color="#98C931" stop-opacity="0.251"/><stop offset="0.67" stop-color="#B4D32D" stop-opacity="0.11"/><stop offset="0.84" stop-color="#C5D92B" stop-opacity="0.031"/><stop offset="1" stop-color="#CBDB2A" stop-opacity="0"/></linearGradient>
+          </defs>
+        </svg>
+      </span>
+      <span class="nav-label">Capillary</span>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M9 7.86667V4.13333C9 3.97778 8.93333 3.87222 8.8 3.81667C8.66667 3.76111 8.54444 3.78889 8.43333 3.9L6.8 5.53333C6.66667 5.66667 6.6 5.82222 6.6 6C6.6 6.17778 6.66667 6.33333 6.8 6.46667L8.43333 8.1C8.54444 8.21111 8.66667 8.23889 8.8 8.18333C8.93333 8.12778 9 8.02222 9 7.86667ZM1.33333 12C0.966667 12 0.652778 11.8694 0.391667 11.6083C0.130556 11.3472 0 11.0333 0 10.6667V1.33333C0 0.966667 0.130556 0.652778 0.391667 0.391667C0.652778 0.130556 0.966667 0 1.33333 0H10.6667C11.0333 0 11.3472 0.130556 11.6083 0.391667C11.8694 0.652778 12 0.966667 12 1.33333V10.6667C12 11.0333 11.8694 11.3472 11.6083 11.6083C11.3472 11.8694 11.0333 12 10.6667 12H1.33333ZM3.33333 10.6667V1.33333H1.33333V10.6667H3.33333ZM4.66667 10.6667H10.6667V1.33333H4.66667V10.6667Z"/></svg>
+      </button>
+    </div>
+
+    <div class="nav-gap"></div>
+
+    <button class="nav-item" data-label="Home">
+      <span class="nav-ico"><svg width="12" height="13.5" viewBox="4 3 16 18" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h3v-6h6v6h3v-9l-6-4.5L6 10v9Zm-2 2V9l8-6 8 6v12h-7v-6h-2v6H4Z"/></svg></span>
+      <span class="nav-label">Home</span>
+    </button>
+
+    <button class="nav-item" data-label="aiRA">
+      <span class="nav-ico"><svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><path d="M11.9545 5.59091L12.75 3.84091L14.5 3.04545L12.75 2.25L11.9545 0.5L11.1591 2.25L9.40909 3.04545L11.1591 3.84091L11.9545 5.59091ZM7.18182 5.90909L5.59091 2.40909L4 5.90909L0.5 7.5L4 9.09091L5.59091 12.5909L7.18182 9.09091L10.6818 7.5L7.18182 5.90909ZM11.9545 9.40909L11.1591 11.1591L9.40909 11.9545L11.1591 12.75L11.9545 14.5L12.75 12.75L14.5 11.9545L12.75 11.1591L11.9545 9.40909Z" fill="none" stroke="currentColor" stroke-linejoin="round"/></svg></span>
+      <span class="nav-label">aiRA</span>
+    </button>
+
+    <button class="nav-item" data-label="Loyalty">
+      <span class="nav-ico"><svg width="13.3167" height="13.3333" viewBox="0 0 13.3167 13.3333" xmlns="http://www.w3.org/2000/svg"><path d="M12.9333 8.16667L8.16667 12.9333C8.03333 13.0667 7.88333 13.1667 7.71667 13.2333C7.55 13.3 7.38333 13.3333 7.21667 13.3333C7.05 13.3333 6.88333 13.3 6.71667 13.2333C6.55 13.1667 6.4 13.0667 6.26667 12.9333L0.383333 7.05C0.261111 6.92778 0.166667 6.78611 0.1 6.625C0.0333333 6.46389 0 6.29444 0 6.11667V1.33333C0 0.966667 0.130556 0.652778 0.391667 0.391667C0.652778 0.130556 0.966667 0 1.33333 0H6.11667C6.29444 0 6.46667 0.0361111 6.63333 0.108333C6.8 0.180556 6.94444 0.277778 7.06667 0.4L12.9333 6.28333C13.0667 6.41667 13.1639 6.56667 13.225 6.73333C13.2861 6.9 13.3167 7.06667 13.3167 7.23333C13.3167 7.4 13.2861 7.56389 13.225 7.725C13.1639 7.88611 13.0667 8.03333 12.9333 8.16667ZM7.21667 12L11.9833 7.23333L6.1 1.33333H1.33333V6.1L7.21667 12ZM3 4C3.27778 4 3.51389 3.90278 3.70833 3.70833C3.90278 3.51389 4 3.27778 4 3C4 2.72222 3.90278 2.48611 3.70833 2.29167C3.51389 2.09722 3.27778 2 3 2C2.72222 2 2.48611 2.09722 2.29167 2.29167C2.09722 2.48611 2 2.72222 2 3C2 3.27778 2.09722 3.51389 2.29167 3.70833C2.48611 3.90278 2.72222 4 3 4ZM7.8 9.86667L9.66667 8C9.78889 7.87778 9.88611 7.73333 9.95833 7.56667C10.0306 7.4 10.0667 7.22222 10.0667 7.03333C10.0667 6.65556 9.93333 6.33333 9.66667 6.06667C9.4 5.8 9.07778 5.66667 8.7 5.66667C8.48889 5.66667 8.28056 5.72778 8.075 5.85C7.86944 5.97222 7.62222 6.17778 7.33333 6.46667C7 6.15556 6.73889 5.94444 6.55 5.83333C6.36111 5.72222 6.16667 5.66667 5.96667 5.66667C5.58889 5.66667 5.26667 5.8 5 6.06667C4.73333 6.33333 4.6 6.65556 4.6 7.03333C4.6 7.22222 4.63611 7.4 4.70833 7.56667C4.78056 7.73333 4.87778 7.87778 5 8L6.86667 9.86667C7 10 7.15556 10.0667 7.33333 10.0667C7.51111 10.0667 7.66667 10 7.8 9.86667Z"/></svg></span>
+      <span class="nav-label">Loyalty</span>
+    </button>
+
+    <button class="nav-item" data-label="Engage">
+      <span class="nav-ico"><svg width="13.3333" height="10.1444" viewBox="0 0 13.3333 10.1444" xmlns="http://www.w3.org/2000/svg"><path d="M12.6667 5.73889H11.3333C11.1444 5.73889 10.9861 5.675 10.8583 5.54722C10.7306 5.41944 10.6667 5.26111 10.6667 5.07222C10.6667 4.88333 10.7306 4.725 10.8583 4.59722C10.9861 4.46944 11.1444 4.40556 11.3333 4.40556H12.6667C12.8556 4.40556 13.0139 4.46944 13.1417 4.59722C13.2694 4.725 13.3333 4.88333 13.3333 5.07222C13.3333 5.26111 13.2694 5.41944 13.1417 5.54722C13.0139 5.675 12.8556 5.73889 12.6667 5.73889ZM9.73333 8.27222C9.84444 8.11667 9.98889 8.02778 10.1667 8.00556C10.3444 7.98333 10.5111 8.02778 10.6667 8.13889L11.7333 8.93889C11.8889 9.05 11.9778 9.19444 12 9.37222C12.0222 9.55 11.9778 9.71667 11.8667 9.87222C11.7556 10.0278 11.6111 10.1167 11.4333 10.1389C11.2556 10.1611 11.0889 10.1167 10.9333 10.0056L9.86667 9.20555C9.71111 9.09444 9.62222 8.95 9.6 8.77222C9.57778 8.59444 9.62222 8.42778 9.73333 8.27222ZM11.7333 1.20556L10.6667 2.00556C10.5111 2.11667 10.3444 2.16111 10.1667 2.13889C9.98889 2.11667 9.84444 2.02778 9.73333 1.87222C9.62222 1.71667 9.57778 1.55 9.6 1.37222C9.62222 1.19444 9.71111 1.05 9.86667 0.938889L10.9333 0.138889C11.0889 0.0277778 11.2556 -0.0166667 11.4333 0.00555556C11.6111 0.0277778 11.7556 0.116667 11.8667 0.272222C11.9778 0.427778 12.0222 0.594444 12 0.772222C11.9778 0.95 11.8889 1.09444 11.7333 1.20556ZM2 7.07222H1.33333C0.966667 7.07222 0.652778 6.94167 0.391667 6.68056C0.130556 6.41944 0 6.10556 0 5.73889V4.40556C0 4.03889 0.130556 3.725 0.391667 3.46389C0.652778 3.20278 0.966667 3.07222 1.33333 3.07222H4L6.31667 1.67222C6.53889 1.53889 6.76389 1.53889 6.99167 1.67222C7.21944 1.80556 7.33333 2 7.33333 2.25556V7.88889C7.33333 8.14444 7.21944 8.33889 6.99167 8.47222C6.76389 8.60556 6.53889 8.60556 6.31667 8.47222L4 7.07222H3.33333V9.07222C3.33333 9.26111 3.26944 9.41944 3.14167 9.54722C3.01389 9.675 2.85556 9.73889 2.66667 9.73889C2.47778 9.73889 2.31944 9.675 2.19167 9.54722C2.06389 9.41944 2 9.26111 2 9.07222V7.07222ZM6 6.70556V3.43889L4.36667 4.40556H1.33333V5.73889H4.36667L6 6.70556ZM8 7.30556V2.83889C8.3 3.10556 8.54167 3.43056 8.725 3.81389C8.90833 4.19722 9 4.61667 9 5.07222C9 5.52778 8.90833 5.94722 8.725 6.33056C8.54167 6.71389 8.3 7.03889 8 7.30556Z"/></svg></span>
+      <span class="nav-label">Engage</span>
+    </button>
+
+    <button class="nav-item" data-label="Rewards">
+      <span class="nav-ico"><svg width="13.3333" height="14" viewBox="0 0 13.3333 14" xmlns="http://www.w3.org/2000/svg"><path d="M1.33333 12.6667V6.66667C0.966667 6.66667 0.652778 6.53611 0.391667 6.275C0.130556 6.01389 0 5.7 0 5.33333V4C0 3.63333 0.130556 3.31944 0.391667 3.05833C0.652778 2.79722 0.966667 2.66667 1.33333 2.66667H3.46667C3.41111 2.56667 3.375 2.46111 3.35833 2.35C3.34167 2.23889 3.33333 2.12222 3.33333 2C3.33333 1.44444 3.52778 0.972222 3.91667 0.583333C4.30556 0.194444 4.77778 0 5.33333 0C5.58889 0 5.82778 0.0472222 6.05 0.141667C6.27222 0.236111 6.47778 0.366667 6.66667 0.533333C6.85556 0.355556 7.06111 0.222222 7.28333 0.133333C7.50556 0.0444444 7.74444 0 8 0C8.55556 0 9.02778 0.194444 9.41667 0.583333C9.80555 0.972222 10 1.44444 10 2C10 2.12222 9.98889 2.23611 9.96667 2.34167C9.94444 2.44722 9.91111 2.55556 9.86667 2.66667H12C12.3667 2.66667 12.6806 2.79722 12.9417 3.05833C13.2028 3.31944 13.3333 3.63333 13.3333 4V5.33333C13.3333 5.7 13.2028 6.01389 12.9417 6.275C12.6806 6.53611 12.3667 6.66667 12 6.66667V12.6667C12 13.0333 11.8694 13.3472 11.6083 13.6083C11.3472 13.8694 11.0333 14 10.6667 14H2.66667C2.3 14 1.98611 13.8694 1.725 13.6083C1.46389 13.3472 1.33333 13.0333 1.33333 12.6667ZM8 1.33333C7.81111 1.33333 7.65278 1.39722 7.525 1.525C7.39722 1.65278 7.33333 1.81111 7.33333 2C7.33333 2.18889 7.39722 2.34722 7.525 2.475C7.65278 2.60278 7.81111 2.66667 8 2.66667C8.18889 2.66667 8.34722 2.60278 8.475 2.475C8.60278 2.34722 8.66667 2.18889 8.66667 2C8.66667 1.81111 8.60278 1.65278 8.475 1.525C8.34722 1.39722 8.18889 1.33333 8 1.33333ZM4.66667 2C4.66667 2.18889 4.73056 2.34722 4.85833 2.475C4.98611 2.60278 5.14444 2.66667 5.33333 2.66667C5.52222 2.66667 5.68056 2.60278 5.80833 2.475C5.93611 2.34722 6 2.18889 6 2C6 1.81111 5.93611 1.65278 5.80833 1.525C5.68056 1.39722 5.52222 1.33333 5.33333 1.33333C5.14444 1.33333 4.98611 1.39722 4.85833 1.525C4.73056 1.65278 4.66667 1.81111 4.66667 2ZM1.33333 4V5.33333H6V4H1.33333ZM6 12.6667V6.66667H2.66667V12.6667H6ZM7.33333 12.6667H10.6667V6.66667H7.33333V12.6667ZM12 5.33333V4H7.33333V5.33333H12Z"/></svg></span>
+      <span class="nav-label">Rewards</span>
+    </button>
+
+    <button class="nav-item" data-label="Audiences">
+      <span class="nav-ico"><svg width="14.6667" height="10.6667" viewBox="0 0 14.6667 10.6667" xmlns="http://www.w3.org/2000/svg"><path d="M0 8.8C0 8.42222 0.0972222 8.075 0.291667 7.75833C0.486111 7.44167 0.744444 7.2 1.06667 7.03333C1.75556 6.68889 2.45556 6.43056 3.16667 6.25833C3.87778 6.08611 4.6 6 5.33333 6C6.06667 6 6.78889 6.08611 7.5 6.25833C8.21111 6.43056 8.91111 6.68889 9.6 7.03333C9.92222 7.2 10.1806 7.44167 10.375 7.75833C10.5694 8.075 10.6667 8.42222 10.6667 8.8V9.33333C10.6667 9.7 10.5361 10.0139 10.275 10.275C10.0139 10.5361 9.7 10.6667 9.33333 10.6667H1.33333C0.966667 10.6667 0.652778 10.5361 0.391667 10.275C0.130556 10.0139 0 9.7 0 9.33333V8.8ZM13.3333 10.6667H11.6333C11.7556 10.4667 11.8472 10.2528 11.9083 10.025C11.9694 9.79722 12 9.56667 12 9.33333V8.66667C12 8.17778 11.8639 7.70833 11.5917 7.25833C11.3194 6.80833 10.9333 6.42222 10.4333 6.1C11 6.16667 11.5333 6.28056 12.0333 6.44167C12.5333 6.60278 13 6.8 13.4333 7.03333C13.8333 7.25556 14.1389 7.50278 14.35 7.775C14.5611 8.04722 14.6667 8.34445 14.6667 8.66667V9.33333C14.6667 9.7 14.5361 10.0139 14.275 10.275C14.0139 10.5361 13.7 10.6667 13.3333 10.6667ZM5.33333 5.33333C4.6 5.33333 3.97222 5.07222 3.45 4.55C2.92778 4.02778 2.66667 3.4 2.66667 2.66667C2.66667 1.93333 2.92778 1.30556 3.45 0.783333C3.97222 0.261111 4.6 0 5.33333 0C6.06667 0 6.69444 0.261111 7.21667 0.783333C7.73889 1.30556 8 1.93333 8 2.66667C8 3.4 7.73889 4.02778 7.21667 4.55C6.69444 5.07222 6.06667 5.33333 5.33333 5.33333ZM12 2.66667C12 3.4 11.7389 4.02778 11.2167 4.55C10.6944 5.07222 10.0667 5.33333 9.33333 5.33333C9.21111 5.33333 9.05556 5.31945 8.86667 5.29167C8.67778 5.26389 8.52222 5.23333 8.4 5.2C8.7 4.84445 8.93056 4.45 9.09167 4.01667C9.25278 3.58333 9.33333 3.13333 9.33333 2.66667C9.33333 2.2 9.25278 1.75 9.09167 1.31667C8.93056 0.883333 8.7 0.488889 8.4 0.133333C8.55556 0.0777778 8.71111 0.0416667 8.86667 0.025C9.02222 0.00833333 9.17778 0 9.33333 0C10.0667 0 10.6944 0.261111 11.2167 0.783333C11.7389 1.30556 12 1.93333 12 2.66667ZM1.33333 9.33333H9.33333V8.8C9.33333 8.67778 9.30278 8.56667 9.24167 8.46667C9.18056 8.36667 9.1 8.28889 9 8.23333C8.4 7.93333 7.79444 7.70833 7.18333 7.55833C6.57222 7.40833 5.95556 7.33333 5.33333 7.33333C4.71111 7.33333 4.09444 7.40833 3.48333 7.55833C2.87222 7.70833 2.26667 7.93333 1.66667 8.23333C1.56667 8.28889 1.48611 8.36667 1.425 8.46667C1.36389 8.56667 1.33333 8.67778 1.33333 8.8V9.33333ZM5.33333 4C5.7 4 6.01389 3.86945 6.275 3.60833C6.53611 3.34722 6.66667 3.03333 6.66667 2.66667C6.66667 2.3 6.53611 1.98611 6.275 1.725C6.01389 1.46389 5.7 1.33333 5.33333 1.33333C4.96667 1.33333 4.65278 1.46389 4.39167 1.725C4.13056 1.98611 4 2.3 4 2.66667C4 3.03333 4.13056 3.34722 4.39167 3.60833C4.65278 3.86945 4.96667 4 5.33333 4Z"/></svg></span>
+      <span class="nav-label">Audiences</span>
+    </button>
+
+    <button class="nav-item" data-label="Channels">
+      <span class="nav-ico"><svg width="16" height="15.3333" viewBox="0 0 16 15.3333" xmlns="http://www.w3.org/2000/svg"><path d="M2.58333 14.75C2.19444 14.3611 2 13.8889 2 13.3333C2 12.7778 2.19444 12.3056 2.58333 11.9167C2.97222 11.5278 3.44444 11.3333 4 11.3333C4.15556 11.3333 4.3 11.35 4.43333 11.3833C4.56667 11.4167 4.69444 11.4611 4.81667 11.5167L5.76667 10.3333C5.45556 9.98889 5.23889 9.6 5.11667 9.16667C4.99444 8.73333 4.96667 8.3 5.03333 7.86667L3.68333 7.41667C3.49444 7.69444 3.25556 7.91667 2.96667 8.08333C2.67778 8.25 2.35556 8.33333 2 8.33333C1.44444 8.33333 0.972222 8.13889 0.583333 7.75C0.194444 7.36111 0 6.88889 0 6.33333C0 5.77778 0.194444 5.30556 0.583333 4.91667C0.972222 4.52778 1.44444 4.33333 2 4.33333C2.55556 4.33333 3.02778 4.52778 3.41667 4.91667C3.80556 5.30556 4 5.77778 4 6.33333V6.46667L5.35 6.93333C5.57222 6.53333 5.86944 6.19444 6.24167 5.91667C6.61389 5.63889 7.03333 5.46111 7.5 5.38333V3.93333C7.06667 3.81111 6.70833 3.575 6.425 3.225C6.14167 2.875 6 2.46667 6 2C6 1.44444 6.19444 0.972222 6.58333 0.583333C6.97222 0.194444 7.44444 0 8 0C8.55556 0 9.02778 0.194444 9.41667 0.583333C9.80556 0.972222 10 1.44444 10 2C10 2.46667 9.85556 2.875 9.56667 3.225C9.27778 3.575 8.92222 3.81111 8.5 3.93333V5.38333C8.96667 5.46111 9.38611 5.63889 9.75833 5.91667C10.1306 6.19444 10.4278 6.53333 10.65 6.93333L12 6.46667V6.33333C12 5.77778 12.1944 5.30556 12.5833 4.91667C12.9722 4.52778 13.4444 4.33333 14 4.33333C14.5556 4.33333 15.0278 4.52778 15.4167 4.91667C15.8056 5.30556 16 5.77778 16 6.33333C16 6.88889 15.8056 7.36111 15.4167 7.75C15.0278 8.13889 14.5556 8.33333 14 8.33333C13.6444 8.33333 13.3194 8.25 13.025 8.08333C12.7306 7.91667 12.4944 7.69444 12.3167 7.41667L10.9667 7.86667C11.0333 8.3 11.0056 8.73056 10.8833 9.15833C10.7611 9.58611 10.5444 9.97778 10.2333 10.3333L11.1833 11.5C11.3056 11.4444 11.4333 11.4028 11.5667 11.375C11.7 11.3472 11.8444 11.3333 12 11.3333C12.5556 11.3333 13.0278 11.5278 13.4167 11.9167C13.8056 12.3056 14 12.7778 14 13.3333C14 13.8889 13.8056 14.3611 13.4167 14.75C13.0278 15.1389 12.5556 15.3333 12 15.3333C11.4444 15.3333 10.9722 15.1389 10.5833 14.75C10.1944 14.3611 10 13.8889 10 13.3333C10 13.1111 10.0361 12.8972 10.1083 12.6917C10.1806 12.4861 10.2778 12.3 10.4 12.1333L9.45 10.95C8.99444 11.2056 8.50833 11.3333 7.99167 11.3333C7.475 11.3333 6.98889 11.2056 6.53333 10.95L5.6 12.1333C5.72222 12.3 5.81944 12.4861 5.89167 12.6917C5.96389 12.8972 6 13.1111 6 13.3333C6 13.8889 5.80556 14.3611 5.41667 14.75C5.02778 15.1389 4.55556 15.3333 4 15.3333C3.44444 15.3333 2.97222 15.1389 2.58333 14.75ZM2 7C2.18889 7 2.34722 6.93611 2.475 6.80833C2.60278 6.68056 2.66667 6.52222 2.66667 6.33333C2.66667 6.14444 2.60278 5.98611 2.475 5.85833C2.34722 5.73056 2.18889 5.66667 2 5.66667C1.81111 5.66667 1.65278 5.73056 1.525 5.85833C1.39722 5.98611 1.33333 6.14444 1.33333 6.33333C1.33333 6.52222 1.39722 6.68056 1.525 6.80833C1.65278 6.93611 1.81111 7 2 7ZM4.475 13.8083C4.60278 13.6806 4.66667 13.5222 4.66667 13.3333C4.66667 13.1444 4.60278 12.9861 4.475 12.8583C4.34722 12.7306 4.18889 12.6667 4 12.6667C3.81111 12.6667 3.65278 12.7306 3.525 12.8583C3.39722 12.9861 3.33333 13.1444 3.33333 13.3333C3.33333 13.5222 3.39722 13.6806 3.525 13.8083C3.65278 13.9361 3.81111 14 4 14C4.18889 14 4.34722 13.9361 4.475 13.8083ZM8.475 2.475C8.60278 2.34722 8.66667 2.18889 8.66667 2C8.66667 1.81111 8.60278 1.65278 8.475 1.525C8.34722 1.39722 8.18889 1.33333 8 1.33333C7.81111 1.33333 7.65278 1.39722 7.525 1.525C7.39722 1.65278 7.33333 1.81111 7.33333 2C7.33333 2.18889 7.39722 2.34722 7.525 2.475C7.65278 2.60278 7.81111 2.66667 8 2.66667C8.18889 2.66667 8.34722 2.60278 8.475 2.475ZM8 10C8.46667 10 8.86111 9.83889 9.18333 9.51667C9.50556 9.19444 9.66667 8.8 9.66667 8.33333C9.66667 7.86667 9.50556 7.47222 9.18333 7.15C8.86111 6.82778 8.46667 6.66667 8 6.66667C7.53333 6.66667 7.13889 6.82778 6.81667 7.15C6.49444 7.47222 6.33333 7.86667 6.33333 8.33333C6.33333 8.8 6.49444 9.19444 6.81667 9.51667C7.13889 9.83889 7.53333 10 8 10ZM12.475 13.8083C12.6028 13.6806 12.6667 13.5222 12.6667 13.3333C12.6667 13.1444 12.6028 12.9861 12.475 12.8583C12.3472 12.7306 12.1889 12.6667 12 12.6667C11.8111 12.6667 11.6528 12.7306 11.525 12.8583C11.3972 12.9861 11.3333 13.1444 11.3333 13.3333C11.3333 13.5222 11.3972 13.6806 11.525 13.8083C11.6528 13.9361 11.8111 14 12 14C12.1889 14 12.3472 13.9361 12.475 13.8083ZM14.475 6.80833C14.6028 6.68056 14.6667 6.52222 14.6667 6.33333C14.6667 6.14444 14.6028 5.98611 14.475 5.85833C14.3472 5.73056 14.1889 5.66667 14 5.66667C13.8111 5.66667 13.6528 5.73056 13.525 5.85833C13.3972 5.98611 13.3333 6.14444 13.3333 6.33333C13.3333 6.52222 13.3972 6.68056 13.525 6.80833C13.6528 6.93611 13.8111 7 14 7C14.1889 7 14.3472 6.93611 14.475 6.80833Z"/></svg></span>
+      <span class="nav-label">Channels</span>
+    </button>
+
+    <button class="nav-item" data-label="Member care">
+      <span class="nav-ico"><svg width="12" height="13.5667" viewBox="0 0 12 13.5667" xmlns="http://www.w3.org/2000/svg"><path d="M6 7.45C5.35556 7.45 4.80556 7.22222 4.35 6.76667C3.89444 6.31111 3.66667 5.76111 3.66667 5.11667C3.66667 4.47222 3.89444 3.92222 4.35 3.46667C4.80556 3.01111 5.35556 2.78333 6 2.78333C6.64444 2.78333 7.19444 3.01111 7.65 3.46667C8.10556 3.92222 8.33333 4.47222 8.33333 5.11667C8.33333 5.76111 8.10556 6.31111 7.65 6.76667C7.19444 7.22222 6.64444 7.45 6 7.45ZM6 6.11667C6.27778 6.11667 6.51389 6.01944 6.70833 5.825C6.90278 5.63056 7 5.39444 7 5.11667C7 4.83889 6.90278 4.60278 6.70833 4.40833C6.51389 4.21389 6.27778 4.11667 6 4.11667C5.72222 4.11667 5.48611 4.21389 5.29167 4.40833C5.09722 4.60278 5 4.83889 5 5.11667C5 5.39444 5.09722 5.63056 5.29167 5.825C5.48611 6.01944 5.72222 6.11667 6 6.11667ZM0.633333 10.5C0.433333 10.3778 0.277778 10.2167 0.166667 10.0167C0.0555556 9.81667 0 9.6 0 9.36667V4.2C0 3.96667 0.0555556 3.75 0.166667 3.55C0.277778 3.35 0.433333 3.18889 0.633333 3.06667L5.3 0.2C5.52222 0.0666667 5.75556 0 6 0C6.24444 0 6.47778 0.0666667 6.7 0.2L11.3667 3.06667C11.5667 3.18889 11.7222 3.35 11.8333 3.55C11.9444 3.75 12 3.96667 12 4.2V9.36667C12 9.6 11.9444 9.81667 11.8333 10.0167C11.7222 10.2167 11.5667 10.3778 11.3667 10.5L6.7 13.3667C6.47778 13.5 6.24444 13.5667 6 13.5667C5.75556 13.5667 5.52222 13.5 5.3 13.3667L0.633333 10.5ZM6 10.1167C5.57778 10.1167 5.15833 10.1667 4.74167 10.2667C4.325 10.3667 3.92778 10.5167 3.55 10.7167L6 12.2333L8.45 10.7167C8.07222 10.5167 7.675 10.3667 7.25833 10.2667C6.84167 10.1667 6.42222 10.1167 6 10.1167ZM2.26667 9.93333C2.82222 9.55556 3.41667 9.26944 4.05 9.075C4.68333 8.88056 5.33333 8.78333 6 8.78333C6.66667 8.78333 7.31667 8.88056 7.95 9.075C8.58333 9.26944 9.17778 9.55556 9.73333 9.93333L10.6667 9.38333V4.2L6 1.35L1.33333 4.2V9.38333L2.26667 9.93333Z"/></svg></span>
+      <span class="nav-label">Member care</span>
+    </button>
+
+    <button class="nav-item" data-label="Insights">
+      <span class="nav-ico"><svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M3.33333 6C3.14444 6 2.98611 6.06389 2.85833 6.19167C2.73056 6.31944 2.66667 6.47778 2.66667 6.66667V8.66667C2.66667 8.85556 2.73056 9.01389 2.85833 9.14167C2.98611 9.26944 3.14444 9.33333 3.33333 9.33333C3.52222 9.33333 3.68056 9.26944 3.80833 9.14167C3.93611 9.01389 4 8.85556 4 8.66667V6.66667C4 6.47778 3.93611 6.31944 3.80833 6.19167C3.68056 6.06389 3.52222 6 3.33333 6ZM8.66667 2.66667C8.47778 2.66667 8.31944 2.73056 8.19167 2.85833C8.06389 2.98611 8 3.14444 8 3.33333V8.66667C8 8.85556 8.06389 9.01389 8.19167 9.14167C8.31944 9.26944 8.47778 9.33333 8.66667 9.33333C8.85556 9.33333 9.01389 9.26944 9.14167 9.14167C9.26944 9.01389 9.33333 8.85556 9.33333 8.66667V3.33333C9.33333 3.14444 9.26944 2.98611 9.14167 2.85833C9.01389 2.73056 8.85556 2.66667 8.66667 2.66667ZM6 7.33333C5.81111 7.33333 5.65278 7.39722 5.525 7.525C5.39722 7.65278 5.33333 7.81111 5.33333 8V8.66667C5.33333 8.85556 5.39722 9.01389 5.525 9.14167C5.65278 9.26944 5.81111 9.33333 6 9.33333C6.18889 9.33333 6.34722 9.26944 6.475 9.14167C6.60278 9.01389 6.66667 8.85556 6.66667 8.66667V8C6.66667 7.81111 6.60278 7.65278 6.475 7.525C6.34722 7.39722 6.18889 7.33333 6 7.33333ZM1.33333 12C0.966667 12 0.652778 11.8694 0.391667 11.6083C0.130556 11.3472 0 11.0333 0 10.6667V1.33333C0 0.966667 0.130556 0.652778 0.391667 0.391667C0.652778 0.130556 0.966667 0 1.33333 0H10.6667C11.0333 0 11.3472 0.130556 11.6083 0.391667C11.8694 0.652778 12 0.966667 12 1.33333V10.6667C12 11.0333 11.8694 11.3472 11.6083 11.6083C11.3472 11.8694 11.0333 12 10.6667 12H1.33333ZM1.33333 10.6667H10.6667V1.33333H1.33333V10.6667ZM6 6C6.18889 6 6.34722 5.93611 6.475 5.80833C6.60278 5.68056 6.66667 5.52222 6.66667 5.33333C6.66667 5.14444 6.60278 4.98611 6.475 4.85833C6.34722 4.73056 6.18889 4.66667 6 4.66667C5.81111 4.66667 5.65278 4.73056 5.525 4.85833C5.39722 4.98611 5.33333 5.14444 5.33333 5.33333C5.33333 5.52222 5.39722 5.68056 5.525 5.80833C5.65278 5.93611 5.81111 6 6 6Z"/></svg></span>
+      <span class="nav-label">Insights</span>
+    </button>
+
+    <div class="nav-divider"></div>
+
+    <button class="nav-item" data-label="Data Management">
+      <span class="nav-ico"><svg width="14" height="12.6667" viewBox="0 0 14 12.6667" xmlns="http://www.w3.org/2000/svg"><path d="M8.66667 12.6667C8.3 12.6667 7.98611 12.5361 7.725 12.275C7.46389 12.0139 7.33333 11.7 7.33333 11.3333C7.33333 11.0778 7.39444 10.85 7.51667 10.65C7.63889 10.45 7.8 10.2889 8 10.1667V6.48333C7.8 6.36111 7.63889 6.20278 7.51667 6.00833C7.39444 5.81389 7.33333 5.58889 7.33333 5.33333C7.33333 4.96667 7.46389 4.65278 7.725 4.39167C7.98611 4.13056 8.3 4 8.66667 4C9.03333 4 9.34722 4.13056 9.60833 4.39167C9.86944 4.65278 10 4.96667 10 5.33333C10 5.58889 9.93889 5.81389 9.81667 6.00833C9.69444 6.20278 9.53333 6.36111 9.33333 6.48333V8.4L12 7.51667V6.48333C11.8 6.36111 11.6389 6.20278 11.5167 6.00833C11.3944 5.81389 11.3333 5.58889 11.3333 5.33333C11.3333 4.96667 11.4639 4.65278 11.725 4.39167C11.9861 4.13056 12.3 4 12.6667 4C13.0333 4 13.3472 4.13056 13.6083 4.39167C13.8694 4.65278 14 4.96667 14 5.33333C14 5.58889 13.9389 5.81389 13.8167 6.00833C13.6944 6.20278 13.5333 6.36111 13.3333 6.48333V7.5C13.3333 7.78889 13.25 8.05 13.0833 8.28333C12.9167 8.51667 12.6944 8.67778 12.4167 8.76667L9.33333 9.8V10.1667C9.53333 10.2889 9.69444 10.45 9.81667 10.65C9.93889 10.85 10 11.0778 10 11.3333C10 11.7 9.86944 12.0139 9.60833 12.275C9.34722 12.5361 9.03333 12.6667 8.66667 12.6667ZM1.33333 10.6667C0.966667 10.6667 0.652778 10.5361 0.391667 10.275C0.130556 10.0139 0 9.7 0 9.33333V1.33333C0 0.966667 0.130556 0.652778 0.391667 0.391667C0.652778 0.130556 0.966667 0 1.33333 0H4.78333C4.96111 0 5.13056 0.0333333 5.29167 0.1C5.45278 0.166667 5.59444 0.261111 5.71667 0.383333L6.66667 1.33333H12.6667C12.8556 1.33333 13.0139 1.39722 13.1417 1.525C13.2694 1.65278 13.3333 1.81111 13.3333 2C13.3333 2.18889 13.2694 2.34722 13.1417 2.475C13.0139 2.60278 12.8556 2.66667 12.6667 2.66667H6.11667L4.78333 1.33333H1.33333V9.33333H5.33333C5.52222 9.33333 5.68056 9.39722 5.80833 9.525C5.93611 9.65278 6 9.81111 6 10C6 10.1889 5.93611 10.3472 5.80833 10.475C5.68056 10.6028 5.52222 10.6667 5.33333 10.6667H1.33333Z"/></svg></span>
+      <span class="nav-label">Data Management</span>
+    </button>
+
+    <button class="nav-item" data-label="Extensions">
+      <span class="nav-ico"><svg width="12.7667" height="7.45867" viewBox="0 0 12.7667 7.45867" xmlns="http://www.w3.org/2000/svg"><path d="M1.6 3.75L4.18333 6.33333C4.30556 6.45556 4.36667 6.61111 4.36667 6.8C4.36667 6.98889 4.30556 7.14444 4.18333 7.26667C4.06111 7.38889 3.90556 7.45 3.71667 7.45C3.52778 7.45 3.37222 7.38889 3.25 7.26667L0.183333 4.2C0.116667 4.13333 0.0694444 4.06111 0.0416667 3.98333C0.0138889 3.90556 0 3.82222 0 3.73333C0 3.64444 0.0138889 3.56111 0.0416667 3.48333C0.0694444 3.40556 0.116667 3.33333 0.183333 3.26667L3.25 0.2C3.38333 0.0666667 3.54167 0 3.725 0C3.90833 0 4.06667 0.0666667 4.2 0.2C4.33333 0.333333 4.4 0.491667 4.4 0.675C4.4 0.858333 4.33333 1.01667 4.2 1.15L1.6 3.75ZM11.1667 3.71667L8.58333 1.13333C8.46111 1.01111 8.4 0.855555 8.4 0.666667C8.4 0.477778 8.46111 0.322222 8.58333 0.2C8.70556 0.0777778 8.86111 0.0166667 9.05 0.0166667C9.23889 0.0166667 9.39444 0.0777778 9.51667 0.2L12.5833 3.26667C12.65 3.33333 12.6972 3.40556 12.725 3.48333C12.7528 3.56111 12.7667 3.64444 12.7667 3.73333C12.7667 3.82222 12.7528 3.90556 12.725 3.98333C12.6972 4.06111 12.65 4.13333 12.5833 4.2L9.51667 7.26667C9.38333 7.4 9.22778 7.46389 9.05 7.45833C8.87222 7.45278 8.71667 7.38333 8.58333 7.25C8.45 7.11667 8.38333 6.95833 8.38333 6.775C8.38333 6.59167 8.45 6.43333 8.58333 6.3L11.1667 3.71667Z"/></svg></span>
+      <span class="nav-label">Extensions</span>
+    </button>
+
+    <div class="nav-divider"></div>
+
+    <button class="nav-item" data-label="Settings">
+      <span class="nav-ico"><svg width="12.6933" height="13.3333" viewBox="0 0 12.6933 13.3333" xmlns="http://www.w3.org/2000/svg"><path d="M5.56333 13.3333C5.26333 13.3333 5.005 13.2333 4.78833 13.0333C4.57167 12.8333 4.44111 12.5889 4.39667 12.3L4.24667 11.2C4.10222 11.1444 3.96611 11.0778 3.83833 11C3.71056 10.9222 3.58556 10.8389 3.46333 10.75L2.43 11.1833C2.15222 11.3056 1.87444 11.3167 1.59667 11.2167C1.31889 11.1167 1.10222 10.9389 0.946667 10.6833L0.163333 9.31667C0.00777778 9.06111 -0.0366667 8.78889 0.03 8.5C0.0966667 8.21111 0.246667 7.97222 0.48 7.78333L1.36333 7.11667C1.35222 7.03889 1.34667 6.96389 1.34667 6.89167V6.44167C1.34667 6.36944 1.35222 6.29444 1.36333 6.21667L0.48 5.55C0.246667 5.36111 0.0966667 5.12222 0.03 4.83333C-0.0366667 4.54444 0.00777778 4.27222 0.163333 4.01667L0.946667 2.65C1.10222 2.39444 1.31889 2.21667 1.59667 2.11667C1.87444 2.01667 2.15222 2.02778 2.43 2.15L3.46333 2.58333C3.58556 2.49444 3.71333 2.41111 3.84667 2.33333C3.98 2.25556 4.11333 2.18889 4.24667 2.13333L4.39667 1.03333C4.44111 0.744444 4.57167 0.5 4.78833 0.3C5.005 0.1 5.26333 0 5.56333 0H7.13C7.43 0 7.68833 0.1 7.905 0.3C8.12167 0.5 8.25222 0.744444 8.29667 1.03333L8.44667 2.13333C8.59111 2.18889 8.72722 2.25556 8.855 2.33333C8.98278 2.41111 9.10778 2.49444 9.23 2.58333L10.2633 2.15C10.5411 2.02778 10.8189 2.01667 11.0967 2.11667C11.3744 2.21667 11.5911 2.39444 11.7467 2.65L12.53 4.01667C12.6856 4.27222 12.73 4.54444 12.6633 4.83333C12.5967 5.12222 12.4467 5.36111 12.2133 5.55L11.33 6.21667C11.3411 6.29444 11.3467 6.36944 11.3467 6.44167V6.89167C11.3467 6.96389 11.3356 7.03889 11.3133 7.11667L12.1967 7.78333C12.43 7.97222 12.58 8.21111 12.6467 8.5C12.7133 8.78889 12.6689 9.06111 12.5133 9.31667L11.7133 10.6833C11.5578 10.9389 11.3411 11.1167 11.0633 11.2167C10.7856 11.3167 10.5078 11.3056 10.23 11.1833L9.23 10.75C9.10778 10.8389 8.98 10.9222 8.84667 11C8.71333 11.0778 8.58 11.1444 8.44667 11.2L8.29667 12.3C8.25222 12.5889 8.12167 12.8333 7.905 13.0333C7.68833 13.2333 7.43 13.3333 7.13 13.3333H5.56333ZM5.68 12H6.99667L7.23 10.2333C7.57444 10.1444 7.89389 10.0139 8.18833 9.84167C8.48278 9.66944 8.75222 9.46111 8.99667 9.21667L10.6467 9.9L11.2967 8.76667L9.86333 7.68333C9.91889 7.52778 9.95778 7.36389 9.98 7.19167C10.0022 7.01944 10.0133 6.84444 10.0133 6.66667C10.0133 6.48889 10.0022 6.31389 9.98 6.14167C9.95778 5.96944 9.91889 5.80556 9.86333 5.65L11.2967 4.56667L10.6467 3.43333L8.99667 4.13333C8.75222 3.87778 8.48278 3.66389 8.18833 3.49167C7.89389 3.31944 7.57444 3.18889 7.23 3.1L7.01333 1.33333H5.69667L5.46333 3.1C5.11889 3.18889 4.79944 3.31944 4.505 3.49167C4.21056 3.66389 3.94111 3.87222 3.69667 4.11667L2.04667 3.43333L1.39667 4.56667L2.83 5.63333C2.77444 5.8 2.73556 5.96667 2.71333 6.13333C2.69111 6.3 2.68 6.47778 2.68 6.66667C2.68 6.84444 2.69111 7.01667 2.71333 7.18333C2.73556 7.35 2.77444 7.51667 2.83 7.68333L1.39667 8.76667L2.04667 9.9L3.69667 9.2C3.94111 9.45555 4.21056 9.66944 4.505 9.84167C4.79944 10.0139 5.11889 10.1444 5.46333 10.2333L5.68 12ZM6.38 9C7.02444 9 7.57444 8.77222 8.03 8.31667C8.48555 7.86111 8.71333 7.31111 8.71333 6.66667C8.71333 6.02222 8.48555 5.47222 8.03 5.01667C7.57444 4.56111 7.02444 4.33333 6.38 4.33333C5.72444 4.33333 5.17167 4.56111 4.72167 5.01667C4.27167 5.47222 4.04667 6.02222 4.04667 6.66667C4.04667 7.31111 4.27167 7.86111 4.72167 8.31667C5.17167 8.77222 5.72444 9 6.38 9Z"/></svg></span>
+      <span class="nav-label">Settings</span>
+    </button>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">User Management</h1>
+          <p class="page-sub">Add users and assign permissions to manage access across your organisation</p>
+        </div>
+        <div class="page-head-actions">
+          <button class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round">
+              <path d="M2.5 4.5h2M7.5 4.5h6M2.5 8h6M11.5 8h2M2.5 11.5h2M7.5 11.5h6"/>
+              <circle cx="6" cy="4.5" r="1.5"/><circle cx="10" cy="8" r="1.5"/><circle cx="6" cy="11.5" r="1.5"/>
+            </svg>
+            Settings
+          </button>
+        </div>
+      </div>
+
+      <nav class="tabs" id="tabs">
+        <button class="tab is-active" data-tab="users">Users</button>
+        <button class="tab" data-tab="permsets">Permission sets</button>
+        <button class="tab" data-tab="custom">Custom Permissions</button>
+        <button class="tab" data-tab="audit">Audit Logs</button>
+      </nav>
+
+      <!-- ---------- USERS TAB ---------- -->
+      <section id="panel-users">
+        <div class="stats">
+          <div>
+            <div class="stat-label"><span class="dot dot-green"></span>Active</div>
+            <div class="stat-value">19</div>
+          </div>
+          <div>
+            <div class="stat-label"><span class="dot dot-orange"></span>Pending</div>
+            <div class="stat-value">22</div>
+          </div>
+          <div>
+            <div class="stat-label">Total users</div>
+            <div class="stat-value">41</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <label class="field pill search-users">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7.2" cy="7.2" r="4.6"/><path d="m10.7 10.7 3.1 3.1"/></svg>
+            <input type="text" placeholder="Search (Enter at least 5 characters)" />
+          </label>
+          <button class="select-pill">User type
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.3 8 10.3l4-4"/></svg>
+          </button>
+          <button class="select-pill">Status
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.3 8 10.3l4-4"/></svg>
+          </button>
+          <div class="toolbar-right">
+            <button class="btn btn-primary">Add new user</button>
+            <button class="btn btn-secondary">More actions
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.3 8 10.3l4-4"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="table users-table">
+          <div class="thead">
+            <div class="th col-sel"><span class="cbx" data-cbx></span></div>
+            <div class="th col-name">
+              <span class="th-1">Name</span>
+              <span class="th-2">Email address</span>
+            </div>
+            <div class="th col-type th-mid"><span class="th-1">User type</span></div>
+            <div class="th col-login">
+              <span class="th-1">Last login</span>
+              <span class="th-2">Status</span>
+            </div>
+            <div class="th col-ent">
+              <span class="th-1">Accessible entities</span>
+              <span class="th-2">Permission set</span>
+            </div>
+            <div class="th col-act"></div>
+          </div>
+          <div id="usersBody"></div>
+        </div>
+      </section>
+
+      <!-- ---------- PERMISSION SETS TAB ---------- -->
+      <section id="panel-permsets" hidden>
+        <div class="toolbar">
+          <label class="field rect search-sets">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7.2" cy="7.2" r="4.6"/><path d="m10.7 10.7 3.1 3.1"/></svg>
+            <input type="text" placeholder="Search permission set" />
+          </label>
+          <button class="select-rect">Category
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.3 8 10.3l4-4"/></svg>
+          </button>
+          <div class="toolbar-right">
+            <button class="btn btn-primary" id="btnCreateSet">Create permission set</button>
+          </div>
+        </div>
+
+        <div class="table sets-table">
+          <div class="thead">
+            <div class="th col-name">
+              <span class="th-1">Permission set name</span>
+              <span class="th-2">Description</span>
+            </div>
+            <div class="th col-gap"></div>
+            <div class="th col-users"><span class="th-1">Number of users</span></div>
+            <div class="th col-upd">
+              <span class="th-1">Last update on</span>
+              <span class="th-2">Last updated by</span>
+            </div>
+            <div class="th col-act"></div>
+          </div>
+          <div id="setsBody"></div>
+        </div>
+      </section>
+
+      <!-- ---------- OTHER TABS (placeholders) ---------- -->
+      <section id="panel-custom" hidden>
+        <p style="margin-top:40px;color:var(--tx-2);">Custom Permissions — not part of this design scope.</p>
+      </section>
+      <section id="panel-audit" hidden>
+        <p style="margin-top:40px;color:var(--tx-2);">Audit Logs — not part of this design scope.</p>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ================= SCRIM ================= -->
+<div class="scrim" id="scrim"></div>
+
+<!-- ================= STEP 1 : CREATE PERMISSION SET ================= -->
+<aside class="pane" id="pane-create" role="dialog" aria-modal="true" aria-labelledby="createTitle">
+  <button class="pane-close" data-close>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m5 5 10 10M15 5 5 15"/></svg>
+  </button>
+
+  <div class="pane-body">
+    <h2 class="pane-title" id="createTitle">Create permission set</h2>
+
+    <div class="form-col" style="margin-top:32px;">
+      <div class="field-group">
+        <label class="form-label" for="setName">Permission set name</label>
+        <input class="text-input" id="setName" type="text" placeholder="Enter permission set name" value="ghjk" />
+      </div>
+
+      <div class="field-group">
+        <label class="form-label" for="setDesc">Description <span class="optional">(Optional)</span></label>
+        <input class="text-input" id="setDesc" type="text" placeholder="Enter description" />
+      </div>
+
+      <div class="field-group">
+        <span class="form-label">How do you want to create this set?</span>
+        <div class="choice-grid" id="choiceGrid">
+          <button class="choice is-selected" data-choice="scratch">
+            <span class="choice-check">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.3 3 3 6-6.6"/></svg>
+            </span>
+            <span class="choice-ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18.4 5.6 20 7.2a1.2 1.2 0 0 1 0 1.7L9.9 19H5v-4.9L15.1 4a1.2 1.2 0 0 1 1.7 0z"/><path d="m14.2 5 4.8 4.8"/></svg>
+            </span>
+            <span class="choice-body">
+              <span class="choice-title">Start from scratch</span>
+              <span class="choice-desc">Start assigning permissions in the set from scratch</span>
+            </span>
+          </button>
+
+          <button class="choice" data-choice="existing">
+            <span class="choice-check">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.3 3 3 6-6.6"/></svg>
+            </span>
+            <span class="choice-ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            </span>
+            <span class="choice-body">
+              <span class="choice-title">Start from existing sets</span>
+              <span class="choice-desc">Choose from existing sets and edit the permissions</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pane-footer">
+    <button class="btn btn-primary btn-cta" id="btnNext">Next</button>
+  </div>
+</aside>
+
+<!-- ================= STEP 2 : PERMISSIONS BUILDER ================= -->
+<aside class="pane" id="pane-perms" role="dialog" aria-modal="true" aria-labelledby="permsTitle">
+  <button class="pane-close" data-close>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m5 5 10 10M15 5 5 15"/></svg>
+  </button>
+
+  <div class="pane-head">
+    <div class="pane-head-row">
+      <button class="pane-back" id="btnBack" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 10h-13M8.5 4.5 3 10l5.5 5.5"/></svg>
+      </button>
+      <div>
+        <h2 class="pane-title" id="permsTitle">Create permission set</h2>
+        <p class="pane-name">Name: <span class="val" id="permsName">nm</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pane-body">
+    <div class="perm-layout">
+      <div class="perm-products">
+        <h3 class="col-heading">Products</h3>
+        <div class="product-list" id="productList"></div>
+      </div>
+
+      <div class="perm-main">
+        <div class="perm-main-head">
+          <h3 class="col-heading" style="margin:0;">Permissions</h3>
+          <button class="preview-link" id="previewLink" aria-disabled="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.4 8S4 3.6 8 3.6 14.6 8 14.6 8 12 12.4 8 12.4 1.4 8 1.4 8Z"/><circle cx="8" cy="8" r="1.9"/></svg>
+            Preview permissions
+          </button>
+        </div>
+        <div id="permSections"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pane-footer">
+    <div class="pane-footer-row">
+      <button class="btn btn-primary btn-cta" id="btnDone" disabled aria-disabled="true">Done</button>
+      <span class="footer-hint" id="footerHint" aria-live="polite"></span>
+    </div>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   Data
+   ============================================================ */
+const USERS = [
+  {name:'dca', email:'dca@asef.co', type:'Organization owner', badge:true, colour:'#3F5EC0',
+   login:'-', status:'Pending', ent:'Complete organization', set:'Member care', more:'+119 more'},
+  {name:'wd', email:'wd@scw.co', type:'Standard user', colour:'#17A2A2',
+   login:'-', status:'Pending', ent:'Complete organization', set:'Audience Manager'},
+  {name:'aira-test', email:'aira-test@gmail.com', type:'Standard user', colour:'#34A853',
+   login:'Jul 10, 2026 6:51 PM', status:'Active', ent:'Complete organization', set:'Member Care Explore'},
+  {name:'test_orgou', email:'test_orgou@test.com', type:'Standard user', badge:true, colour:'#4A5568',
+   login:'Jul 2, 2026 1:22 PM', status:'Active', entPrefix:'Concept:', entStrong:'rounding', entMore:'+ 2 more',
+   set:'Member Care Explore', more:'+2 more'},
+  {name:'rbac-test234', email:'rbac-test234@bukl.com', type:'Standard user', colour:'#E8622C',
+   login:'Apr 19, 2026 1:18 PM', status:'Active', ent:'Complete organization', set:'Insights+ Setting', more:'+2 more'},
+  {name:'ops-manager', email:'ops.manager@bukl.com', type:'Standard user', colour:'#7B5EA7',
+   login:'Jun 28, 2026 9:04 AM', status:'Active', ent:'Complete organization', set:'Audience Manager', more:'+3 more'},
+  {name:'finance-view', email:'finance.view@bukl.com', type:'Standard user', colour:'#B0762A',
+   login:'-', status:'Pending', entPrefix:'Concept:', entStrong:'default', set:'Insights Export Download Admin'},
+  {name:'sys-admin', email:'sys.admin@bukl.com', type:'Organization owner', badge:true, colour:'#2E7D8F',
+   login:'Mar 12, 2026 11:47 AM', status:'Active', ent:'Complete organization', set:'Member care', more:'+119 more'},
+];
+
+const SETS = [
+  ['Audience Manager','Manage audiences: view, create, edit and delete audience groups',11],
+  ['Insights Export Download Admin','Permission set for downloading Insights+ Exports to desktop',10],
+  ['aiRA Dashboard Admin','Permission set for aiRA Dashboard Admin',8],
+  ['aiRA Config Approver','Permission set for aiRA Configuration Approver',8],
+  ['aiRA Creative Manager','Permission set for aiRA Creative Manager',8],
+  ['aiRA Configuration Admin','Permission set for aiRA Configuration Admin',8],
+  ['Member Care Explore','Explore member profiles, transactions and support history',14],
+  ['Insights+ Setting','Configure Insights+ dashboards and scheduled reports',6],
+];
+
+/* ============================================================
+   PERMISSION TREE  —  portable config
+   Mirrors src/features/permission-sets/config/permissionTree.ts
+
+   type Action = 'view' | 'create' | 'edit' | 'delete' | 'approval';
+   type PermissionNode = { id; label; allowedActions; children? };
+   type Product = { id; label; modules: PermissionNode[] };
+
+   Source data: 11 products · 45 modules (22 with children) · 100 sub-permissions.
+   Connect+ is currently commented out below, so the rendered tree is
+   10 products · 44 modules (21 with children) · 99 sub-permissions.
+   ids are slug(label) prefixed by parent path.
+   ============================================================ */
+const PERMISSION_TREE = {
+  actions: ['view','create','edit','delete','approval'],
+  products: [
+    { id:'loyalty', label:'Loyalty', modules: [
+      { id:'loyalty.old-promotions', label:'Old Promotions', allowedActions:['view','create'] },
+      { id:'loyalty.program', label:'Old Programs', allowedActions:['create'] },
+      { id:'loyalty.new-promotions', label:'New Promotions', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'loyalty.new-promotions.basic-operations', label:'Basic Operations', allowedActions:['view','create','edit','delete'] },
+        { id:'loyalty.new-promotions.listing-page', label:'Listing Page', allowedActions:['view'] },
+        { id:'loyalty.new-promotions.status-change', label:'Status Change', allowedActions:['edit','approval'] },
+        { id:'loyalty.new-promotions.duplicate', label:'Duplicate', allowedActions:['create'] },
+        { id:'loyalty.new-promotions.stop', label:'Stop', allowedActions:['edit'] },
+      ] },
+      { id:'loyalty.milestones', label:'Milestones', allowedActions:['view','create','edit','delete'] },
+      { id:'loyalty.streaks', label:'Streaks', allowedActions:['create'] },
+      { id:'loyalty.benefit-categories', label:'Programs — Benefit Categories', allowedActions:['view','create','edit'], children: [
+        { id:'loyalty.benefit-categories.view-benefit-categories-list', label:'View benefit categories list', allowedActions:['view'] },
+        { id:'loyalty.benefit-categories.view-benefit-category-details', label:'View benefit category details', allowedActions:['view'] },
+        { id:'loyalty.benefit-categories.create-benefit-category', label:'Create benefit category', allowedActions:['create'] },
+        { id:'loyalty.benefit-categories.update-benefit-category', label:'Update benefit category', allowedActions:['edit'] },
+        { id:'loyalty.benefit-categories.change-status-of-benefit-category', label:'Change status of benefit category', allowedActions:['edit'] },
+      ] },
+      { id:'loyalty.tiers', label:'Programs — Tiers', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'loyalty.tiers.view-tiers-list', label:'View tiers list', allowedActions:['view'] },
+        { id:'loyalty.tiers.view-tier-details', label:'View tier details', allowedActions:['view'] },
+        { id:'loyalty.tiers.create-tiers', label:'Create tiers', allowedActions:['create'] },
+        { id:'loyalty.tiers.update-tiers', label:'Update tiers', allowedActions:['edit'] },
+        { id:'loyalty.tiers.submit-tiers-for-review', label:'Submit tiers for review', allowedActions:['edit'] },
+        { id:'loyalty.tiers.delete-draft-tier', label:'Delete draft (tier)', allowedActions:['delete'] },
+        { id:'loyalty.tiers.approve-or-reject-tiers', label:'Approve or reject tiers', allowedActions:['approval'] },
+      ] },
+      { id:'loyalty.subscription-programs', label:'Programs — Subscription Programs', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'loyalty.subscription-programs.view-subscription-program-list', label:'View subscription program list', allowedActions:['view'] },
+        { id:'loyalty.subscription-programs.view-subscription-program-details', label:'View subscription program details', allowedActions:['view'] },
+        { id:'loyalty.subscription-programs.create-subscription-program', label:'Create subscription program', allowedActions:['create'] },
+        { id:'loyalty.subscription-programs.update-subscription-program', label:'Update subscription program', allowedActions:['edit'] },
+        { id:'loyalty.subscription-programs.change-status-of-subscription-program', label:'Change status of subscription program', allowedActions:['edit'] },
+        { id:'loyalty.subscription-programs.discard-draft-on-published-subscription', label:'Discard draft on published subscription', allowedActions:['delete'] },
+        { id:'loyalty.subscription-programs.approve-or-reject-subscription-program', label:'Approve or reject subscription program', allowedActions:['approval'] },
+      ] },
+      { id:'loyalty.config-attributes', label:'Programs — Config Attributes', allowedActions:['view','create','edit'], children: [
+        { id:'loyalty.config-attributes.view-loyalty-config-attributes', label:'View loyalty config attributes', allowedActions:['view'] },
+        { id:'loyalty.config-attributes.view-loyalty-config-attributes-scopes', label:'View loyalty config attributes scopes', allowedActions:['view'] },
+        { id:'loyalty.config-attributes.create-loyalty-config-attributes', label:'Create loyalty config attributes', allowedActions:['create'] },
+        { id:'loyalty.config-attributes.update-loyalty-config-attributes', label:'Update loyalty config attributes', allowedActions:['edit'] },
+      ] },
+      { id:'loyalty.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
+      { id:'loyalty.manage-liability-owners', label:'Manage Liability Owners', allowedActions:['view','create','edit'] },
+      { id:'loyalty.loyalty-benefits', label:'Programs — Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'loyalty.loyalty-benefits.view-loyalty-benefit-list', label:'View loyalty benefit list', allowedActions:['view'] },
+        { id:'loyalty.loyalty-benefits.view-loyalty-benefit-details', label:'View loyalty benefit details', allowedActions:['view'] },
+        { id:'loyalty.loyalty-benefits.create-loyalty-benefit', label:'Create loyalty benefit', allowedActions:['create'] },
+        { id:'loyalty.loyalty-benefits.update-loyalty-benefit', label:'Update loyalty benefit', allowedActions:['edit'] },
+        { id:'loyalty.loyalty-benefits.change-status-of-loyalty-benefit', label:'Change status of loyalty benefit', allowedActions:['edit'] },
+        { id:'loyalty.loyalty-benefits.discard-draft-on-published-loyalty-benefit', label:'Discard draft on published loyalty benefit', allowedActions:['delete'] },
+        { id:'loyalty.loyalty-benefits.approve-or-reject-loyalty-benefit', label:'Approve or reject loyalty benefit', allowedActions:['approval'] },
+      ] },
+    ] },
+    { id:'engage', label:'Engage', modules: [
+      { id:'engage.campaign', label:'Campaign', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'engage.campaign.workflow', label:'Workflow', allowedActions:['view','create','approval'] },
+        { id:'engage.campaign.messages', label:'Messages', allowedActions:['create','approval'] },
+        { id:'engage.campaign.incentive', label:'Incentive', allowedActions:['create','approval'] },
+        { id:'engage.campaign.audience', label:'Audience', allowedActions:['view'] },
+        { id:'engage.campaign.report', label:'Report', allowedActions:['view'] },
+        { id:'engage.campaign.creatives', label:'Creatives', allowedActions:['view','create','edit','delete'] },
+        { id:'engage.campaign.config', label:'Config', allowedActions:['edit'] },
+      ] },
+    ] },
+    { id:'rewards', label:'Rewards', modules: [
+      { id:'rewards.badges', label:'Badges', allowedActions:['edit'] },
+      { id:'rewards.coupons', label:'Coupons', allowedActions:['view','create','edit'] },
+      { id:'rewards.cart-promotion', label:'Cart Promotion', allowedActions:['edit'] },
+      { id:'rewards.gift-voucher', label:'Gift Voucher', allowedActions:['edit'] },
+    ] },
+    { id:'member-care', label:'Member Care', modules: [
+      { id:'member-care.customer', label:'Customer', allowedActions:['view','create','edit','delete','approval'] },
+      { id:'member-care.customer-goodwill', label:'Customer Goodwill', allowedActions:['view','approval'], children: [
+        { id:'member-care.customer-goodwill.approve-reject-goodwill-requests', label:'Approve/reject goodwill requests', allowedActions:['approval'] },
+        { id:'member-care.customer-goodwill.get-goodwill-coupons-points-config', label:'Get goodwill coupons/points config', allowedActions:['view'] },
+      ] },
+      { id:'member-care.requests', label:'Requests', allowedActions:['view','create','edit','approval'], children: [
+        { id:'member-care.requests.requests-goodwill-points', label:'Requests goodwill points', allowedActions:['view','create','edit','approval'] },
+        { id:'member-care.requests.requests-goodwill-coupons', label:'Requests goodwill coupons', allowedActions:['view','create','edit','approval'] },
+        { id:'member-care.requests.requests-id-change', label:'Requests ID Change', allowedActions:['view','create','approval'] },
+        { id:'member-care.requests.requests-id-reallocation-merge', label:'Requests ID Reallocation/Merge', allowedActions:['view'] },
+        { id:'member-care.requests.requests-pii-deletion', label:'Requests PII Deletion', allowedActions:['view','create','approval'] },
+        { id:'member-care.requests.requests-cards', label:'Requests Cards', allowedActions:['view','create','edit'] },
+        { id:'member-care.requests.requests-transaction', label:'Requests Transaction', allowedActions:['view','create','approval'] },
+        { id:'member-care.requests.request-new-customer-status-change', label:'Request New Customer Status Change', allowedActions:['create','approval'] },
+        { id:'member-care.requests.new-points-redeem-request', label:'New Points Redeem Request', allowedActions:['create','approval'] },
+        { id:'member-care.requests.request-workflow', label:'Request Workflow', allowedActions:['create','approval'] },
+      ] },
+      { id:'member-care.group', label:'Group', allowedActions:['view','create','approval'], children: [
+        { id:'member-care.group.group-goodwill', label:'Group goodwill', allowedActions:['view','create','approval'] },
+      ] },
+      { id:'member-care.sessions', label:'Sessions', allowedActions:['create','edit'] },
+      { id:'member-care.settings', label:'Settings', allowedActions:['edit'] },
+      { id:'member-care.search-criteria', label:'Search Criteria', allowedActions:['view','create','delete'] },
+    ] },
+    { id:'audiences', label:'Audiences', modules: [
+      { id:'audiences.audiences', label:'Audiences', allowedActions:['view','create','edit','delete'] },
+    ] },
+    { id:'channels', label:'Channels', modules: [
+      { id:'channels-content.creatives', label:'Creatives', allowedActions:['view','create','edit','delete'] },
+    ] },
+    { id:'insights', label:'Insights', modules: [
+      { id:'insights.reports', label:'Reports', allowedActions:['view'] },
+      { id:'insights.segments', label:'Segments', allowedActions:['view'] },
+      { id:'insights.export', label:'Export', allowedActions:['view'] },
+      { id:'insights.settings', label:'Settings', allowedActions:['view'] },
+      { id:'insights.external-facts', label:'External Facts', allowedActions:['view','create'], children: [
+        { id:'insights.external-facts.view-insights-external-facts', label:'View Insights+ External Facts', allowedActions:['view'] },
+        { id:'insights.external-facts.create-edit-insights-external-facts', label:'Create/edit Insights+ External Facts', allowedActions:['create'] },
+      ] },
+      { id:'insights.target-templates', label:'Target Templates', allowedActions:['create'], children: [
+        { id:'insights.target-templates.view-create-upload-download-target-templates', label:'View/create/upload/download target templates', allowedActions:['create'] },
+      ] },
+    ] },
+    { id:'data-management', label:'Data Management', modules: [
+      { id:'data-management.dataflows', label:'Dataflows', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.behavioural-events', label:'Behavioural Events', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.webhooks', label:'Webhooks', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.card-configuration', label:'Card Configuration', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.product-inventory', label:'Product Inventory', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.connect-apis', label:'Dataflow APIs', allowedActions:['create'], children: [
+        { id:'data-management.connect-apis.access-to-connect-plus-apis', label:'Access to Dataflow APIs', allowedActions:['create'] },
+      ] },
+      { id:'data-management.metadata-orch-rules', label:'Metadata Orch — Rules', allowedActions:['view','create','edit','delete'], children: [
+        { id:'data-management.metadata-orch-rules.view-mo-rules', label:'View MO rules', allowedActions:['view'] },
+        { id:'data-management.metadata-orch-rules.create-local-mo-rules', label:'Create local MO rules', allowedActions:['create'] },
+        { id:'data-management.metadata-orch-rules.create-global-mo-rules', label:'Create global MO rules', allowedActions:['create'] },
+        { id:'data-management.metadata-orch-rules.edit-mo-rules', label:'Edit MO rules', allowedActions:['edit'] },
+        { id:'data-management.metadata-orch-rules.edit-global-mo-rules', label:'Edit global MO rules', allowedActions:['edit'] },
+        { id:'data-management.metadata-orch-rules.delete-mo-rules', label:'Delete MO rules', allowedActions:['delete'] },
+      ] },
+      { id:'data-management.metadata-orch-routing', label:'Metadata Orch — Routing', allowedActions:['view','create','edit','delete'], children: [
+        { id:'data-management.metadata-orch-routing.view-mo-routing', label:'View MO routing', allowedActions:['view'] },
+        { id:'data-management.metadata-orch-routing.create-local-mo-routing', label:'Create local MO routing', allowedActions:['create'] },
+        { id:'data-management.metadata-orch-routing.create-global-mo-routing', label:'Create global MO routing', allowedActions:['create'] },
+        { id:'data-management.metadata-orch-routing.edit-mo-routing', label:'Edit MO routing', allowedActions:['edit'] },
+        { id:'data-management.metadata-orch-routing.edit-global-mo-routing', label:'Edit global MO routing', allowedActions:['edit'] },
+        { id:'data-management.metadata-orch-routing.delete-mo-routing', label:'Delete MO routing', allowedActions:['delete'] },
+      ] },
+      { id:'data-management.data-catalog-ei-metadata', label:'Data Catalog — EI Metadata', allowedActions:['view'], children: [
+        { id:'data-management.data-catalog-ei-metadata.read-dc-ei-metadata', label:'Read DC EI metadata', allowedActions:['view'] },
+      ] },
+      { id:'data-management.data-catalog-databricks', label:'Data Catalog — Databricks', allowedActions:['view','edit'], children: [
+        { id:'data-management.data-catalog-databricks.read-databricks-tables', label:'Read Databricks tables', allowedActions:['view'] },
+        { id:'data-management.data-catalog-databricks.write-databricks-descriptions', label:'Write Databricks descriptions', allowedActions:['edit'] },
+        { id:'data-management.data-catalog-databricks.execute-databricks-sql', label:'Execute Databricks SQL', allowedActions:['edit'] },
+      ] },
+      { id:'data-management.data-catalog-admin', label:'Data Catalog — Admin', allowedActions:['approval'], children: [
+        { id:'data-management.data-catalog-admin.cross-org-admin-access-to-data-catalog', label:'Cross-org admin access to Data Catalog', allowedActions:['approval'] },
+      ] },
+    ] },
+    { id:'extensions', label:'Extensions', modules: [
+      { id:'extensions.block-library-read', label:'Block Library — Read', allowedActions:['create'], children: [
+        { id:'extensions.block-library-read.init', label:'Ext Neo block lib init', allowedActions:['create'] },
+        { id:'extensions.block-library-read.versions', label:'Ext Neo block lib versions', allowedActions:['create'] },
+        { id:'extensions.block-library-read.list-blocks', label:'Ext Neo list blocks of lib version', allowedActions:['create'] },
+        { id:'extensions.block-library-read.check-block-exists', label:'Ext Neo check block exists in lib ver', allowedActions:['create'] },
+        { id:'extensions.block-library-read.get-block', label:'Ext Neo get block in a lib ver', allowedActions:['create'] },
+        { id:'extensions.block-library-read.get-block-by-meta', label:'Ext Neo get block library blocks details by meta', allowedActions:['create'] },
+        { id:'extensions.block-library-read.codeview', label:'Ext Neo codeview', allowedActions:['create'] },
+      ] },
+      { id:'extensions.block-library-write', label:'Block Library — Write', allowedActions:['create'], children: [
+        { id:'extensions.block-library-write.create-block', label:'Ext Neo create block in a lib ver', allowedActions:['create'] },
+        { id:'extensions.block-library-write.update-block', label:'Ext Neo update block in a lib ver', allowedActions:['create'] },
+        { id:'extensions.block-library-write.delete-block', label:'Ext Neo delete block in a lib ver', allowedActions:['create'] },
+      ] },
+      { id:'extensions.version-management', label:'Version Management', allowedActions:['create'], children: [
+        { id:'extensions.version-management.send-for-approval', label:'Ext Neo send lib ver for approval', allowedActions:['create'] },
+        { id:'extensions.version-management.edit-lib-ver', label:'Ext Neo edit lib ver', allowedActions:['create'] },
+        { id:'extensions.version-management.update-lib-ver', label:'Ext Neo update lib ver', allowedActions:['create'] },
+        { id:'extensions.version-management.approve-lib-ver', label:'Ext Neo approve lib ver', allowedActions:['create'] },
+        { id:'extensions.version-management.rej-lib-ver', label:'Ext Neo rej lib ver', allowedActions:['create'] },
+      ] },
+      { id:'extensions.promotion-rules', label:'Promotion Rules', allowedActions:['edit'], children: [
+        { id:'extensions.promotion-rules.promote-rule', label:'Ext Neo promote rule', allowedActions:['edit'] },
+        { id:'extensions.promotion-rules.org-mappings-rule', label:'Ext Neo org mappings rule', allowedActions:['edit'] },
+      ] },
+    ] },
+    { id:'ask-aira', label:'Ask aiRA', modules: [
+      { id:'ask-aira.analytics', label:'Analytics', allowedActions:['view','create','edit','delete'] },
+      { id:'ask-aira.qa', label:'QA', allowedActions:['view','create','edit','delete'] },
+      { id:'ask-aira.configurations', label:'Configurations', allowedActions:['view','create','edit','delete','approval'] },
+      { id:'ask-aira.settings', label:'Settings', allowedActions:['view','create','edit','delete'] },
+      { id:'ask-aira.dashboard', label:'Dashboard', allowedActions:['view','create','edit','delete'] },
+    ] },
+    { id:'settings', label:'Settings', modules: [
+
+      { id:'settings.oauth-api-management', label:'OAuth / API Management', allowedActions:['view','create','edit','delete'] },
+      { id:'settings.org-setup', label:'Org Setup', allowedActions:['view'], children: [
+        { id:'settings.org-setup.org-set-up-assistant-page', label:'Org set up assistant page', allowedActions:['view'] },
+        { id:'settings.org-setup.access-to-master-stores', label:'Access to master stores', allowedActions:['view'] },
+      ] },
+      { id:'settings.oauth-clients-vulcan', label:'OAuth Clients Vulcan', allowedActions:['edit'], children: [
+        { id:'settings.oauth-clients-vulcan.upsert-oauth-clients-on-vulcan', label:'Upsert oauth clients on vulcan', allowedActions:['edit'] },
+      ] },
+    ] },
+  ],
+};
+
+/* ============================================================
+   Render — users table
+   ============================================================ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const badgeSvg = `<span class="avatar-badge"><svg width="9" height="9" viewBox="0 0 16 16" fill="#fff"><path d="M8 1.4 3.2 3.2v4.1c0 3 2 5.6 4.8 6.3 2.8-.7 4.8-3.3 4.8-6.3V3.2z" opacity=".95"/><rect x="6.3" y="7" width="3.4" height="3" rx=".5" fill="#3B4757"/><path d="M6.9 7V6.2a1.1 1.1 0 0 1 2.2 0V7" stroke="#3B4757" stroke-width=".9" fill="none"/></svg></span>`;
+const dotsSvg  = `<svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><circle cx="3.5" cy="9" r="1.5"/><circle cx="9" cy="9" r="1.5"/><circle cx="14.5" cy="9" r="1.5"/></svg>`;
+
+document.getElementById('usersBody').innerHTML = USERS.map(u => {
+  const ent = u.entPrefix
+    ? `<span class="muted">${esc(u.entPrefix)}</span> <span class="strong">${esc(u.entStrong)}</span>${u.entMore ? ` <span class="muted">${esc(u.entMore)}</span>` : ''}`
+    : esc(u.ent);
+  return `
+  <div class="trow">
+    <div class="td col-sel"><span class="cbx" data-cbx></span></div>
+    <div class="td col-name">
+      <div class="user-cell">
+        <span class="avatar" style="background:${u.colour}">${esc(u.name[0])}${u.badge ? badgeSvg : ''}</span>
+        <span style="min-width:0">
+          <span class="cell-1" style="display:block">${esc(u.name)}</span>
+          <span class="cell-2" style="display:block">${esc(u.email)}</span>
+        </span>
+      </div>
+    </div>
+    <div class="td col-type" style="align-items:center">
+      <span class="chip ${u.type === 'Organization owner' ? 'chip-owner' : 'chip-standard'}">${esc(u.type)}</span>
+    </div>
+    <div class="td col-login">
+      <span class="cell-1" style="font-weight:400">${esc(u.login)}</span>
+      <span class="status"><span class="dot ${u.status === 'Active' ? 'dot-green' : 'dot-orange'}"></span>${esc(u.status)}</span>
+    </div>
+    <div class="td col-ent">
+      <span class="cell-1" style="font-weight:400">${ent}</span>
+      <span class="cell-2">${esc(u.set)}${u.more ? `&nbsp;&nbsp;<span class="muted">${esc(u.more)}</span>` : ''}</span>
+    </div>
+    <div class="col-act"><button class="icon-btn">${dotsSvg}</button></div>
+  </div>`;
+}).join('');
+
+/* ============================================================
+   Render — permission sets table
+   ============================================================ */
+document.getElementById('setsBody').innerHTML = SETS.map(([name, desc, n]) => `
+  <div class="trow">
+    <div class="td col-name">
+      <span class="cell-1">${esc(name)}</span>
+      <span class="cell-2">${esc(desc)}</span>
+    </div>
+    <div class="td col-gap"></div>
+    <div class="td col-users"><span class="cell-1" style="font-weight:400">${n}</span></div>
+    <div class="td col-upd">
+      <span class="cell-1" style="font-weight:400">Jul 30, 2026 7:12 AM</span>
+      <span class="cell-2">Capillary System Admin</span>
+    </div>
+    <div class="col-act"><button class="icon-btn">${dotsSvg}</button></div>
+  </div>`).join('');
+
+/* ============================================================
+   Derived indexes + dev-mode validation
+   ============================================================ */
+const ACTIONS   = PERMISSION_TREE.actions;              // canonical order
+const PRODUCTS  = PERMISSION_TREE.products;
+const DEV       = true;                                  // stand-in for NODE_ENV !== 'production'
+
+const NODE_INDEX = new Map();   // id -> node (modules + sub-permissions)
+const PARENT_OF  = new Map();   // childId -> parent node
+const STORABLE   = new Set();   // ids the reducer may hold: leaf modules + all children
+
+PRODUCTS.forEach(p => p.modules.forEach(m => {
+  NODE_INDEX.set(m.id, m);
+  if (m.children){
+    m.children.forEach(c => { NODE_INDEX.set(c.id, c); PARENT_OF.set(c.id, m); STORABLE.add(c.id); });
+  } else {
+    STORABLE.add(m.id);
+  }
+}));
+
+/* Invariant: a parent's allowedActions is exactly the union of its children's. */
+function validateTree(){
+  const problems = [];
+  PRODUCTS.forEach(p => p.modules.forEach(m => {
+    if (!m.children) return;
+    const union = new Set();
+    m.children.forEach(c => c.allowedActions.forEach(a => union.add(a)));
+    const declared = new Set(m.allowedActions);
+    const missing = [...union].filter(a => !declared.has(a));
+    const extra   = [...declared].filter(a => !union.has(a));
+    if (missing.length || extra.length){
+      problems.push({ id: m.id, declared: [...declared], union: [...union], missing, extra });
+    }
+  }));
+  if (DEV && problems.length){
+    console.warn('[permissionTree] parent-union invariant violated on %d module(s):', problems.length, problems);
+  }
+  return problems;
+}
+validateTree();
+
+/* ============================================================
+   Selection reducer — Map<nodeId, Set<Action>>
+   One store for the whole drawer. Only leaves are stored; parent rows are
+   pure rollups. Every write is validated against allowedActions.
+   ============================================================ */
+function createSelectionStore(){
+  const state = new Map();
+  const listeners = new Set();
+  const emit = () => listeners.forEach(fn => fn());
+
+  function rejects(id, action){
+    const node = NODE_INDEX.get(id);
+    if (!node){
+      if (DEV) console.warn('[selection] unknown node id, dropped:', id);
+      return true;
+    }
+    if (!STORABLE.has(id)){
+      if (DEV) console.warn('[selection] "%s" has children and is a rollup only — dropped (%s)', id, action);
+      return true;
+    }
+    if (!node.allowedActions.includes(action)){
+      if (DEV) console.warn('[selection] "%s" does not allow "%s" — dropped', id, action);
+      return true;
+    }
+    return false;
+  }
+
+  function apply(type, payload){
+    switch (type){
+      case 'GRANT': {
+        const { id, action } = payload;
+        if (rejects(id, action)) return false;
+        if (!state.has(id)) state.set(id, new Set());
+        state.get(id).add(action);
+        return true;
+      }
+      case 'REVOKE': {
+        const { id, action } = payload;
+        const set = state.get(id);
+        if (!set) return false;
+        set.delete(action);
+        if (!set.size) state.delete(id);
+        return true;
+      }
+      case 'SET_MANY': {
+        // payload: { ids:[], action, on:boolean }  — used by the parent cascade
+        let changed = false;
+        payload.ids.forEach(id => {
+          changed = apply(payload.on ? 'GRANT' : 'REVOKE', { id, action: payload.action }) || changed;
+        });
+        return changed;
+      }
+      case 'HYDRATE': {
+        // payload: { permissions:[{id, actions}] } — invalid pairs are dropped, not trusted
+        state.clear();
+        (payload.permissions || []).forEach(p =>
+          (p.actions || []).forEach(a => apply('GRANT', { id: p.id, action: a })));
+        return true;
+      }
+      case 'RESET': state.clear(); return true;
+      default:
+        if (DEV) console.warn('[selection] unknown action type:', type);
+        return false;
+    }
+  }
+
+  return {
+    dispatch(type, payload){ const changed = apply(type, payload); if (changed) emit(); return changed; },
+    subscribe(fn){ listeners.add(fn); return () => listeners.delete(fn); },
+    has(id, action){ const s = state.get(id); return !!s && s.has(action); },
+    size(){ return state.size; },
+    raw(){ return state; },
+  };
+}
+const selection = createSelectionStore();
+
+/* ---- derived parent state (never stored) ---- */
+function eligibleChildren(parent, action){
+  return parent.children.filter(c => c.allowedActions.includes(action));
+}
+function parentState(parent, action){
+  const elig = eligibleChildren(parent, action);
+  if (!elig.length) return { checked:false, indeterminate:false };
+  const n = elig.filter(c => selection.has(c.id, action)).length;
+  return { checked: n === elig.length, indeterminate: n > 0 && n < elig.length };
+}
+function toggleParent(parent, action){
+  const { checked } = parentState(parent, action);
+  selection.dispatch('SET_MANY', {
+    ids: eligibleChildren(parent, action).map(c => c.id),
+    action,
+    on: !checked,
+  });
+}
+
+/* ---- payload selector (pure) ---- */
+function selectPayload(name){
+  const permissions = [];
+  selection.raw().forEach((set, id) => {
+    if (!set.size) return;
+    permissions.push({ id, actions: ACTIONS.filter(a => set.has(a)) });
+  });
+  permissions.sort((a, b) => a.id.localeCompare(b.id));
+  return { name: (name || '').trim(), permissions };
+}
+
+/* ============================================================
+   Checkbox — single DS-behaviour implementation.
+   Stand-in for CapCheckbox: props ≈ { checked, disabled, indeterminate,
+   onChange }. Wraps a native input so Tab/Space and aria-checked come from
+   the platform and disabled cells drop out of the tab order for free.
+   ============================================================ */
+function makeCheckbox({ disabled, ariaLabel, onChange }){
+  const el = document.createElement('span');
+  el.className = 'cbx' + (disabled ? ' is-disabled' : '');
+  const input = document.createElement('input');
+  input.type = 'checkbox';
+  input.disabled = !!disabled;
+  input.setAttribute('aria-label', ariaLabel);
+  const box = document.createElement('span');
+  box.className = 'cbx-box';
+  el.append(input, box);
+  if (!disabled) input.addEventListener('change', () => onChange());
+  return {
+    el,
+    set(checked, indeterminate){
+      // never both — indeterminate wins only when not fully checked
+      const ind = !checked && !!indeterminate;
+      el.classList.toggle('is-checked', !!checked);
+      el.classList.toggle('is-indeterminate', ind);
+      input.checked = !!checked;
+      input.indeterminate = ind;
+      input.setAttribute('aria-checked', ind ? 'mixed' : (checked ? 'true' : 'false'));
+    },
+  };
+}
+
+/* ============================================================
+   Render — permissions builder
+   ============================================================ */
+/* DS icon `caret-right` → Material Icons Outlined `chevron_right`
+   (Part 5, Controls: "Navigate right / expand row"). Rotates 90° when open. */
+const caretSvg = `<svg class="perm-caret" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>`;
+const colLabel = a => a.charAt(0).toUpperCase() + a.slice(1);
+
+/* Rail grouping mirrors the L1 navigation: a rule before Data Management and
+   another before Settings. Connect+ groups with the platform block. */
+const RAIL_DIVIDER_BEFORE = new Set(['data-management', 'extensions', 'ask-aira', 'settings']);
+
+document.getElementById('productList').innerHTML =
+  PRODUCTS.map((p, i) =>
+    (RAIL_DIVIDER_BEFORE.has(p.id) ? '<div class="product-divider"></div>' : '') +
+    `<button class="product-item${i === 0 ? ' is-active' : ''}" data-product="${p.id}">${esc(p.label)}</button>`
+  ).join('');
+
+/* row markup — one <span class="cb-slot"> per action, always all five */
+function slots(){
+  return ACTIONS.map(a => `<span class="perm-cell-cb" data-action="${a}"></span>`).join('');
+}
+
+function moduleRowHtml(m){
+  const hasKids = !!m.children;
+  const caret = hasKids
+    ? `<span class="perm-caret-btn" role="button" tabindex="0" aria-expanded="false"
+             aria-controls="sub-${m.id}" aria-label="Expand ${esc(m.label)}"
+             data-expand="${m.id}">${caretSvg}</span>`
+    : `<span class="perm-caret-spacer"></span>`;
+  let html = `
+    <div class="perm-row${hasKids ? ' is-parent' : ''}" data-node="${m.id}">
+      <span class="mod">${caret}<span class="mod-name">${esc(m.label)}</span></span>
+      ${slots()}
+    </div>`;
+  if (hasKids){
+    html += `<div class="perm-sub" id="sub-${m.id}" hidden>` + m.children.map(c => `
+      <div class="perm-row" data-node="${c.id}">
+        <span class="mod"><span class="mod-name">${esc(c.label)}</span></span>
+        ${slots()}
+      </div>`).join('') + `</div>`;
+  }
+  return html;
+}
+
+document.getElementById('permSections').innerHTML = PRODUCTS.map(p => `
+  <section class="perm-section" id="sec-${p.id}">
+    <h4 class="perm-section-title">${esc(p.label)}</h4>
+    <div class="perm-table">
+      <div class="perm-thead">
+        <div class="perm-thead-row">
+          <span class="mod">Modules</span>
+          ${ACTIONS.map(a => `<span class="perm-cell"><span class="perm-cell-label">${colLabel(a)}</span></span>`).join('')}
+        </div>
+      </div>
+      ${p.modules.map(moduleRowHtml).join('')}
+    </div>
+  </section>`).join('');
+
+/* ---- mount checkboxes: every row × every action, no gaps ---- */
+const CONTROLS = [];   // { node, action, isParent, cb }
+
+document.querySelectorAll('#permSections .perm-row').forEach(row => {
+  const node = NODE_INDEX.get(row.dataset.node);
+  const isParent = !!node.children;
+  row.querySelectorAll('.perm-cell-cb').forEach(cell => {
+    const action = cell.dataset.action;
+    const enabled = node.allowedActions.includes(action);
+    const cb = makeCheckbox({
+      disabled: !enabled,
+      ariaLabel: `${colLabel(action)} — ${node.label}`,
+      onChange(){
+        if (isParent) toggleParent(node, action);
+        else selection.dispatch(selection.has(node.id, action) ? 'REVOKE' : 'GRANT', { id: node.id, action });
+        syncGrid();
+      },
+    });
+    cell.appendChild(cb.el);
+    CONTROLS.push({ node, action, isParent, cb });
+  });
+});
+
+function syncGrid(){
+  CONTROLS.forEach(({ node, action, isParent, cb }) => {
+    if (isParent){
+      const st = parentState(node, action);
+      cb.set(st.checked, st.indeterminate);
+    } else {
+      cb.set(selection.has(node.id, action), false);
+    }
+  });
+  syncFooter();
+}
+
+/* ============================================================
+   Behaviour
+   ============================================================ */
+const app    = document.getElementById('app');
+const scrim  = document.getElementById('scrim');
+const paneCreate = document.getElementById('pane-create');
+const panePerms  = document.getElementById('pane-perms');
+const toastEl = document.getElementById('toast');
+
+/* nav collapse */
+document.getElementById('navToggle').addEventListener('click', () => app.classList.toggle('collapsed'));
+
+/* tabs */
+document.getElementById('tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.tab'); if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('is-active', t === tab));
+  ['users','permsets','custom','audit'].forEach(k => {
+    document.getElementById('panel-' + k).hidden = (k !== tab.dataset.tab);
+  });
+});
+
+/* users-table checkboxes (out of scope for the permission grid) */
+document.addEventListener('click', e => {
+  const cb = e.target.closest('[data-cbx]');
+  if (cb) cb.classList.toggle('is-checked');
+});
+
+/* expandable permission rows — expand state is separate from selection state
+   and is never reset by a product switch (all sections stay mounted) */
+function toggleExpand(btn){
+  const id  = btn.dataset.expand;
+  const row = btn.closest('.perm-row');
+  const sub = document.getElementById('sub-' + id);
+  const open = !row.classList.contains('is-open');
+  row.classList.toggle('is-open', open);
+  btn.setAttribute('aria-expanded', String(open));
+  btn.setAttribute('aria-label', `${open ? 'Collapse' : 'Expand'} ${NODE_INDEX.get(id).label}`);
+  if (sub) sub.hidden = !open;
+}
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-expand]');
+  if (btn) toggleExpand(btn);
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const btn = e.target.closest('[data-expand]');
+  if (!btn) return;
+  e.preventDefault();
+  toggleExpand(btn);
+});
+
+/* choice cards */
+document.getElementById('choiceGrid').addEventListener('click', e => {
+  const c = e.target.closest('.choice'); if (!c) return;
+  document.querySelectorAll('#choiceGrid .choice').forEach(x => x.classList.toggle('is-selected', x === c));
+});
+
+/* product list — scroll to section */
+const permBody = panePerms.querySelector('.pane-body');
+let spyLock = 0;   // suppress scroll-spy while a click-scroll is animating
+
+/* section top measured against the scroll container, not offsetParent */
+function sectionTop(id){
+  const sec = document.getElementById('sec-' + id);
+  if (!sec) return Infinity;
+  return sec.getBoundingClientRect().top - permBody.getBoundingClientRect().top + permBody.scrollTop;
+}
+
+/* rAF easing — scrollTo({behavior:'smooth'}) is unreliable under reduced-motion */
+let scrollRAF = null;
+function scrollPaneTo(target){
+  cancelAnimationFrame(scrollRAF);
+  const from = permBody.scrollTop;
+  const max  = permBody.scrollHeight - permBody.clientHeight;
+  const to   = Math.max(0, Math.min(target, max));
+  const dist = to - from;
+  if (Math.abs(dist) < 1){ permBody.scrollTop = to; spyLock = 0; return; }
+  const dur = 320, t0 = performance.now();
+  (function step(now){
+    const p = Math.min(1, (now - t0) / dur);
+    permBody.scrollTop = from + dist * (1 - Math.pow(1 - p, 3));   // easeOutCubic
+    if (p < 1) scrollRAF = requestAnimationFrame(step);
+    else spyLock = 0;
+  })(t0);
+}
+
+document.getElementById('productList').addEventListener('click', e => {
+  const item = e.target.closest('.product-item'); if (!item) return;
+  const id = item.dataset.product;
+  setActiveProduct(id);
+  spyLock = 1;
+  scrollPaneTo(sectionTop(id) - 8);
+});
+
+function setActiveProduct(id){
+  document.querySelectorAll('.product-item').forEach(x => x.classList.toggle('is-active', x.dataset.product === id));
+}
+
+permBody.addEventListener('scroll', () => {
+  if (spyLock) return;
+  const y = permBody.scrollTop + 24;
+  let current = PRODUCTS[0].id;
+  for (const p of PRODUCTS){
+    if (sectionTop(p.id) <= y) current = p.id;
+  }
+  setActiveProduct(current);
+});
+
+/* pane open / close */
+function openPane(pane){
+  scrim.classList.add('is-open');
+  paneCreate.classList.remove('is-open');
+  panePerms.classList.remove('is-open');
+  pane.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+function closePanes(){
+  scrim.classList.remove('is-open');
+  paneCreate.classList.remove('is-open');
+  panePerms.classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+document.getElementById('btnCreateSet').addEventListener('click', () => openPane(paneCreate));
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closePanes));
+scrim.addEventListener('click', closePanes);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanes(); });
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  const name = document.getElementById('setName').value.trim() || 'Untitled set';
+  document.getElementById('permsName').textContent = name;
+  openPane(panePerms);
+  permBody.scrollTop = 0;
+  setActiveProduct(PRODUCTS[0].id);
+  syncGrid();
+});
+document.getElementById('btnBack').addEventListener('click', () => openPane(paneCreate));
+
+/* ============================================================
+   Footer — Save gating
+   Disabled until the name is non-empty AND ≥1 permission is selected.
+   Patterns/status-lifecycle.md sets the precedent ("only enabled when all
+   mandatory fields are valid"); Components/button.md supplies the disabled
+   tokens. No tooltip on the disabled button — a hint sits beside it instead.
+   ============================================================ */
+const btnSave    = document.getElementById('btnDone');
+const footerHint = document.getElementById('footerHint');
+
+function currentName(){ return (document.getElementById('setName').value || '').trim(); }
+
+function syncFooter(){
+  const payload = selectPayload(currentName());
+  const hasName = payload.name.length > 0;
+  const hasPerm = payload.permissions.length > 0;
+  const ok = hasName && hasPerm;
+
+  /* Preview turns active the moment anything is selected — it doesn't wait
+     on the name, since a name isn't needed to preview the grants. */
+  const preview = document.getElementById('previewLink');
+  preview.classList.toggle('is-active', hasPerm);
+  preview.setAttribute('aria-disabled', String(!hasPerm));
+
+  btnSave.disabled = !ok;
+  btnSave.setAttribute('aria-disabled', String(!ok));
+
+  if (ok)            footerHint.textContent = '';
+  else if (!hasName) footerHint.textContent = 'Permission set name is required';
+  else               footerHint.textContent = 'Select at least one permission';
+}
+
+/* Hand-off point for the devs — no network code here by design. */
+function onSave(payload){
+  console.info('[onSave] payload ready for the save call:', payload);
+  return Promise.resolve();
+}
+
+function notify(kind, message){
+  toastEl.textContent = message;
+  toastEl.classList.add('is-open');
+  setTimeout(() => toastEl.classList.remove('is-open'), kind === 'error' ? 4200 : 2600);
+}
+
+btnSave.addEventListener('click', () => {
+  if (btnSave.disabled) return;
+  const payload = selectPayload(currentName());
+  Promise.resolve()
+    .then(() => onSave(payload))
+    .then(() => { closePanes(); notify('success', 'Permission set created.'); })
+    .catch(() => notify('error', "Couldn't save permission set. Try again."));
+});
+
+document.getElementById('setName').addEventListener('input', () => {
+  document.getElementById('permsName').textContent = currentName() || 'Untitled set';
+  syncFooter();
+});
+
+syncGrid();   // paint initial (empty) state + footer
+
+/* ============================================================
+   Tests — table-driven off the config.
+   Run in the console with runPermissionTests(); auto-runs in DEV.
+   ============================================================ */
+function runPermissionTests(){
+  const results = [];
+  const t = (name, fn) => {
+    try { const msg = fn(); results.push({ test: name, pass: true, detail: msg || '' }); }
+    catch (err) { results.push({ test: name, pass: false, detail: err.message }); }
+  };
+  const assert = (cond, msg) => { if (!cond) throw new Error(msg); };
+  const ctl = (id, action) => CONTROLS.find(c => c.node.id === id && c.action === action);
+  const snapshot = selectPayload(currentName());
+  selection.dispatch('RESET');
+
+  /* 1 — enabled/disabled matches allowedActions for all 145 rows × 5 columns */
+  t('every row × action: enabled ⟺ action ∈ allowedActions', () => {
+    let rows = 0, cells = 0;
+    NODE_INDEX.forEach(node => {
+      rows++;
+      ACTIONS.forEach(action => {
+        const c = ctl(node.id, action);
+        assert(c, `no checkbox mounted for ${node.id} / ${action}`);
+        const shouldBeEnabled = node.allowedActions.includes(action);
+        const isDisabled = c.cb.el.classList.contains('is-disabled');
+        assert(isDisabled === !shouldBeEnabled,
+          `${node.id} / ${action}: expected ${shouldBeEnabled ? 'enabled' : 'disabled'}`);
+        cells++;
+      });
+    });
+    assert(rows === NODE_INDEX.size, `expected ${NODE_INDEX.size} rows, saw ${rows}`);
+    assert(cells === CONTROLS.length, `mounted ${CONTROLS.length} controls but checked ${cells}`);
+    return `${rows} rows × ${ACTIONS.length} = ${cells} cells`;
+  });
+
+  /* 2 — clicking a disabled checkbox is a no-op */
+  t('clicking a disabled checkbox is a no-op', () => {
+    const c = ctl('loyalty.basic', 'delete');           // Basic = V only
+    assert(c.cb.el.classList.contains('is-disabled'), 'fixture is not disabled');
+    const before = selection.size();
+    c.cb.el.querySelector('input').click();
+    assert(selection.size() === before, 'selection changed');
+    assert(!selection.has('loyalty.basic', 'delete'), 'grant leaked through');
+    return 'no state change';
+  });
+
+  /* 3 — New Promotions / Edit cascade */
+  t('parent Edit cascade selects only eligible children', () => {
+    const parent = NODE_INDEX.get('loyalty.new-promotions');
+    toggleParent(parent, 'edit');
+    const on  = ['basic-operations','status-change','stop'].map(s => `loyalty.new-promotions.${s}`);
+    const off = ['listing-page','duplicate'].map(s => `loyalty.new-promotions.${s}`);
+    on.forEach(id => assert(selection.has(id, 'edit'), `${id} should have edit`));
+    off.forEach(id => assert(!selection.has(id, 'edit'), `${id} must be untouched`));
+    assert(parentState(parent, 'edit').checked, 'parent should read checked');
+    return `+${on.length} eligible, ${off.length} skipped`;
+  });
+
+  /* 4 — checked → indeterminate → unchecked */
+  t('unchecking children flips parent checked → indeterminate → unchecked', () => {
+    const parent = NODE_INDEX.get('loyalty.new-promotions');
+    selection.dispatch('REVOKE', { id: 'loyalty.new-promotions.stop', action: 'edit' });
+    let st = parentState(parent, 'edit');
+    assert(!st.checked && st.indeterminate, 'expected indeterminate after one revoke');
+    ['basic-operations','status-change'].forEach(s =>
+      selection.dispatch('REVOKE', { id: `loyalty.new-promotions.${s}`, action: 'edit' }));
+    st = parentState(parent, 'edit');
+    assert(!st.checked && !st.indeterminate, 'expected unchecked after all revoked');
+    return 'checked → indeterminate → unchecked';
+  });
+
+  /* 5 — reducer drops an out-of-allowedActions pair injected directly */
+  t('reducer drops an out-of-allowedActions pair', () => {
+    const okDrop = selection.dispatch('GRANT', { id: 'loyalty.basic', action: 'delete' });
+    assert(okDrop === false, 'dispatch reported success');
+    assert(!selection.has('loyalty.basic', 'delete'), 'pair was stored');
+    selection.dispatch('HYDRATE', { permissions: [{ id: 'loyalty.basic', actions: ['view','delete'] }] });
+    assert(selection.has('loyalty.basic', 'view'), 'valid action lost on hydrate');
+    assert(!selection.has('loyalty.basic', 'delete'), 'invalid action survived hydrate');
+    selection.dispatch('RESET');
+    return 'dropped on GRANT and on HYDRATE';
+  });
+
+  /* 6 — parent rows are rollups, never stored */
+  t('parent nodes are not storable', () => {
+    const okDrop = selection.dispatch('GRANT', { id: 'loyalty.new-promotions', action: 'edit' });
+    assert(okDrop === false, 'parent grant accepted');
+    assert(selection.size() === 0, 'parent id entered the store');
+    return 'rollup only';
+  });
+
+  /* 7 — parent-union invariant across the whole config */
+  t('parent-union invariant holds for every parent', () => {
+    const problems = validateTree();
+    const parents = [...NODE_INDEX.values()].filter(n => n.children);
+    assert(problems.length === 0, `${problems.length} of ${parents.length} violated`);
+    return `${parents.length}/${parents.length}`;
+  });
+
+  /* 8 — payload selector: leaf ids only, no empty action lists */
+  t('payload selector returns leaf ids only, no empty lists', () => {
+    selection.dispatch('RESET');
+    toggleParent(NODE_INDEX.get('loyalty.new-promotions'), 'edit');
+    selection.dispatch('GRANT', { id: 'loyalty.basic', action: 'view' });
+    const p = selectPayload('  Nightly set  ');
+    assert(p.name === 'Nightly set', 'name not trimmed');
+    assert(p.permissions.length === 4, `expected 4 entries, got ${p.permissions.length}`);
+    p.permissions.forEach(e => {
+      assert(STORABLE.has(e.id), `${e.id} is not a leaf`);
+      assert(e.actions.length > 0, `${e.id} has an empty action list`);
+    });
+    return `${p.permissions.length} entries`;
+  });
+
+  /* 9 — product switch preserves selection */
+  t('switching products preserves selection', () => {
+    const before = selectPayload('x').permissions.length;
+    document.querySelector('[data-product="settings"]').click();
+    document.querySelector('[data-product="loyalty"]').click();
+    const after = selectPayload('x').permissions.length;
+    assert(before === after, `${before} → ${after}`);
+    return `${after} entries kept`;
+  });
+
+  /* 10 — expanding a row does not mutate selection */
+  t('expanding a row does not mutate selection', () => {
+    const before = JSON.stringify(selectPayload('x'));
+    const btn = document.querySelector('[data-expand="loyalty.tiers"]');
+    toggleExpand(btn); toggleExpand(btn);
+    assert(JSON.stringify(selectPayload('x')) === before, 'selection changed on expand');
+    return 'unchanged';
+  });
+
+  /* restore whatever the user had */
+  selection.dispatch('HYDRATE', { permissions: snapshot.permissions });
+  syncGrid();
+
+  const failed = results.filter(r => !r.pass);
+  console.table(results);
+  console.log(`%c${results.length - failed.length}/${results.length} permission tests passed`,
+    `color:${failed.length ? '#E83135' : '#42B040'};font-weight:600`);
+  return { passed: results.length - failed.length, total: results.length, failed };
+}
+window.runPermissionTests = runPermissionTests;
+if (DEV) runPermissionTests();
+
+/* deep link: open on the Permission sets tab */
+if (location.hash === '#permsets') document.querySelector('[data-tab="permsets"]').click();
+</script>
+</body>
+</html>
