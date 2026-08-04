@@ -1027,14 +1027,14 @@ const PERMISSION_TREE = {
       ] },
       { id:'loyalty.milestones', label:'Milestones', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.streaks', label:'Streaks', allowedActions:['create'] },
-      { id:'loyalty.benefit-categories', label:'Benefit Categories', allowedActions:['view','create','edit'], children: [
+      { id:'loyalty.benefit-categories', label:'Programs — Benefit Categories', allowedActions:['view','create','edit'], children: [
         { id:'loyalty.benefit-categories.view-benefit-categories-list', label:'View benefit categories list', allowedActions:['view'] },
         { id:'loyalty.benefit-categories.view-benefit-category-details', label:'View benefit category details', allowedActions:['view'] },
         { id:'loyalty.benefit-categories.create-benefit-category', label:'Create benefit category', allowedActions:['create'] },
         { id:'loyalty.benefit-categories.update-benefit-category', label:'Update benefit category', allowedActions:['edit'] },
         { id:'loyalty.benefit-categories.change-status-of-benefit-category', label:'Change status of benefit category', allowedActions:['edit'] },
       ] },
-      { id:'loyalty.tiers', label:'Tiers', allowedActions:['view','create','edit','delete','approval'], children: [
+      { id:'loyalty.tiers', label:'Programs — Tiers', allowedActions:['view','create','edit','delete','approval'], children: [
         { id:'loyalty.tiers.view-tiers-list', label:'View tiers list', allowedActions:['view'] },
         { id:'loyalty.tiers.view-tier-details', label:'View tier details', allowedActions:['view'] },
         { id:'loyalty.tiers.create-tiers', label:'Create tiers', allowedActions:['create'] },
@@ -1043,7 +1043,7 @@ const PERMISSION_TREE = {
         { id:'loyalty.tiers.delete-draft-tier', label:'Delete draft (tier)', allowedActions:['delete'] },
         { id:'loyalty.tiers.approve-or-reject-tiers', label:'Approve or reject tiers', allowedActions:['approval'] },
       ] },
-      { id:'loyalty.subscription-programs', label:'Subscription Programs', allowedActions:['view','create','edit','delete','approval'], children: [
+      { id:'loyalty.subscription-programs', label:'Programs — Subscription Programs', allowedActions:['view','create','edit','delete','approval'], children: [
         { id:'loyalty.subscription-programs.view-subscription-program-list', label:'View subscription program list', allowedActions:['view'] },
         { id:'loyalty.subscription-programs.view-subscription-program-details', label:'View subscription program details', allowedActions:['view'] },
         { id:'loyalty.subscription-programs.create-subscription-program', label:'Create subscription program', allowedActions:['create'] },
@@ -1052,7 +1052,7 @@ const PERMISSION_TREE = {
         { id:'loyalty.subscription-programs.discard-draft-on-published-subscription', label:'Discard draft on published subscription', allowedActions:['delete'] },
         { id:'loyalty.subscription-programs.approve-or-reject-subscription-program', label:'Approve or reject subscription program', allowedActions:['approval'] },
       ] },
-      { id:'loyalty.config-attributes', label:'Config Attributes', allowedActions:['view','create','edit'], children: [
+      { id:'loyalty.config-attributes', label:'Programs — Config Attributes', allowedActions:['view','create','edit'], children: [
         { id:'loyalty.config-attributes.view-loyalty-config-attributes', label:'View loyalty config attributes', allowedActions:['view'] },
         { id:'loyalty.config-attributes.view-loyalty-config-attributes-scopes', label:'View loyalty config attributes scopes', allowedActions:['view'] },
         { id:'loyalty.config-attributes.create-loyalty-config-attributes', label:'Create loyalty config attributes', allowedActions:['create'] },
@@ -1060,7 +1060,7 @@ const PERMISSION_TREE = {
       ] },
       { id:'loyalty.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.manage-liability-owners', label:'Manage Liability Owners', allowedActions:['view','create','edit'] },
-      { id:'loyalty.loyalty-benefits', label:'Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'], children: [
+      { id:'loyalty.loyalty-benefits', label:'Programs — Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'], children: [
         { id:'loyalty.loyalty-benefits.view-loyalty-benefit-list', label:'View loyalty benefit list', allowedActions:['view'] },
         { id:'loyalty.loyalty-benefits.view-loyalty-benefit-details', label:'View loyalty benefit details', allowedActions:['view'] },
         { id:'loyalty.loyalty-benefits.create-loyalty-benefit', label:'Create loyalty benefit', allowedActions:['create'] },
