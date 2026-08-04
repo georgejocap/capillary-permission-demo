@@ -1119,6 +1119,7 @@ const PERMISSION_TREE = {
       { id:'member-care.sessions', label:'Sessions', allowedActions:['create','edit'] },
       { id:'member-care.settings', label:'Settings', allowedActions:['edit'] },
       { id:'member-care.search-criteria', label:'Search Criteria', allowedActions:['view','create','delete'] },
+      { id:'member-care.unmasked-otp', label:'Unmasked OTP', allowedActions:['view'] },
     ] },
     { id:'audiences', label:'Audiences', modules: [
       { id:'audiences.audiences', label:'Audiences', allowedActions:['view','create','edit','delete'] },
@@ -1175,6 +1176,13 @@ const PERMISSION_TREE = {
       { id:'data-management.data-catalog-admin', label:'Data Catalog — Admin', allowedActions:['approval'], children: [
         { id:'data-management.data-catalog-admin.cross-org-admin-access-to-data-catalog', label:'Cross-org admin access to Data Catalog', allowedActions:['approval'] },
       ] },
+      { id:'data-management.import', label:'Import', allowedActions:['view','create','approval'], children: [
+        { id:'data-management.import.all-import-api', label:'All Import API', allowedActions:['create'] },
+        { id:'data-management.import.listing-page', label:'Listing page', allowedActions:['view'] },
+        { id:'data-management.import.create-job', label:'Create job', allowedActions:['create'] },
+        { id:'data-management.import.approve-reject-job', label:'Approve / reject job', allowedActions:['approval'] },
+      ] },
+      { id:'data-management.product-sku', label:'Product SKU', allowedActions:['delete'] },
     ] },
     { id:'extensions', label:'Extensions', modules: [
       { id:'extensions.block-library-read', label:'Block Library — Read', allowedActions:['create'], children: [
@@ -1206,6 +1214,8 @@ const PERMISSION_TREE = {
     { id:'settings', label:'Settings', modules: [
 
       { id:'settings.oauth-api-management', label:'OAuth / API Management', allowedActions:['view','create','edit','delete'] },
+      { id:'settings.pii-masking', label:'PII Data Masking', allowedActions:['view'] },
+      { id:'settings.download-data', label:'Download Data', allowedActions:['view'] },
       { id:'settings.org-setup', label:'Org Setup', allowedActions:['view'], children: [
         { id:'settings.org-setup.org-set-up-assistant-page', label:'Org set up assistant page', allowedActions:['view'] },
         { id:'settings.org-setup.access-to-master-stores', label:'Access to master stores', allowedActions:['view'] },
