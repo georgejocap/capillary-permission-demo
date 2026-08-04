@@ -1017,8 +1017,10 @@ const PERMISSION_TREE = {
   actions: ['view','create','edit','delete','approval'],
   products: [
     { id:'loyalty', label:'Loyalty', modules: [
-      { id:'loyalty.basic', label:'Old Promotions — View', allowedActions:['view'] },
-      { id:'loyalty.promotion', label:'Old Promotions — Create', allowedActions:['create'] },
+      { id:'loyalty.old-promotions', label:'Old Promotions', allowedActions:['view','create'], children: [
+        { id:'loyalty.old-promotions.view', label:'Old Promotions — View', allowedActions:['view'] },
+        { id:'loyalty.old-promotions.create', label:'Old Promotions — Create', allowedActions:['create'] },
+      ] },
       { id:'loyalty.program', label:'Old Programs — Create', allowedActions:['create'] },
       { id:'loyalty.new-promotions', label:'New Promotions', allowedActions:['view','create','edit','delete','approval'], children: [
         { id:'loyalty.new-promotions.basic-operations', label:'Basic Operations', allowedActions:['view','create','edit','delete'] },
