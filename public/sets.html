@@ -1060,6 +1060,8 @@ const PERMISSION_TREE = {
         { id:'loyalty.config-attributes.create-loyalty-config-attributes', label:'Create loyalty config attributes', allowedActions:['create'] },
         { id:'loyalty.config-attributes.update-loyalty-config-attributes', label:'Update loyalty config attributes', allowedActions:['edit'] },
       ] },
+      { id:'loyalty.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
+      { id:'loyalty.manage-liability-owners', label:'Manage Liability Owners', allowedActions:['view','create','edit'] },
       { id:'loyalty.loyalty-benefits', label:'Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'], children: [
         { id:'loyalty.loyalty-benefits.view-loyalty-benefit-list', label:'View loyalty benefit list', allowedActions:['view'] },
         { id:'loyalty.loyalty-benefits.view-loyalty-benefit-details', label:'View loyalty benefit details', allowedActions:['view'] },
@@ -1200,8 +1202,7 @@ const PERMISSION_TREE = {
       ] },
     ] },
     { id:'settings', label:'Settings', modules: [
-      { id:'settings.manage-liability-owners', label:'Manage Liability Owners', allowedActions:['view','create','edit'] },
-      { id:'settings.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
+
       { id:'settings.oauth-api-management', label:'OAuth / API Management', allowedActions:['view','create','edit','delete'] },
       { id:'settings.org-setup', label:'Org Setup', allowedActions:['view'], children: [
         { id:'settings.org-setup.org-set-up-assistant-page', label:'Org set up assistant page', allowedActions:['view'] },
