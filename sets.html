@@ -957,7 +957,7 @@ svg{display:block;}
 
   <div class="pane-footer">
     <div class="pane-footer-row">
-      <button class="btn btn-primary btn-cta" id="btnDone" disabled aria-disabled="true">Done</button>
+      <button class="btn btn-primary btn-cta" id="btnDone">Done</button>
       <span class="footer-hint" id="footerHint" aria-live="polite"></span>
     </div>
   </div>
@@ -1707,12 +1707,10 @@ function syncFooter(){
   preview.classList.toggle('is-active', hasPerm);
   preview.setAttribute('aria-disabled', String(!hasPerm));
 
-  btnSave.disabled = !ok;
-  btnSave.setAttribute('aria-disabled', String(!ok));
+  btnSave.disabled = false;
+  btnSave.setAttribute('aria-disabled', 'false');
 
-  if (ok)            footerHint.textContent = '';
-  else if (!hasName) footerHint.textContent = 'Permission set name is required';
-  else               footerHint.textContent = 'Select at least one permission';
+  footerHint.textContent = '';
 }
 
 /* Hand-off point for the devs — no network code here by design. */
