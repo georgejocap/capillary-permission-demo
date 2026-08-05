@@ -1022,61 +1022,15 @@ const PERMISSION_TREE = {
       { id:'ask-aira.configurations', label:'Configurations', allowedActions:['view','create','edit','delete','approval'] },
       { id:'ask-aira.settings', label:'Settings', allowedActions:['view','create','edit','delete'] },
       { id:'ask-aira.dashboard', label:'Dashboard', allowedActions:['view','create','edit','delete'] },
+      { id:'ask-aira.data-download', label:'Data Download', allowedActions:['view'] },
     ] },
     { id:'loyalty', label:'Loyalty', modules: [
-      { id:'loyalty.old-promotions', label:'Old Promotions', allowedActions:['view','create'] },
-      { id:'loyalty.program', label:'Old Programs', allowedActions:['create'] },
-      { id:'loyalty.new-promotions', label:'New Promotions', allowedActions:['view','create','edit','delete','approval'], children: [
-        { id:'loyalty.new-promotions.basic-operations', label:'Basic Operations', allowedActions:['view','create','edit','delete'] },
-        { id:'loyalty.new-promotions.listing-page', label:'Listing Page', allowedActions:['view'] },
-        { id:'loyalty.new-promotions.status-change', label:'Status Change', allowedActions:['edit','approval'] },
-        { id:'loyalty.new-promotions.duplicate', label:'Duplicate', allowedActions:['create'] },
-        { id:'loyalty.new-promotions.stop', label:'Stop', allowedActions:['edit'] },
-      ] },
+      { id:'loyalty.promotions', label:'Promotions', allowedActions:['view','create','edit','delete','approval'] },
+      { id:'loyalty.programs', label:'Programs', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.milestones', label:'Milestones', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.streaks', label:'Streaks', allowedActions:['create'] },
-      { id:'loyalty.benefit-categories', label:'Programs — Benefit Categories', allowedActions:['view','create','edit'], children: [
-        { id:'loyalty.benefit-categories.view-benefit-categories-list', label:'View benefit categories list', allowedActions:['view'] },
-        { id:'loyalty.benefit-categories.view-benefit-category-details', label:'View benefit category details', allowedActions:['view'] },
-        { id:'loyalty.benefit-categories.create-benefit-category', label:'Create benefit category', allowedActions:['create'] },
-        { id:'loyalty.benefit-categories.update-benefit-category', label:'Update benefit category', allowedActions:['edit'] },
-        { id:'loyalty.benefit-categories.change-status-of-benefit-category', label:'Change status of benefit category', allowedActions:['edit'] },
-      ] },
-      { id:'loyalty.tiers', label:'Programs — Tiers', allowedActions:['view','create','edit','delete','approval'], children: [
-        { id:'loyalty.tiers.view-tiers-list', label:'View tiers list', allowedActions:['view'] },
-        { id:'loyalty.tiers.view-tier-details', label:'View tier details', allowedActions:['view'] },
-        { id:'loyalty.tiers.create-tiers', label:'Create tiers', allowedActions:['create'] },
-        { id:'loyalty.tiers.update-tiers', label:'Update tiers', allowedActions:['edit'] },
-        { id:'loyalty.tiers.submit-tiers-for-review', label:'Submit tiers for review', allowedActions:['edit'] },
-        { id:'loyalty.tiers.delete-draft-tier', label:'Delete draft (tier)', allowedActions:['delete'] },
-        { id:'loyalty.tiers.approve-or-reject-tiers', label:'Approve or reject tiers', allowedActions:['approval'] },
-      ] },
-      { id:'loyalty.subscription-programs', label:'Programs — Subscription Programs', allowedActions:['view','create','edit','delete','approval'], children: [
-        { id:'loyalty.subscription-programs.view-subscription-program-list', label:'View subscription program list', allowedActions:['view'] },
-        { id:'loyalty.subscription-programs.view-subscription-program-details', label:'View subscription program details', allowedActions:['view'] },
-        { id:'loyalty.subscription-programs.create-subscription-program', label:'Create subscription program', allowedActions:['create'] },
-        { id:'loyalty.subscription-programs.update-subscription-program', label:'Update subscription program', allowedActions:['edit'] },
-        { id:'loyalty.subscription-programs.change-status-of-subscription-program', label:'Change status of subscription program', allowedActions:['edit'] },
-        { id:'loyalty.subscription-programs.discard-draft-on-published-subscription', label:'Discard draft on published subscription', allowedActions:['delete'] },
-        { id:'loyalty.subscription-programs.approve-or-reject-subscription-program', label:'Approve or reject subscription program', allowedActions:['approval'] },
-      ] },
-      { id:'loyalty.config-attributes', label:'Programs — Config Attributes', allowedActions:['view','create','edit'], children: [
-        { id:'loyalty.config-attributes.view-loyalty-config-attributes', label:'View loyalty config attributes', allowedActions:['view'] },
-        { id:'loyalty.config-attributes.view-loyalty-config-attributes-scopes', label:'View loyalty config attributes scopes', allowedActions:['view'] },
-        { id:'loyalty.config-attributes.create-loyalty-config-attributes', label:'Create loyalty config attributes', allowedActions:['create'] },
-        { id:'loyalty.config-attributes.update-loyalty-config-attributes', label:'Update loyalty config attributes', allowedActions:['edit'] },
-      ] },
       { id:'loyalty.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.manage-liability-owners', label:'Manage Liability Owners', allowedActions:['view','create','edit'] },
-      { id:'loyalty.loyalty-benefits', label:'Programs — Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'], children: [
-        { id:'loyalty.loyalty-benefits.view-loyalty-benefit-list', label:'View loyalty benefit list', allowedActions:['view'] },
-        { id:'loyalty.loyalty-benefits.view-loyalty-benefit-details', label:'View loyalty benefit details', allowedActions:['view'] },
-        { id:'loyalty.loyalty-benefits.create-loyalty-benefit', label:'Create loyalty benefit', allowedActions:['create'] },
-        { id:'loyalty.loyalty-benefits.update-loyalty-benefit', label:'Update loyalty benefit', allowedActions:['edit'] },
-        { id:'loyalty.loyalty-benefits.change-status-of-loyalty-benefit', label:'Change status of loyalty benefit', allowedActions:['edit'] },
-        { id:'loyalty.loyalty-benefits.discard-draft-on-published-loyalty-benefit', label:'Discard draft on published loyalty benefit', allowedActions:['delete'] },
-        { id:'loyalty.loyalty-benefits.approve-or-reject-loyalty-benefit', label:'Approve or reject loyalty benefit', allowedActions:['approval'] },
-      ] },
     ] },
     { id:'engage', label:'Engage', modules: [
       { id:'engage.campaign', label:'Campaign', allowedActions:['view','create','edit','delete','approval'], children: [
@@ -1215,7 +1169,6 @@ const PERMISSION_TREE = {
 
       { id:'settings.oauth-api-management', label:'OAuth / API Management', allowedActions:['view','create','edit','delete'] },
       { id:'settings.pii-masking', label:'PII Data Masking', allowedActions:['view'] },
-      { id:'settings.download-data', label:'Download Data', allowedActions:['view'] },
       { id:'settings.org-setup', label:'Org Setup', allowedActions:['view'], children: [
         { id:'settings.org-setup.org-set-up-assistant-page', label:'Org set up assistant page', allowedActions:['view'] },
         { id:'settings.org-setup.access-to-master-stores', label:'Access to master stores', allowedActions:['view'] },
@@ -1797,27 +1750,26 @@ function runPermissionTests(){
     return 'no state change';
   });
 
-  /* 3 — New Promotions / Edit cascade */
-  t('parent Edit cascade selects only eligible children', () => {
-    const parent = NODE_INDEX.get('loyalty.new-promotions');
-    toggleParent(parent, 'edit');
-    const on  = ['basic-operations','status-change','stop'].map(s => `loyalty.new-promotions.${s}`);
-    const off = ['listing-page','duplicate'].map(s => `loyalty.new-promotions.${s}`);
-    on.forEach(id => assert(selection.has(id, 'edit'), `${id} should have edit`));
-    off.forEach(id => assert(!selection.has(id, 'edit'), `${id} must be untouched`));
-    assert(parentState(parent, 'edit').checked, 'parent should read checked');
+  /* 3 — Import / Create cascade */
+  t('parent Create cascade selects only eligible children', () => {
+    const parent = NODE_INDEX.get('data-management.import');
+    toggleParent(parent, 'create');
+    const on  = ['data-management.import.all-import-api','data-management.import.create-job'];
+    const off = ['data-management.import.listing-page','data-management.import.approve-reject-job'];
+    on.forEach(id => assert(selection.has(id, 'create'), `${id} should have create`));
+    off.forEach(id => assert(!selection.has(id, 'create'), `${id} must be untouched`));
+    assert(parentState(parent, 'create').checked, 'parent should read checked');
     return `+${on.length} eligible, ${off.length} skipped`;
   });
 
   /* 4 — checked → indeterminate → unchecked */
   t('unchecking children flips parent checked → indeterminate → unchecked', () => {
-    const parent = NODE_INDEX.get('loyalty.new-promotions');
-    selection.dispatch('REVOKE', { id: 'loyalty.new-promotions.stop', action: 'edit' });
-    let st = parentState(parent, 'edit');
+    const parent = NODE_INDEX.get('data-management.import');
+    selection.dispatch('REVOKE', { id: 'data-management.import.create-job', action: 'create' });
+    let st = parentState(parent, 'create');
     assert(!st.checked && st.indeterminate, 'expected indeterminate after one revoke');
-    ['basic-operations','status-change'].forEach(s =>
-      selection.dispatch('REVOKE', { id: `loyalty.new-promotions.${s}`, action: 'edit' }));
-    st = parentState(parent, 'edit');
+    selection.dispatch('REVOKE', { id: 'data-management.import.all-import-api', action: 'create' });
+    st = parentState(parent, 'create');
     assert(!st.checked && !st.indeterminate, 'expected unchecked after all revoked');
     return 'checked → indeterminate → unchecked';
   });
@@ -1836,7 +1788,7 @@ function runPermissionTests(){
 
   /* 6 — parent rows are rollups, never stored */
   t('parent nodes are not storable', () => {
-    const okDrop = selection.dispatch('GRANT', { id: 'loyalty.new-promotions', action: 'edit' });
+    const okDrop = selection.dispatch('GRANT', { id: 'data-management.import', action: 'create' });
     assert(okDrop === false, 'parent grant accepted');
     assert(selection.size() === 0, 'parent id entered the store');
     return 'rollup only';
@@ -1853,11 +1805,11 @@ function runPermissionTests(){
   /* 8 — payload selector: leaf ids only, no empty action lists */
   t('payload selector returns leaf ids only, no empty lists', () => {
     selection.dispatch('RESET');
-    toggleParent(NODE_INDEX.get('loyalty.new-promotions'), 'edit');
-    selection.dispatch('GRANT', { id: 'loyalty.basic', action: 'view' });
+    toggleParent(NODE_INDEX.get('data-management.import'), 'create');
+    selection.dispatch('GRANT', { id: 'loyalty.promotions', action: 'view' });
     const p = selectPayload('  Nightly set  ');
     assert(p.name === 'Nightly set', 'name not trimmed');
-    assert(p.permissions.length === 4, `expected 4 entries, got ${p.permissions.length}`);
+    assert(p.permissions.length === 3, `expected 3 entries, got ${p.permissions.length}`);
     p.permissions.forEach(e => {
       assert(STORABLE.has(e.id), `${e.id} is not a leaf`);
       assert(e.actions.length > 0, `${e.id} has an empty action list`);
