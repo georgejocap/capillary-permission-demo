@@ -1020,7 +1020,12 @@ const PERMISSION_TREE = {
       { id:'ask-aira.analytics', label:'Analytics', allowedActions:['view','create','edit','delete'] },
       { id:'ask-aira.qa', label:'QA', allowedActions:['view','create','edit','delete'] },
       { id:'ask-aira.configurations', label:'Configurations', allowedActions:['view','create','edit','delete','approval'] },
-      { id:'ask-aira.settings', label:'Settings', allowedActions:['view','create','edit','delete'] },
+      { id:'ask-aira.settings', label:'Settings', allowedActions:['view','create','edit','delete'], children: [
+        { id:'ask-aira.settings.context', label:'Context', allowedActions:['view','create','edit','delete'] },
+        { id:'ask-aira.settings.whitelist', label:'Whitelist', allowedActions:['view','create','edit','delete'] },
+        { id:'ask-aira.settings.sessions', label:'Sessions', allowedActions:['view','create','edit','delete'] },
+        { id:'ask-aira.settings.billing', label:'Billing', allowedActions:['view','create','edit','delete'] },
+      ] },
       { id:'ask-aira.dashboard', label:'Dashboard', allowedActions:['view','create','edit','delete'] },
       { id:'ask-aira.data-download', label:'Data Download', allowedActions:['view'] },
     ] },
@@ -1028,7 +1033,13 @@ const PERMISSION_TREE = {
       { id:'loyalty.basic', label:'Basic', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.promotions-old', label:'Promotions — Old UI', allowedActions:['view','create'] },
       { id:'loyalty.programs-old', label:'Programs — Old UI', allowedActions:['create'] },
-      { id:'loyalty.promotions', label:'Promotions', allowedActions:['view','create','edit','delete','approval'] },
+      { id:'loyalty.promotions', label:'Promotions', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'loyalty.promotions.basic-operations', label:'Basic Operations', allowedActions:['view','create','edit','delete'] },
+        { id:'loyalty.promotions.listing-page', label:'Listing Page', allowedActions:['view'] },
+        { id:'loyalty.promotions.status-change', label:'Status Change', allowedActions:['edit'] },
+        { id:'loyalty.promotions.duplicate', label:'Duplicate', allowedActions:['create'] },
+        { id:'loyalty.promotions.stop', label:'Stop', allowedActions:['edit'] },
+      ] },
       { id:'loyalty.programs', label:'Programs', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.milestones', label:'Milestones', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.streaks', label:'Streaks', allowedActions:['create'] },
@@ -1095,7 +1106,16 @@ const PERMISSION_TREE = {
       { id:'rewards.gift-voucher', label:'Gift Voucher', allowedActions:['edit'] },
     ] },
     { id:'member-care', label:'Member Care', modules: [
-      { id:'member-care.customer', label:'Customer', allowedActions:['view','create','edit','delete','approval'] },
+      { id:'member-care.customer', label:'Customer', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'member-care.customer.customer-profile', label:'Customer profile', allowedActions:['view','create','edit','delete'] },
+        { id:'member-care.customer.customer-pii', label:'Customer PII', allowedActions:['view','create','edit','delete','approval'] },
+        { id:'member-care.customer.customer-retro-transaction', label:'Customer retro transaction', allowedActions:['view','create','edit','delete','approval'] },
+        { id:'member-care.customer.customer-cards', label:'Customer cards', allowedActions:['view','create'] },
+        { id:'member-care.customer.customer-goodwill', label:'Customer goodwill', allowedActions:['view','create','edit','delete'] },
+        { id:'member-care.customer.customer-group', label:'Customer group', allowedActions:['view','create','edit','delete'] },
+        { id:'member-care.customer.masked-customer-pii', label:'Masked Customer PII', allowedActions:['view'] },
+        { id:'member-care.customer.customer-cache', label:'Customer Cache', allowedActions:['view','create','edit','delete'] },
+      ] },
       { id:'member-care.customer-goodwill', label:'Customer Goodwill', allowedActions:['view','approval'], children: [
         { id:'member-care.customer-goodwill.approve-reject-goodwill-requests', label:'Approve/reject goodwill requests', allowedActions:['approval'] },
         { id:'member-care.customer-goodwill.get-goodwill-coupons-points-config', label:'Get goodwill coupons/points config', allowedActions:['view'] },
@@ -1168,7 +1188,11 @@ const PERMISSION_TREE = {
     ] },
     { id:'data-management', label:'Data Management', modules: [
       { id:'data-management.dataflows', label:'Dataflows', allowedActions:['view','create','edit','delete'] },
-      { id:'data-management.behavioural-events', label:'Behavioural Events', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.behavioural-events', label:'Behavioural Events', allowedActions:['view','create','edit','delete'], children: [
+        { id:'data-management.behavioural-events.event', label:'Event', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.behavioural-events.mapping', label:'Mapping', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.behavioural-events.publish', label:'Publish', allowedActions:['create'] },
+      ] },
       { id:'data-management.webhooks', label:'Webhooks', allowedActions:['view','create','edit','delete'] },
       { id:'data-management.card-configuration', label:'Card Configuration', allowedActions:['view','create','edit','delete'], children: [
         { id:'data-management.card-configuration.card-series', label:'Card Series', allowedActions:['view','create','edit','delete'] },
