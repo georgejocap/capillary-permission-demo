@@ -1025,6 +1025,7 @@ const PERMISSION_TREE = {
       { id:'ask-aira.data-download', label:'Data Download', allowedActions:['view'] },
     ] },
     { id:'loyalty', label:'Loyalty', modules: [
+      { id:'loyalty.basic', label:'Basic', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.promotions-old', label:'Promotions — Old UI', allowedActions:['view','create'] },
       { id:'loyalty.programs-old', label:'Programs — Old UI', allowedActions:['create'] },
       { id:'loyalty.promotions', label:'Promotions', allowedActions:['view','create','edit','delete','approval'] },
@@ -1043,6 +1044,13 @@ const PERMISSION_TREE = {
         { id:'engage.campaign.report', label:'Report', allowedActions:['view'] },
         { id:'engage.campaign.creatives', label:'Creatives', allowedActions:['view','create','edit','delete'] },
         { id:'engage.campaign.config', label:'Config', allowedActions:['edit'] },
+      ] },
+      { id:'engage.journeys', label:'Journeys', allowedActions:['view','create','edit','delete'] },
+      { id:'engage.incentives', label:'Incentives', allowedActions:['view','create','edit','delete'], children: [
+        { id:'engage.incentives.badges', label:'Badges', allowedActions:['view','create','edit','delete'] },
+        { id:'engage.incentives.coupons', label:'Coupons', allowedActions:['view','create','edit','delete'] },
+        { id:'engage.incentives.cart-promotion', label:'Cart Promotion', allowedActions:['view','create','edit','delete'] },
+        { id:'engage.incentives.gift-voucher', label:'Gift Voucher', allowedActions:['view','create','edit','delete'] },
       ] },
     ] },
     { id:'rewards', label:'Rewards', modules: [
@@ -1100,8 +1108,23 @@ const PERMISSION_TREE = {
       { id:'data-management.dataflows', label:'Dataflows', allowedActions:['view','create','edit','delete'] },
       { id:'data-management.behavioural-events', label:'Behavioural Events', allowedActions:['view','create','edit','delete'] },
       { id:'data-management.webhooks', label:'Webhooks', allowedActions:['view','create','edit','delete'] },
-      { id:'data-management.card-configuration', label:'Card Configuration', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.card-configuration', label:'Card Configuration', allowedActions:['view','create','edit','delete'], children: [
+        { id:'data-management.card-configuration.card-series', label:'Card Series', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.card-configuration.card-generation', label:'Card Generation', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.card-configuration.global-setting', label:'Global Setting', allowedActions:['view','create','edit','delete'] },
+      ] },
       { id:'data-management.product-inventory', label:'Product Inventory', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.locations', label:'Locations', allowedActions:['view','create','edit','delete'], children: [
+        { id:'data-management.locations.store', label:'Store', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.locations.zone', label:'Zone', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.locations.concept', label:'Concept', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.locations.till', label:'Till', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.locations.location-labels', label:'Location Labels', allowedActions:['view','create','edit','delete'] },
+        { id:'data-management.locations.location-collections', label:'Location Collections', allowedActions:['view','create','edit','delete'] },
+      ] },
+      { id:'data-management.customers', label:'Customers', allowedActions:['view','create','edit','delete'], children: [
+        { id:'data-management.customers.customer-labels', label:'Customer Labels', allowedActions:['view','create','edit','delete'] },
+      ] },
       { id:'data-management.connect-apis', label:'Dataflow APIs', allowedActions:['create'], children: [
         { id:'data-management.connect-apis.access-to-connect-plus-apis', label:'Access to Dataflow APIs', allowedActions:['create'] },
       ] },
