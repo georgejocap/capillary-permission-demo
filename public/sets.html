@@ -1034,6 +1034,46 @@ const PERMISSION_TREE = {
       { id:'loyalty.streaks', label:'Streaks', allowedActions:['create'] },
       { id:'loyalty.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.manage-liability-owners', label:'Manage Liability Owners', allowedActions:['view','create','edit'] },
+      { id:'loyalty.benefit-categories', label:'Benefit Categories', allowedActions:['view','create','edit','delete'], children: [
+        { id:'loyalty.benefit-categories.view-list', label:'View benefit categories list', allowedActions:['view'] },
+        { id:'loyalty.benefit-categories.view-details', label:'View benefit category details', allowedActions:['view'] },
+        { id:'loyalty.benefit-categories.create', label:'Create benefit category', allowedActions:['create'] },
+        { id:'loyalty.benefit-categories.update', label:'Update benefit category', allowedActions:['edit'] },
+        { id:'loyalty.benefit-categories.change-status', label:'Change status of benefit category', allowedActions:['edit'] },
+      ] },
+      { id:'loyalty.tiers', label:'Tiers', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'loyalty.tiers.view-list', label:'View tiers list', allowedActions:['view'] },
+        { id:'loyalty.tiers.view-details', label:'View tier details', allowedActions:['view'] },
+        { id:'loyalty.tiers.create', label:'Create tiers', allowedActions:['create'] },
+        { id:'loyalty.tiers.update', label:'Update tiers', allowedActions:['edit'] },
+        { id:'loyalty.tiers.delete-draft', label:'Delete draft', allowedActions:['delete'] },
+        { id:'loyalty.tiers.submit-for-review', label:'Submit tiers for review', allowedActions:['approval'] },
+        { id:'loyalty.tiers.approve-reject', label:'Approve or reject tiers', allowedActions:['approval'] },
+      ] },
+      { id:'loyalty.subscription-programs', label:'Subscription Programs', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'loyalty.subscription-programs.view-list', label:'View subscription program list', allowedActions:['view'] },
+        { id:'loyalty.subscription-programs.view-details', label:'View subscription program details', allowedActions:['view'] },
+        { id:'loyalty.subscription-programs.create', label:'Create subscription program', allowedActions:['create'] },
+        { id:'loyalty.subscription-programs.update', label:'Update subscription program', allowedActions:['edit'] },
+        { id:'loyalty.subscription-programs.change-status', label:'Change status of subscription program', allowedActions:['edit'] },
+        { id:'loyalty.subscription-programs.approve-reject', label:'Approve or reject subscription program', allowedActions:['approval'] },
+        { id:'loyalty.subscription-programs.discard-draft', label:'Discard draft on published subscription program', allowedActions:['delete'] },
+      ] },
+      { id:'loyalty.loyalty-benefits', label:'Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'], children: [
+        { id:'loyalty.loyalty-benefits.view-list', label:'View loyalty benefit list', allowedActions:['view'] },
+        { id:'loyalty.loyalty-benefits.view-details', label:'View loyalty benefit details', allowedActions:['view'] },
+        { id:'loyalty.loyalty-benefits.create', label:'Create loyalty benefit', allowedActions:['create'] },
+        { id:'loyalty.loyalty-benefits.update', label:'Update loyalty benefit', allowedActions:['edit'] },
+        { id:'loyalty.loyalty-benefits.change-status', label:'Change status of loyalty benefit', allowedActions:['edit'] },
+        { id:'loyalty.loyalty-benefits.approve-reject', label:'Approve or reject loyalty benefit', allowedActions:['approval'] },
+        { id:'loyalty.loyalty-benefits.discard-draft', label:'Discard draft on published loyalty benefit', allowedActions:['delete'] },
+      ] },
+      { id:'loyalty.loyalty-config', label:'Loyalty Config Attributes', allowedActions:['view','create','edit'], children: [
+        { id:'loyalty.loyalty-config.view', label:'View loyalty config attributes', allowedActions:['view'] },
+        { id:'loyalty.loyalty-config.view-scopes', label:'View loyalty config attributes scopes', allowedActions:['view'] },
+        { id:'loyalty.loyalty-config.create', label:'Create loyalty config attributes', allowedActions:['create'] },
+        { id:'loyalty.loyalty-config.update', label:'Update loyalty config attributes', allowedActions:['edit'] },
+      ] },
     ] },
     { id:'engage', label:'Engage', modules: [
       { id:'engage.campaign', label:'Campaign', allowedActions:['view','create','edit','delete','approval'], children: [
@@ -1052,6 +1092,7 @@ const PERMISSION_TREE = {
         { id:'engage.incentives.cart-promotion', label:'Cart Promotion', allowedActions:['view','create','edit','delete'] },
         { id:'engage.incentives.gift-voucher', label:'Gift Voucher', allowedActions:['view','create','edit','delete'] },
       ] },
+      { id:'engage.x-engage-settings', label:'X-Engage Settings', allowedActions:['view'] },
     ] },
     { id:'rewards', label:'Rewards', modules: [
       { id:'rewards.badges', label:'Badges', allowedActions:['edit'] },
@@ -1080,7 +1121,9 @@ const PERMISSION_TREE = {
       { id:'member-care.group', label:'Group', allowedActions:['view','create','approval'], children: [
         { id:'member-care.group.group-goodwill', label:'Group goodwill', allowedActions:['view','create','approval'] },
       ] },
-      { id:'member-care.sessions', label:'Sessions', allowedActions:['create','edit'] },
+      { id:'member-care.sessions', label:'Sessions', allowedActions:['view','create','edit'], children: [
+        { id:'member-care.sessions.sessions-end-create', label:'Sessions end create', allowedActions:['create'] },
+      ] },
       { id:'member-care.settings', label:'Settings', allowedActions:['edit'] },
       { id:'member-care.search-criteria', label:'Search Criteria', allowedActions:['view','create','delete'] },
       { id:'member-care.unmasked-otp', label:'Unmasked OTP', allowedActions:['view'] },
@@ -1092,9 +1135,34 @@ const PERMISSION_TREE = {
       { id:'channels-content.creatives', label:'Creatives', allowedActions:['view','create','edit','delete'] },
     ] },
     { id:'insights', label:'Insights', modules: [
-      { id:'insights.reports', label:'Reports', allowedActions:['view'] },
-      { id:'insights.segments', label:'Segments', allowedActions:['view'] },
-      { id:'insights.export', label:'Export', allowedActions:['view'] },
+      { id:'insights.insights-view', label:'Insights+ View', allowedActions:['view'], children: [
+        { id:'insights.insights-view.view-all', label:'Access to view Insights+', allowedActions:['view'] },
+        { id:'insights.insights-view.view-reports-segments-export', label:'Access to view Insights+ reports, segments, export', allowedActions:['view'] },
+        { id:'insights.insights-view.admin-export-download', label:'Admin access to download Insights+ Exports to desktop', allowedActions:['view'] },
+      ] },
+      { id:'insights.reports', label:'Reports', allowedActions:['view','create','edit','delete'], children: [
+        { id:'insights.reports.view', label:'View Insights+ Reports', allowedActions:['view'] },
+        { id:'insights.reports.view-custom', label:'View Insights+ Custom Reports', allowedActions:['view'] },
+        { id:'insights.reports.create-edit', label:'Create/edit Insights+ Reports', allowedActions:['create'] },
+        { id:'insights.reports.create-edit-custom', label:'Create/edit Insights+ Custom Reports', allowedActions:['create'] },
+        { id:'insights.reports.create-reports-segment-templates', label:'Create reports/segment/templates', allowedActions:['create'] },
+      ] },
+      { id:'insights.segments', label:'Segments', allowedActions:['view','create','edit','delete'], children: [
+        { id:'insights.segments.view-module', label:'View Insights+ Segments Module', allowedActions:['view'] },
+        { id:'insights.segments.view-create', label:'View/create segments', allowedActions:['view','create'] },
+        { id:'insights.segments.create-edit', label:'Create/edit Insights+ Segments', allowedActions:['create'] },
+      ] },
+      { id:'insights.export', label:'Export', allowedActions:['view','create','delete'], children: [
+        { id:'insights.export.view-module', label:'View Insights+ Exports Module', allowedActions:['view'] },
+        { id:'insights.export.create', label:'Create export', allowedActions:['create'] },
+        { id:'insights.export.create-edit', label:'Create/edit Insights+ Exports', allowedActions:['create'] },
+        { id:'insights.export.delete', label:'Delete Insights+ Exports', allowedActions:['delete'] },
+      ] },
+      { id:'insights.charts', label:'Charts', allowedActions:['view','create','edit','delete'], children: [
+        { id:'insights.charts.view', label:'View Insights+ Charts', allowedActions:['view'] },
+        { id:'insights.charts.create-edit', label:'Create/edit Insights+ Charts', allowedActions:['create'] },
+        { id:'insights.charts.delete', label:'Delete Insights+ Charts', allowedActions:['delete'] },
+      ] },
       { id:'insights.settings', label:'Settings', allowedActions:['view'] },
       { id:'insights.external-facts', label:'External Facts', allowedActions:['view','create'], children: [
         { id:'insights.external-facts.view-insights-external-facts', label:'View Insights+ External Facts', allowedActions:['view'] },
@@ -1161,7 +1229,9 @@ const PERMISSION_TREE = {
         { id:'data-management.import.create-job', label:'Create job', allowedActions:['create'] },
         { id:'data-management.import.approve-reject-job', label:'Approve / reject job', allowedActions:['approval'] },
       ] },
-      { id:'data-management.product-sku', label:'Product SKU', allowedActions:['delete'] },
+      { id:'data-management.product-sku', label:'Product SKU', allowedActions:['delete'], children: [
+        { id:'data-management.product-sku.delete', label:'Delete Product SKU', allowedActions:['delete'] },
+      ] },
     ] },
     { id:'extensions', label:'Extensions', modules: [
       { id:'extensions.block-library-read', label:'Block Library — Read', allowedActions:['create'], children: [
@@ -1200,6 +1270,15 @@ const PERMISSION_TREE = {
       ] },
       { id:'settings.oauth-clients-vulcan', label:'OAuth Clients Vulcan', allowedActions:['edit'], children: [
         { id:'settings.oauth-clients-vulcan.upsert-oauth-clients-on-vulcan', label:'Upsert oauth clients on vulcan', allowedActions:['edit'] },
+      ] },
+      { id:'settings.mfe-nav-config', label:'MFE Navigation Config', allowedActions:['edit'], children: [
+        { id:'settings.mfe-nav-config.manage', label:'Manage MFE navigation config and app config', allowedActions:['edit'] },
+      ] },
+      { id:'settings.admin-access', label:'Admin Access', allowedActions:['view','create','edit','delete'], children: [
+        { id:'settings.admin-access.client-dev-script', label:'Only client dev able to create script', allowedActions:['create'] },
+        { id:'settings.admin-access.finance-team', label:'Finance team', allowedActions:['view'] },
+        { id:'settings.admin-access.high-level-admin', label:'High level access for admin user management', allowedActions:['view'] },
+        { id:'settings.admin-access.update-deployment', label:'Update deployment', allowedActions:['edit'] },
       ] },
     ] },
   ],
