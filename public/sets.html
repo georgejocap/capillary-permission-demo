@@ -1211,30 +1211,30 @@ const PERMISSION_TREE = {
       ] },
     ] },
     { id:'extensions', label:'Extensions', modules: [
-      { id:'extensions.block-library-read', label:'Block Library — Read', allowedActions:['create'], children: [
-        { id:'extensions.block-library-read.init', label:'Ext Neo block lib init', allowedActions:['create'] },
-        { id:'extensions.block-library-read.versions', label:'Ext Neo block lib versions', allowedActions:['create'] },
-        { id:'extensions.block-library-read.list-blocks', label:'Ext Neo list blocks of lib version', allowedActions:['create'] },
-        { id:'extensions.block-library-read.check-block-exists', label:'Ext Neo check block exists in lib ver', allowedActions:['create'] },
-        { id:'extensions.block-library-read.get-block', label:'Ext Neo get block in a lib ver', allowedActions:['create'] },
-        { id:'extensions.block-library-read.get-block-by-meta', label:'Ext Neo get block library blocks details by meta', allowedActions:['create'] },
-        { id:'extensions.block-library-read.codeview', label:'Ext Neo codeview', allowedActions:['create'] },
+      { id:'extensions.block-library-read', label:'Block Library — Read', allowedActions:['view','create'], children: [
+        { id:'extensions.block-library-read.init', label:'Initialize block library', allowedActions:['create'] },
+        { id:'extensions.block-library-read.versions', label:'List block library versions', allowedActions:['view'] },
+        { id:'extensions.block-library-read.list-blocks', label:'List blocks in library version', allowedActions:['view'] },
+        { id:'extensions.block-library-read.check-block-exists', label:'Check block exists in library version', allowedActions:['view'] },
+        { id:'extensions.block-library-read.get-block', label:'Get block in library version', allowedActions:['view'] },
+        { id:'extensions.block-library-read.get-block-by-meta', label:'Get block library blocks details by metadata', allowedActions:['view'] },
+        { id:'extensions.block-library-read.codeview', label:'Codeview (block library)', allowedActions:['view'] },
       ] },
-      { id:'extensions.block-library-write', label:'Block Library — Write', allowedActions:['create'], children: [
-        { id:'extensions.block-library-write.create-block', label:'Ext Neo create block in a lib ver', allowedActions:['create'] },
-        { id:'extensions.block-library-write.update-block', label:'Ext Neo update block in a lib ver', allowedActions:['create'] },
-        { id:'extensions.block-library-write.delete-block', label:'Ext Neo delete block in a lib ver', allowedActions:['create'] },
+      { id:'extensions.block-library-write', label:'Block Library — Write', allowedActions:['create','edit','delete'], children: [
+        { id:'extensions.block-library-write.create-block', label:'Create block in library version', allowedActions:['create'] },
+        { id:'extensions.block-library-write.update-block', label:'Update block in library version', allowedActions:['edit'] },
+        { id:'extensions.block-library-write.delete-block', label:'Delete block in library version', allowedActions:['delete'] },
       ] },
-      { id:'extensions.version-management', label:'Version Management', allowedActions:['create'], children: [
-        { id:'extensions.version-management.send-for-approval', label:'Ext Neo send lib ver for approval', allowedActions:['create'] },
-        { id:'extensions.version-management.edit-lib-ver', label:'Ext Neo edit lib ver', allowedActions:['create'] },
-        { id:'extensions.version-management.update-lib-ver', label:'Ext Neo update lib ver', allowedActions:['create'] },
-        { id:'extensions.version-management.approve-lib-ver', label:'Ext Neo approve lib ver', allowedActions:['create'] },
-        { id:'extensions.version-management.rej-lib-ver', label:'Ext Neo rej lib ver', allowedActions:['create'] },
+      { id:'extensions.version-management', label:'Extension Version Management', allowedActions:['edit'], children: [
+        { id:'extensions.version-management.send-for-approval', label:'Send library version for approval', allowedActions:['edit'] },
+        { id:'extensions.version-management.edit-lib-ver', label:'Edit library version', allowedActions:['edit'] },
+        { id:'extensions.version-management.update-lib-ver', label:'Update library version', allowedActions:['edit'] },
+        { id:'extensions.version-management.approve-lib-ver', label:'Approve library version', allowedActions:['edit'] },
+        { id:'extensions.version-management.rej-lib-ver', label:'Reject library version', allowedActions:['edit'] },
       ] },
-      { id:'extensions.promotion-rules', label:'Promotion Rules', allowedActions:['edit'], children: [
-        { id:'extensions.promotion-rules.promote-rule', label:'Ext Neo promote rule', allowedActions:['edit'] },
-        { id:'extensions.promotion-rules.org-mappings-rule', label:'Ext Neo org mappings rule', allowedActions:['edit'] },
+      { id:'extensions.promotion-rules', label:'Extension Promotion Rules', allowedActions:['view','create','edit','delete'], children: [
+        { id:'extensions.promotion-rules.promote-rule', label:'Promote rule (route group: promote-dataflows)', allowedActions:['edit'] },
+        { id:'extensions.promotion-rules.org-mappings-rule', label:'Org mappings rule (route group: org-mappings)', allowedActions:['view','create','edit','delete'] },
       ] },
     ] },
     { id:'settings', label:'Settings', modules: [
