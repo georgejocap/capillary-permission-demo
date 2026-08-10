@@ -1173,22 +1173,6 @@ const PERMISSION_TREE = {
       { id:'data-management.connect-apis', label:'Dataflow APIs', allowedActions:['create'], children: [
         { id:'data-management.connect-apis.access-to-connect-plus-apis', label:'Access to Dataflow APIs', allowedActions:['create'] },
       ] },
-      { id:'data-management.metadata-orch-rules', label:'Metadata Orchestrator — Rules', allowedActions:['view','create','edit','delete'], children: [
-        { id:'data-management.metadata-orch-rules.view-mo-rules', label:'View MO rules', allowedActions:['view'] },
-        { id:'data-management.metadata-orch-rules.create-local-mo-rules', label:'Create local MO rules', allowedActions:['create'] },
-        { id:'data-management.metadata-orch-rules.create-global-mo-rules', label:'Create global MO rules', allowedActions:['create'] },
-        { id:'data-management.metadata-orch-rules.edit-mo-rules', label:'Edit MO rules', allowedActions:['edit'] },
-        { id:'data-management.metadata-orch-rules.edit-global-mo-rules', label:'Edit global MO rules', allowedActions:['edit'] },
-        { id:'data-management.metadata-orch-rules.delete-mo-rules', label:'Delete MO rules', allowedActions:['delete'] },
-      ] },
-      { id:'data-management.metadata-orch-routing', label:'Metadata Orchestrator — Routing', allowedActions:['view','create','edit','delete'], children: [
-        { id:'data-management.metadata-orch-routing.view-mo-routing', label:'View MO routing', allowedActions:['view'] },
-        { id:'data-management.metadata-orch-routing.create-local-mo-routing', label:'Create local MO routing', allowedActions:['create'] },
-        { id:'data-management.metadata-orch-routing.create-global-mo-routing', label:'Create global MO routing', allowedActions:['create'] },
-        { id:'data-management.metadata-orch-routing.edit-mo-routing', label:'Edit MO routing', allowedActions:['edit'] },
-        { id:'data-management.metadata-orch-routing.edit-global-mo-routing', label:'Edit global MO routing', allowedActions:['edit'] },
-        { id:'data-management.metadata-orch-routing.delete-mo-routing', label:'Delete MO routing', allowedActions:['delete'] },
-      ] },
       { id:'data-management.data-catalog-ei-metadata', label:'Data Catalog — EI Metadata', allowedActions:['view'], children: [
         { id:'data-management.data-catalog-ei-metadata.read-dc-ei-metadata', label:'Read DC EI metadata', allowedActions:['view'] },
       ] },
@@ -1250,6 +1234,12 @@ const PERMISSION_TREE = {
       ] },
       { id:'settings.mfe-nav-config', label:'MFE Navigation Config', allowedActions:['edit'], children: [
         { id:'settings.mfe-nav-config.manage', label:'Manage MFE navigation config and app config', allowedActions:['edit'] },
+      ] },
+      { id:'settings.gateway-configuration', label:'Gateway Configuration', allowedActions:['view','create','edit','delete'], children: [
+        { id:'settings.gateway-configuration.rules-local', label:'Rules — Local', allowedActions:['view','create','edit','delete'] },
+        { id:'settings.gateway-configuration.rules-global', label:'Rules — Global', allowedActions:['view','create','edit','delete'] },
+        { id:'settings.gateway-configuration.routing-local', label:'Routing — Local', allowedActions:['view','create','edit','delete'] },
+        { id:'settings.gateway-configuration.routing-global', label:'Routing — Global', allowedActions:['view','create','edit','delete'] },
       ] },
       { id:'settings.admin-access', label:'Admin Access', allowedActions:['view','create','edit','delete'], children: [
         { id:'settings.admin-access.client-dev-script', label:'Only client dev able to create script', allowedActions:['create'] },
