@@ -1116,30 +1116,30 @@ const PERMISSION_TREE = {
       { id:'insights.reports', label:'Reports', allowedActions:['view','create','edit','delete'], children: [
         { id:'insights.reports.view', label:'View Insights+ Reports', allowedActions:['view'] },
         { id:'insights.reports.view-custom', label:'View Insights+ Custom Reports', allowedActions:['view'] },
-        { id:'insights.reports.create-edit', label:'Create/edit Insights+ Reports', allowedActions:['create'] },
-        { id:'insights.reports.create-edit-custom', label:'Create/edit Insights+ Custom Reports', allowedActions:['create'] },
+        { id:'insights.reports.standard', label:'Standard Reports', allowedActions:['create','edit'] },
+        { id:'insights.reports.custom', label:'Custom Reports', allowedActions:['create','edit'] },
         { id:'insights.reports.create-reports-segment-templates', label:'Create reports/segment/templates', allowedActions:['create'] },
       ] },
       { id:'insights.segments', label:'Segments', allowedActions:['view','create','edit','delete'], children: [
         { id:'insights.segments.view-module', label:'View Insights+ Segments Module', allowedActions:['view'] },
         { id:'insights.segments.view-create', label:'View/create segments', allowedActions:['view','create'] },
-        { id:'insights.segments.create-edit', label:'Create/edit Insights+ Segments', allowedActions:['create'] },
+        { id:'insights.segments.create-edit', label:'Create/edit Insights+ Segments', allowedActions:['create','edit'] },
       ] },
-      { id:'insights.export', label:'Export', allowedActions:['view','create','delete'], children: [
+      { id:'insights.export', label:'Export', allowedActions:['view','create','edit','delete'], children: [
         { id:'insights.export.view-module', label:'View Insights+ Exports Module', allowedActions:['view'] },
         { id:'insights.export.create', label:'Create export', allowedActions:['create'] },
-        { id:'insights.export.create-edit', label:'Create/edit Insights+ Exports', allowedActions:['create'] },
+        { id:'insights.export.create-edit', label:'Create/edit Insights+ Exports', allowedActions:['create','edit'] },
         { id:'insights.export.delete', label:'Delete Insights+ Exports', allowedActions:['delete'] },
       ] },
       { id:'insights.charts', label:'Charts', allowedActions:['view','create','edit','delete'], children: [
         { id:'insights.charts.view', label:'View Insights+ Charts', allowedActions:['view'] },
-        { id:'insights.charts.create-edit', label:'Create/edit Insights+ Charts', allowedActions:['create'] },
+        { id:'insights.charts.create-edit', label:'Create/edit Insights+ Charts', allowedActions:['create','edit'] },
         { id:'insights.charts.delete', label:'Delete Insights+ Charts', allowedActions:['delete'] },
       ] },
       { id:'insights.settings', label:'Settings', allowedActions:['view'] },
-      { id:'insights.external-facts', label:'External Facts', allowedActions:['view','create'], children: [
+      { id:'insights.external-facts', label:'External Facts', allowedActions:['view','create','edit'], children: [
         { id:'insights.external-facts.view-insights-external-facts', label:'View Insights+ External Facts', allowedActions:['view'] },
-        { id:'insights.external-facts.create-edit-insights-external-facts', label:'Create/edit Insights+ External Facts', allowedActions:['create'] },
+        { id:'insights.external-facts.create-edit-insights-external-facts', label:'Create/edit Insights+ External Facts', allowedActions:['create','edit'] },
       ] },
       { id:'insights.target-templates', label:'Target Templates', allowedActions:['create'], children: [
         { id:'insights.target-templates.view-create-upload-download-target-templates', label:'View/create/upload/download target templates', allowedActions:['create'] },
