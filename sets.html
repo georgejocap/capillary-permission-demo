@@ -1141,6 +1141,7 @@ const PERMISSION_TREE = {
       { id:'insights.target-templates', label:'Target Templates', allowedActions:['create'], children: [
         { id:'insights.target-templates.view-create-upload-download-target-templates', label:'View/create/upload/download target templates', allowedActions:['create'] },
       ] },
+      { id:'insights.export-download', label:'Export Download', allowedActions:['view'] },
     ] },
     { id:'data-management', label:'Data Management', modules: [
       { id:'data-management.dataflows', label:'Dataflows', allowedActions:['view','create','edit','delete'] },
@@ -1380,6 +1381,8 @@ function createSelectionStore(){
         if (rejects(id, action)) return false;
         if (!state.has(id)) state.set(id, new Set());
         state.get(id).add(action);
+        // granting create implies view
+        if (action === 'create') apply('GRANT', { id, action: 'view' });
         return true;
       }
       case 'REVOKE': {
@@ -1388,6 +1391,8 @@ function createSelectionStore(){
         if (!set) return false;
         set.delete(action);
         if (!set.size) state.delete(id);
+        // revoking view also revokes create/edit/delete
+        if (action === 'view') ['create','edit','delete'].forEach(a => apply('REVOKE', { id, action: a }));
         return true;
       }
       case 'SET_MANY': {
