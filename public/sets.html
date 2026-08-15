@@ -1039,8 +1039,8 @@ const PERMISSION_TREE = {
       { id:'loyalty.streaks', label:'Streaks', allowedActions:['create'] },
       { id:'loyalty.subscription-programs', label:'Subscription Programs', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.tiers', label:'Tiers', allowedActions:['view','create','edit','delete','approval'] },
-      { id:'loyalty.promotions-old', label:'Promotions (Old UI — Deprecated)', allowedActions:['view','create'] },
-      { id:'loyalty.programs-old', label:'Programs (Old UI — Deprecated)', allowedActions:['view','create'] },
+      { id:'loyalty.promotions-old', label:'Promotions (Old UI)', allowedActions:['view','create'] },
+      { id:'loyalty.programs-old', label:'Programs (Old UI)', allowedActions:['view','create'] },
     ] },
     { id:'engage', label:'Engage', modules: [
       { id:'engage.campaign', label:'Campaign', allowedActions:['view','create','edit','delete','approval'], children: [
@@ -1194,10 +1194,10 @@ const PERMISSION_TREE = {
     { id:'settings', label:'Settings', modules: [
       { id:'settings.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
       { id:'settings.admin-access', label:'Admin & Developer Access', allowedActions:['view','create','edit','delete'], children: [
-        { id:'settings.admin-access.client-dev-script', label:'Only client dev able to create script', allowedActions:['create'] },
-        { id:'settings.admin-access.finance-team', label:'Finance team', allowedActions:['view'] },
-        { id:'settings.admin-access.high-level-admin', label:'High level access for admin user management', allowedActions:['view'] },
-        { id:'settings.admin-access.update-deployment', label:'Update deployment', allowedActions:['edit'] },
+        { id:'settings.admin-access.client-dev-script', label:'Script Access', allowedActions:['create'] },
+        { id:'settings.admin-access.finance-team', label:'Finance Team', allowedActions:['view'] },
+        { id:'settings.admin-access.high-level-admin', label:'Admin User Management', allowedActions:['view'] },
+        { id:'settings.admin-access.update-deployment', label:'Update Deployment', allowedActions:['edit'] },
       ] },
       { id:'settings.gateway-configuration', label:'Gateway Configuration', allowedActions:['view','create','edit','delete'], children: [
         { id:'settings.gateway-configuration.routing-global', label:'Routing — Global', allowedActions:['view','create','edit','delete'] },
@@ -1205,12 +1205,12 @@ const PERMISSION_TREE = {
         { id:'settings.gateway-configuration.rules-global', label:'Rules — Global', allowedActions:['view','create','edit','delete'] },
         { id:'settings.gateway-configuration.rules-local', label:'Rules — Local', allowedActions:['view','create','edit','delete'] },
       ] },
-      { id:'settings.mfe-nav-config', label:'MFE Navigation Config', allowedActions:['edit'] },
+      { id:'settings.mfe-nav-config', label:'App Navigation Config', allowedActions:['edit'] },
       { id:'settings.oauth-api-management', label:'OAuth / API Management', allowedActions:['view','create','edit','delete'] },
-      { id:'settings.oauth-clients-vulcan', label:'OAuth Clients Vulcan', allowedActions:['edit'] },
+      { id:'settings.oauth-clients-vulcan', label:'OAuth Clients', allowedActions:['edit'] },
       { id:'settings.org-setup', label:'Org Setup', allowedActions:['view'], children: [
-        { id:'settings.org-setup.org-set-up-assistant-page', label:'Org set up assistant page', allowedActions:['view'] },
-        { id:'settings.org-setup.access-to-master-stores', label:'Access to master stores', allowedActions:['view'] },
+        { id:'settings.org-setup.org-set-up-assistant-page', label:'Org Setup Assistant', allowedActions:['view'] },
+        { id:'settings.org-setup.access-to-master-stores', label:'Master Stores', allowedActions:['view'] },
       ] },
       { id:'settings.pii-masking', label:'PII Data Masking', allowedActions:['view'] },
       { id:'settings.search-criteria', label:'Search Criteria', allowedActions:['view','create','delete'] },
