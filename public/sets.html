@@ -1030,20 +1030,18 @@ const PERMISSION_TREE = {
       { id:'ask-aira.data-download', label:'Data Download', allowedActions:['view'] },
     ] },
     { id:'loyalty', label:'Loyalty', modules: [
-      { id:'loyalty.basic', label:'Basic (Old UI)', allowedActions:['view','create','edit','delete'] },
-      { id:'loyalty.promotions-old', label:'Promotions (Old UI)', allowedActions:['view','create'] },
-      { id:'loyalty.programs-old', label:'Programs (Old UI)', allowedActions:['create'] },
       { id:'loyalty.promotions', label:'Promotions', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.programs', label:'Programs', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.milestones', label:'Milestones', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.streaks', label:'Streaks', allowedActions:['create'] },
       { id:'loyalty.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
-      { id:'loyalty.manage-liability-owners', label:'Manage Liability Owners', allowedActions:['view','create','edit'] },
       { id:'loyalty.benefit-categories', label:'Benefit Categories', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.tiers', label:'Tiers', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.subscription-programs', label:'Subscription Programs', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.loyalty-benefits', label:'Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.loyalty-config', label:'Loyalty Config Attributes', allowedActions:['view','create','edit'] },
+      { id:'loyalty.promotions-old', label:'Promotions (Old UI)', allowedActions:['view','create'] },
+      { id:'loyalty.programs-old', label:'Programs (Old UI)', allowedActions:['view','create'] },
     ] },
     { id:'engage', label:'Engage', modules: [
       { id:'engage.campaign', label:'Campaign', allowedActions:['view','create','edit','delete','approval'], children: [
@@ -1814,12 +1812,12 @@ function runPermissionTests(){
 
   /* 2 — clicking a disabled checkbox is a no-op */
   t('clicking a disabled checkbox is a no-op', () => {
-    const c = ctl('loyalty.basic', 'delete');           // Basic = V only
+    const c = ctl('loyalty.streaks', 'delete');           // Streaks = create only
     assert(c.cb.el.classList.contains('is-disabled'), 'fixture is not disabled');
     const before = selection.size();
     c.cb.el.querySelector('input').click();
     assert(selection.size() === before, 'selection changed');
-    assert(!selection.has('loyalty.basic', 'delete'), 'grant leaked through');
+    assert(!selection.has('loyalty.streaks', 'delete'), 'grant leaked through');
     return 'no state change';
   });
 
@@ -1849,12 +1847,12 @@ function runPermissionTests(){
 
   /* 5 — reducer drops an out-of-allowedActions pair injected directly */
   t('reducer drops an out-of-allowedActions pair', () => {
-    const okDrop = selection.dispatch('GRANT', { id: 'loyalty.basic', action: 'delete' });
+    const okDrop = selection.dispatch('GRANT', { id: 'loyalty.promotions-old', action: 'delete' });
     assert(okDrop === false, 'dispatch reported success');
-    assert(!selection.has('loyalty.basic', 'delete'), 'pair was stored');
-    selection.dispatch('HYDRATE', { permissions: [{ id: 'loyalty.basic', actions: ['view','delete'] }] });
-    assert(selection.has('loyalty.basic', 'view'), 'valid action lost on hydrate');
-    assert(!selection.has('loyalty.basic', 'delete'), 'invalid action survived hydrate');
+    assert(!selection.has('loyalty.promotions-old', 'delete'), 'pair was stored');
+    selection.dispatch('HYDRATE', { permissions: [{ id: 'loyalty.promotions-old', actions: ['view','delete'] }] });
+    assert(selection.has('loyalty.promotions-old', 'view'), 'valid action lost on hydrate');
+    assert(!selection.has('loyalty.promotions-old', 'delete'), 'invalid action survived hydrate');
     selection.dispatch('RESET');
     return 'dropped on GRANT and on HYDRATE';
   });
