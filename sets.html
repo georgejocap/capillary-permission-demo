@@ -1146,12 +1146,12 @@ const PERMISSION_TREE = {
       ] },
       { id:'data-management.customers', label:'Customer Labels', allowedActions:['view','create','edit','delete'] },
       { id:'data-management.data-catalog-admin', label:'Data Catalog — Admin', allowedActions:['approval'] },
-      { id:'data-management.data-catalog-databricks', label:'Data Catalog — Databricks', allowedActions:['view','edit'], children: [
-        { id:'data-management.data-catalog-databricks.execute-databricks-sql', label:'Execute Databricks SQL', allowedActions:['edit'] },
-        { id:'data-management.data-catalog-databricks.read-databricks-tables', label:'Read Databricks tables', allowedActions:['view'] },
-        { id:'data-management.data-catalog-databricks.write-databricks-descriptions', label:'Write Databricks descriptions', allowedActions:['edit'] },
+      { id:'data-management.data-catalog-databricks', label:'Data Catalog — SQL & Tables', allowedActions:['view','edit'], children: [
+        { id:'data-management.data-catalog-databricks.execute-databricks-sql', label:'Execute SQL queries', allowedActions:['edit'] },
+        { id:'data-management.data-catalog-databricks.read-databricks-tables', label:'Read tables and columns', allowedActions:['view'] },
+        { id:'data-management.data-catalog-databricks.write-databricks-descriptions', label:'Write table and column descriptions', allowedActions:['edit'] },
       ] },
-      { id:'data-management.data-catalog-ei-metadata', label:'Data Catalog — EI Metadata', allowedActions:['view'] },
+      { id:'data-management.data-catalog-ei-metadata', label:'Data Catalog — Facts & Dimensions', allowedActions:['view'] },
       { id:'data-management.connect-apis', label:'Dataflow APIs', allowedActions:['create'] },
       { id:'data-management.dataflows', label:'Dataflows', allowedActions:['view','create','edit','delete'] },
       { id:'data-management.import', label:'Import', allowedActions:['view','create','approval'], children: [
