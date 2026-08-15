@@ -1033,15 +1033,14 @@ const PERMISSION_TREE = {
       { id:'loyalty.benefit-categories', label:'Benefit Categories', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.loyalty-config', label:'Config Attributes', allowedActions:['view','create','edit'] },
       { id:'loyalty.loyalty-benefits', label:'Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'] },
-      { id:'loyalty.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.milestones', label:'Milestones', allowedActions:['view','create','edit','delete'] },
       { id:'loyalty.programs', label:'Programs', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.promotions', label:'Promotions', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.streaks', label:'Streaks', allowedActions:['create'] },
       { id:'loyalty.subscription-programs', label:'Subscription Programs', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.tiers', label:'Tiers', allowedActions:['view','create','edit','delete','approval'] },
-      { id:'loyalty.promotions-old', label:'Promotions (Old UI)', allowedActions:['view','create'] },
-      { id:'loyalty.programs-old', label:'Programs (Old UI)', allowedActions:['view','create'] },
+      { id:'loyalty.promotions-old', label:'Promotions (Old UI — Deprecated)', allowedActions:['view','create'] },
+      { id:'loyalty.programs-old', label:'Programs (Old UI — Deprecated)', allowedActions:['view','create'] },
     ] },
     { id:'engage', label:'Engage', modules: [
       { id:'engage.campaign', label:'Campaign', allowedActions:['view','create','edit','delete','approval'], children: [
@@ -1075,9 +1074,7 @@ const PERMISSION_TREE = {
         { id:'member-care.customer-goodwill.approve-reject-goodwill-requests', label:'Approve/reject goodwill requests', allowedActions:['approval'] },
         { id:'member-care.customer-goodwill.get-goodwill-coupons-points-config', label:'Get goodwill coupons/points config', allowedActions:['view'] },
       ] },
-      { id:'member-care.group', label:'Group', allowedActions:['view','create','approval'], children: [
-        { id:'member-care.group.group-goodwill', label:'Group goodwill', allowedActions:['view','create','approval'] },
-      ] },
+      { id:'member-care.group', label:'Group', allowedActions:['view','create','approval'] },
       { id:'member-care.requests', label:'Requests', allowedActions:['view','create','edit','approval'], children: [
         { id:'member-care.requests.new-points-redeem-request', label:'New Points Redeem Request', allowedActions:['create','approval'] },
         { id:'member-care.requests.request-new-customer-status-change', label:'Request New Customer Status Change', allowedActions:['create','approval'] },
@@ -1090,9 +1087,7 @@ const PERMISSION_TREE = {
         { id:'member-care.requests.requests-pii-deletion', label:'Requests PII Deletion', allowedActions:['view','create','approval'] },
         { id:'member-care.requests.requests-transaction', label:'Requests Transaction', allowedActions:['view','create','approval'] },
       ] },
-      { id:'member-care.sessions', label:'Sessions', allowedActions:['view','create','edit'], children: [
-        { id:'member-care.sessions.sessions-end-create', label:'Sessions end create', allowedActions:['create'] },
-      ] },
+      { id:'member-care.sessions', label:'Sessions', allowedActions:['view','create','edit'] },
       { id:'member-care.settings', label:'Settings', allowedActions:['edit'] },
       { id:'member-care.unmasked-otp', label:'Unmasked OTP', allowedActions:['view'] },
     ] },
@@ -1149,23 +1144,15 @@ const PERMISSION_TREE = {
         { id:'data-management.card-configuration.card-series', label:'Card Series', allowedActions:['view','create','edit','delete'] },
         { id:'data-management.card-configuration.global-setting', label:'Global Setting', allowedActions:['view','create','edit','delete'] },
       ] },
-      { id:'data-management.customers', label:'Customers', allowedActions:['view','create','edit','delete'], children: [
-        { id:'data-management.customers.customer-labels', label:'Customer Labels', allowedActions:['view','create','edit','delete'] },
-      ] },
-      { id:'data-management.data-catalog-admin', label:'Data Catalog — Admin', allowedActions:['approval'], children: [
-        { id:'data-management.data-catalog-admin.cross-org-admin-access-to-data-catalog', label:'Cross-org admin access to Data Catalog', allowedActions:['approval'] },
-      ] },
+      { id:'data-management.customers', label:'Customer Labels', allowedActions:['view','create','edit','delete'] },
+      { id:'data-management.data-catalog-admin', label:'Data Catalog — Admin', allowedActions:['approval'] },
       { id:'data-management.data-catalog-databricks', label:'Data Catalog — Databricks', allowedActions:['view','edit'], children: [
         { id:'data-management.data-catalog-databricks.execute-databricks-sql', label:'Execute Databricks SQL', allowedActions:['edit'] },
         { id:'data-management.data-catalog-databricks.read-databricks-tables', label:'Read Databricks tables', allowedActions:['view'] },
         { id:'data-management.data-catalog-databricks.write-databricks-descriptions', label:'Write Databricks descriptions', allowedActions:['edit'] },
       ] },
-      { id:'data-management.data-catalog-ei-metadata', label:'Data Catalog — EI Metadata', allowedActions:['view'], children: [
-        { id:'data-management.data-catalog-ei-metadata.read-dc-ei-metadata', label:'Read DC EI metadata', allowedActions:['view'] },
-      ] },
-      { id:'data-management.connect-apis', label:'Dataflow APIs', allowedActions:['create'], children: [
-        { id:'data-management.connect-apis.access-to-connect-plus-apis', label:'Access to Dataflow APIs', allowedActions:['create'] },
-      ] },
+      { id:'data-management.data-catalog-ei-metadata', label:'Data Catalog — EI Metadata', allowedActions:['view'] },
+      { id:'data-management.connect-apis', label:'Dataflow APIs', allowedActions:['create'] },
       { id:'data-management.dataflows', label:'Dataflows', allowedActions:['view','create','edit','delete'] },
       { id:'data-management.import', label:'Import', allowedActions:['view','create','approval'], children: [
         { id:'data-management.import.all-import-api', label:'All Import API', allowedActions:['create'] },
@@ -1182,21 +1169,11 @@ const PERMISSION_TREE = {
         { id:'data-management.locations.zone', label:'Zone', allowedActions:['view','create','edit','delete'] },
       ] },
       { id:'data-management.product-inventory', label:'Product Inventory', allowedActions:['view','create','edit','delete'] },
-      { id:'data-management.product-sku', label:'Product SKU', allowedActions:['delete'], children: [
-        { id:'data-management.product-sku.delete', label:'Delete Product SKU', allowedActions:['delete'] },
-      ] },
+      { id:'data-management.product-sku', label:'Product SKU', allowedActions:['delete'] },
       { id:'data-management.webhooks', label:'Webhooks', allowedActions:['view','create','edit','delete'] },
     ] },
     { id:'extensions', label:'Extensions', modules: [
-      { id:'extensions.block-library-read', label:'Block Library — Read', allowedActions:['view','create'], children: [
-        { id:'extensions.block-library-read.check-block-exists', label:'Check block exists in library version', allowedActions:['view'] },
-        { id:'extensions.block-library-read.codeview', label:'Codeview (block library)', allowedActions:['view'] },
-        { id:'extensions.block-library-read.get-block', label:'Get block in library version', allowedActions:['view'] },
-        { id:'extensions.block-library-read.get-block-by-meta', label:'Get block library blocks details by metadata', allowedActions:['view'] },
-        { id:'extensions.block-library-read.init', label:'Initialize block library', allowedActions:['create'] },
-        { id:'extensions.block-library-read.list-blocks', label:'List blocks in library version', allowedActions:['view'] },
-        { id:'extensions.block-library-read.versions', label:'List block library versions', allowedActions:['view'] },
-      ] },
+      { id:'extensions.block-library-read', label:'Block Library — Read', allowedActions:['view','create'] },
       { id:'extensions.block-library-write', label:'Block Library — Write', allowedActions:['create','edit','delete'], children: [
         { id:'extensions.block-library-write.create-block', label:'Create block in library version', allowedActions:['create'] },
         { id:'extensions.block-library-write.delete-block', label:'Delete block in library version', allowedActions:['delete'] },
@@ -1215,7 +1192,8 @@ const PERMISSION_TREE = {
       ] },
     ] },
     { id:'settings', label:'Settings', modules: [
-      { id:'settings.admin-access', label:'Admin Access', allowedActions:['view','create','edit','delete'], children: [
+      { id:'settings.manage-partners', label:'Manage Partners', allowedActions:['view','create','edit','delete'] },
+      { id:'settings.admin-access', label:'Admin & Developer Access', allowedActions:['view','create','edit','delete'], children: [
         { id:'settings.admin-access.client-dev-script', label:'Only client dev able to create script', allowedActions:['create'] },
         { id:'settings.admin-access.finance-team', label:'Finance team', allowedActions:['view'] },
         { id:'settings.admin-access.high-level-admin', label:'High level access for admin user management', allowedActions:['view'] },
@@ -1227,13 +1205,9 @@ const PERMISSION_TREE = {
         { id:'settings.gateway-configuration.rules-global', label:'Rules — Global', allowedActions:['view','create','edit','delete'] },
         { id:'settings.gateway-configuration.rules-local', label:'Rules — Local', allowedActions:['view','create','edit','delete'] },
       ] },
-      { id:'settings.mfe-nav-config', label:'MFE Navigation Config', allowedActions:['edit'], children: [
-        { id:'settings.mfe-nav-config.manage', label:'Manage MFE navigation config and app config', allowedActions:['edit'] },
-      ] },
+      { id:'settings.mfe-nav-config', label:'MFE Navigation Config', allowedActions:['edit'] },
       { id:'settings.oauth-api-management', label:'OAuth / API Management', allowedActions:['view','create','edit','delete'] },
-      { id:'settings.oauth-clients-vulcan', label:'OAuth Clients Vulcan', allowedActions:['edit'], children: [
-        { id:'settings.oauth-clients-vulcan.upsert-oauth-clients-on-vulcan', label:'Upsert oauth clients on vulcan', allowedActions:['edit'] },
-      ] },
+      { id:'settings.oauth-clients-vulcan', label:'OAuth Clients Vulcan', allowedActions:['edit'] },
       { id:'settings.org-setup', label:'Org Setup', allowedActions:['view'], children: [
         { id:'settings.org-setup.org-set-up-assistant-page', label:'Org set up assistant page', allowedActions:['view'] },
         { id:'settings.org-setup.access-to-master-stores', label:'Access to master stores', allowedActions:['view'] },
