@@ -1039,7 +1039,7 @@ const PERMISSION_TREE = {
       { id:'loyalty.tiers', label:'Tiers', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.subscription-programs', label:'Subscription Programs', allowedActions:['view','create','edit','delete','approval'] },
       { id:'loyalty.loyalty-benefits', label:'Loyalty Benefits', allowedActions:['view','create','edit','delete','approval'] },
-      { id:'loyalty.loyalty-config', label:'Loyalty Config Attributes', allowedActions:['view','create','edit'] },
+      { id:'loyalty.loyalty-config', label:'Config Attributes', allowedActions:['view','create','edit'] },
       { id:'loyalty.promotions-old', label:'Promotions (Old UI)', allowedActions:['view','create'] },
       { id:'loyalty.programs-old', label:'Programs (Old UI)', allowedActions:['view','create'] },
     ] },
@@ -1048,9 +1048,7 @@ const PERMISSION_TREE = {
         { id:'engage.campaign.workflow', label:'Workflow', allowedActions:['view','create','approval'] },
         { id:'engage.campaign.messages', label:'Messages', allowedActions:['create','approval'] },
         { id:'engage.campaign.incentive', label:'Incentive', allowedActions:['create','approval'] },
-        { id:'engage.campaign.audience', label:'Audience', allowedActions:['view'] },
         { id:'engage.campaign.report', label:'Report', allowedActions:['view'] },
-        { id:'engage.campaign.creatives', label:'Creatives', allowedActions:['view','create','edit','delete'] },
         { id:'engage.campaign.config', label:'Config', allowedActions:['edit'] },
       ] },
       { id:'engage.journeys', label:'Journeys', allowedActions:['view','create','edit','delete'] },
@@ -1096,7 +1094,6 @@ const PERMISSION_TREE = {
         { id:'member-care.sessions.sessions-end-create', label:'Sessions end create', allowedActions:['create'] },
       ] },
       { id:'member-care.settings', label:'Settings', allowedActions:['edit'] },
-      { id:'member-care.search-criteria', label:'Search Criteria', allowedActions:['view','create','delete'] },
       { id:'member-care.unmasked-otp', label:'Unmasked OTP', allowedActions:['view'] },
     ] },
     { id:'audiences', label:'Audiences', modules: [
@@ -1219,6 +1216,7 @@ const PERMISSION_TREE = {
     ] },
     { id:'settings', label:'Settings', modules: [
 
+      { id:'settings.search-criteria', label:'Search Criteria', allowedActions:['view','create','delete'] },
       { id:'settings.oauth-api-management', label:'OAuth / API Management', allowedActions:['view','create','edit','delete'] },
       { id:'settings.pii-masking', label:'PII Data Masking', allowedActions:['view'] },
       { id:'settings.org-setup', label:'Org Setup', allowedActions:['view'], children: [
